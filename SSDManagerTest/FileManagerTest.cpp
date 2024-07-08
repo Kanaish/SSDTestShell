@@ -1,9 +1,10 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-
 #include "../SSDManager/FileManager.cpp"
 
-TEST(FileManagerTest, TestCase) {
-	EXPECT_EQ(1, 1);
-	EXPECT_TRUE(true);
+using namespace testing;
+TEST(FileManagerTest, file_manager_test_00) 
+{
+	FileManager fm;
+	EXPECT_THAT(fm.open("test.txt"), IsNull());
 }
