@@ -3,14 +3,13 @@
 #include <fstream>
 #include <string>
 
-class FileManager
-{
+class FileManager {
 public:
-	FileManager();
-	std::fstream* open(std::string);
-	std::fstream* init(std::string name);
-	unsigned int read(std::fstream* fs, int index);
-	bool write(std::fstream* fs, int index, unsigned int value);
-	bool write(std::fstream* fs, unsigned int value);
-	bool close(std::fstream* fs);
+    FileManager();
+    std::fstream* init(std::string name);
+    std::fstream* open(std::string name);
+    unsigned int read(std::fstream* fs, int index);
+    bool write(std::fstream* fs, int index, unsigned int value);
+    bool write(std::fstream* fs, unsigned int value);
+    bool close(std::fstream* fs);
 };

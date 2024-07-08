@@ -7,11 +7,11 @@
 FileManager::FileManager() {
 }
 
-std::fstream * FileManager::open(std::string) {
+std::fstream* FileManager::init(std::string name) {
     return nullptr;
 }
 
-std::fstream* FileManager::init(std::string name) {
+std::fstream * FileManager::open(std::string) {
     return nullptr;
 }
 
