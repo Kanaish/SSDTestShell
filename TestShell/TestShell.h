@@ -5,13 +5,14 @@ using namespace std;
 
 class TestShell {
 public:
+	void run(void);
 	void execute(string smd);
-	bool write(string cmd);
-	bool read(string cmd);
-	bool exit(void);
-	bool help(void);
-	bool fullwrite(string cmd);
-	bool fullread(void);
+	virtual bool write(string cmd);
+	virtual bool read(string cmd);
+	virtual bool exit(void);
+	virtual bool help(void);
+	virtual bool fullwrite(string cmd);
+	virtual bool fullread(void);
 private:
 	bool isValidCommand(string cmd);
 };
