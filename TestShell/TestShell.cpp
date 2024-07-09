@@ -61,7 +61,7 @@ void TestShell::execute(std::string input_str) {
 }
 
 int TestShell::write(const std::string& arg) {
-    std::string cmd = "ssd.exe w ";
+    std::string cmd = "../x64/Debug/SSDManager.exe w ";
     int ret;
 
     if (!isValidArgument(arg)) {
@@ -79,7 +79,7 @@ int TestShell::write(const std::string& arg) {
 }
 
 int TestShell::read(const std::string& arg) {
-    std::string cmd = "ssd.exe r ";
+    std::string cmd = "../x64/Debug/SSDManager.exe r ";
     int ret;
 
     if (!isValidIndex(arg)) {
