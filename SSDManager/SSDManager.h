@@ -8,7 +8,7 @@
 //#include "SSDReader.h"
 
 class SSDManager {
-public:
+ public:
     SSDManager(int argc, char** argv);
     //~SSDManager();
 
@@ -16,7 +16,7 @@ public:
     //bool executeCommand();
     std::vector<std::string> getParsedCommand();
 
-private:
+ private:
     std::vector<std::string> parsed_input;
 
     //FileManager* file_manager;

@@ -21,7 +21,7 @@ SSDManager::SSDManager(int argc, char** argv) {
 //}
 
 bool SSDManager::isValidInput() {
-    int argc = (int)parsed_input.size();
+    int argc = static_cast<int>(parsed_input.size());
 
     if (isValidCommand(argc) == false) {
         return false;
