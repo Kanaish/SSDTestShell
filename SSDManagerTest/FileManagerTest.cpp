@@ -5,46 +5,41 @@
 #include "../SSDManager/FileManager.cpp"
 #include "../SSDManager/FileManagerInterface.h"
 
-#define TEST_INDEX  (0)
-#define TEST_VALUE  ("0xAAAAAAAA")
+#define TEST_INDEX     (0)
+#define TEST_VALUE     "0xAAAAAAAA"
 
-#define TEST_RESULT ("result.txt")
-#define TEST_NAND   ("nand.txt")
+#define TEST_RESULT    "test_result.txt"
+#define TEST_NAND      "test_nand.txt"
+#define TEST_NAND_REF  "test_nand_ref.txt"
 
 using namespace std;
 using namespace testing;
 
-class FileManagerMock : public FileManager {
-public:
-    MOCK_METHOD(bool, write, (string, int, string), ());
-};
-
-TEST(FileManagerTest, file_manager_test_init) {
-    FileManager fm;
-    EXPECT_THAT(fm.init(TEST_RESULT), true);
-}
-
-TEST(FileManagerTest, file_manager_test_open) {
-    FileManager fm;
-    EXPECT_THAT(fm.open(TEST_RESULT), true);
-}
-
-TEST(FileManagerTest, file_manager_test_close) {
-    FileManager fm;
-    EXPECT_THAT(fm.close(TEST_RESULT), true);
-
-}
 TEST(FileManagerTest, file_manager_test_read) {
     FileManager fm;
     EXPECT_THAT(fm.read(TEST_RESULT, TEST_INDEX), "");
 }
 
-TEST(FileManagerTest, file_manager_test_write) {
+TEST(FileManagerTest, file_manager_test_write_different_index) {
     FileManager fm;
-    FileManagerMock fmMock;
-    EXPECT_CALL(fmMock, write(TEST_NAND, TEST_INDEX, TEST_VALUE))
-        .WillOnce(Return(true));
-    EXPECT_EQ(fmMock.write(TEST_NAND, TEST_INDEX, TEST_VALUE), true);
+    stringstream testBuf, testRef;
+    string textBuf, textRef;
+
+    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
+    for (int i = 0; i < 100; i++)
+    {
+        fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
+    }
+    
+    fstream refFile(TEST_NAND_REF, std::ios::in | std::ios::out | std::ios::beg);
+
+    testBuf << testFile.rdbuf();
+    testRef << refFile.rdbuf();
+
+    textBuf = testBuf.str();
+    textRef = testRef.str();
+
+    EXPECT_EQ(textBuf, textRef);
 }
 
 TEST(FileManagerTest, file_manager_test_write_during_read) {

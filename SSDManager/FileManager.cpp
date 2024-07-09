@@ -7,33 +7,21 @@
 FileManager::FileManager() {
 }
 
-bool FileManager::init(std::string name) {
-    return true;
-}
-
-bool FileManager::open(std::string name) {
-    return true;
-}
-
-bool FileManager::close(std::string name) {
-    return true;
-}
-
 std::string FileManager::read(std::string name, int index) {
     return "";
 }
 
 bool FileManager::write(std::string name, int index, std::string value) {
-    
-    nandFile.open("nand.txt", std::ios::out | std::ios::in | std::ios::ate);
-    
+
+    std::fstream nandFile(name, std::ios::in | std::ios::out);
+
     if (nandFile.is_open())
     {
-        return true;
+        nandFile.seekg(0, std::ios::end);
+        nandFile << "LBA" << index << " " << value << " ";
     }
     else
     {
-        std::cout << "Open Failed\n";
         /* TO DO : implement exception with throw */
         return false;
     }
