@@ -12,4 +12,5 @@ public:
     bool write(std::fstream* fs, int index, unsigned int value);
     bool write(std::fstream* fs, unsigned int value);
     bool close(std::fstream* fs);
+    
 };
