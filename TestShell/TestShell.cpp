@@ -35,13 +35,13 @@ bool TestShell::isValidAddress(const std::string& str) {
 
 bool TestShell::isValidArgument(const std::string& arg) {
     std::istringstream iss(arg);
-    std::string firstWord, secondWord;
+    std::string first_word, second_word;
 
-    if (!(iss >> firstWord)) return false;
-    if (!isValidIndex(firstWord)) return false;
+    if (!(iss >> first_word)) return false;
+    if (!isValidIndex(first_word)) return false;
 
-    if (!(iss >> secondWord)) return false;
-    if (!isValidAddress(secondWord)) return false;
+    if (!(iss >> second_word)) return false;
+    if (!isValidAddress(second_word)) return false;
 
     return true;
 }
