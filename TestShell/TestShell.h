@@ -9,14 +9,14 @@ class TestShell {
  public:
   void run(void);
   void execute(const std::string inputStr);
-
- protected:
   virtual bool write(const std::string& arg);
   virtual bool read(const std::string& arg);
-  virtual void exit(void);
-  virtual void help(void);
   virtual bool fullWrite(const std::string& arg);
   virtual bool fullRead(void);
+
+ protected:
+  virtual void exit(void);
+  virtual void help(void);
 
  private:
   bool isValidCommand(const std::string& cmd);
