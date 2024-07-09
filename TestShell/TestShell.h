@@ -9,10 +9,10 @@ public:
 	void execute(string smd);
 	virtual bool write(string cmd);
 	virtual bool read(string cmd);
-	virtual bool exit(void);
-	virtual bool help(void);
-	virtual bool fullwrite(string cmd);
-	virtual bool fullread(void);
+	bool exit(void);
+	bool help(void);
+	bool fullWrite(string cmd);
+	bool fullRead(void);
 private:
 	bool isValidCommand(string cmd);
 };
