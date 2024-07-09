@@ -73,5 +73,18 @@ TEST(FileManagerTest, file_manager_test_write_same_index) {
 
 TEST(FileManagerTest, file_manager_test_write_during_read) {
     FileManager fm;
-    EXPECT_THAT(fm.write(TEST_RESULT, TEST_VALUE), true);
+    stringstream resultTestBuf;
+    string resultTextBuf;
+    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
+    fstream testResultFile(TEST_RESULT, std::ios::in | std::ios::out | std::ios::trunc);
+
+    for (int i = 0; i < 100; i++) {
+        fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
+    }
+    string resultTextRef = fm.read(TEST_NAND, 5);
+    fm.write(TEST_RESULT, resultTextRef);
+
+    resultTestBuf << testResultFile.rdbuf();
+    resultTextBuf = resultTestBuf.str();
+    EXPECT_EQ(resultTextBuf, resultTextRef);
 }
