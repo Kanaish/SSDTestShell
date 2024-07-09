@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <stdexcept>
 #include "FileManager.h"
 
 FileManager::FileManager() {
@@ -15,19 +17,34 @@ bool FileManager::write(std::string name, int index, std::string value) {
 
     std::fstream nandFile(name, std::ios::in | std::ios::out);
 
-    if (nandFile.is_open())
-    {
-        nandFile.seekg(0, std::ios::end);
-        nandFile << "LBA" << index << " " << value << " ";
+    if (nandFile.is_open()) {
+        bool indexExistFlag = false;
+        nandFile.seekp(0, std::ios::beg);
+
+        std::stringstream buffer;
+        buffer << nandFile.rdbuf();
+        nandFile.seekp(0, std::ios::beg);
+        std::string lba = std::string("LBA" + std::to_string(index));
+        size_t pos = buffer.str().find(lba);
+
+        if (pos != std::string::npos) {
+            nandFile.seekp(pos, std::ios::beg);
+            nandFile << "LBA" << index << " " << value << " ";
+            indexExistFlag = true;
+        }
+        if (!indexExistFlag) {
+            nandFile.seekg(0, std::ios::end);
+            nandFile << "LBA" << index << " " << value << " ";
+        }
     }
-    else
-    {
-        /* TO DO : implement exception with throw */
+    else {
+        throw std::invalid_argument("File is not opened");
         return false;
     }
     nandFile.close();
     return true;
 }
+
 
 bool FileManager::write(std::string name, std::string value) {
     return true;

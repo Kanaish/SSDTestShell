@@ -11,6 +11,7 @@
 #define TEST_RESULT    "test_result.txt"
 #define TEST_NAND      "test_nand.txt"
 #define TEST_NAND_REF  "test_nand_ref.txt"
+#define TEST_NAND_DIFF_REF  "test_nand_diff_ref.txt"
 
 using namespace std;
 using namespace testing;
@@ -26,12 +27,32 @@ TEST(FileManagerTest, file_manager_test_write_different_index) {
     string textBuf, textRef;
 
     fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
-    for (int i = 0; i < 100; i++)
-    {
+    for (int i = 0; i < 100; i++) {
         fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
     }
     
     fstream refFile(TEST_NAND_REF, std::ios::in | std::ios::out | std::ios::beg);
+
+    testBuf << testFile.rdbuf();
+    testRef << refFile.rdbuf();
+
+    textBuf = testBuf.str();
+    textRef = testRef.str();
+
+    EXPECT_EQ(textBuf, textRef);
+}
+
+TEST(FileManagerTest, file_manager_test_write_same_index) {
+    FileManager fm;
+    stringstream testBuf, testRef;
+    string textBuf, textRef;
+
+    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
+    for (int i = 0; i < 100; i++) {
+        fm.write(TEST_NAND, i / 4, "0x" + to_string(10000000 + i));
+    }
+
+    fstream refFile(TEST_NAND_DIFF_REF, std::ios::in | std::ios::out | std::ios::beg);
 
     testBuf << testFile.rdbuf();
     testRef << refFile.rdbuf();
