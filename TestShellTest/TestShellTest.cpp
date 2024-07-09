@@ -10,15 +10,15 @@ using namespace testing;
 
 class TestShellMock : public TestShell {
 public:
-    MOCK_METHOD(int, write, (const std::string& arg), (override));
-    MOCK_METHOD(int, read, (const std::string& arg), (override));
+    MOCK_METHOD(int, write, (const string& arg), (override));
+    MOCK_METHOD(int, read, (const string& arg), (override));
     MOCK_METHOD(void, exit, (), (override));
     MOCK_METHOD(void, help, (), (override));
-    MOCK_METHOD(int, fullWrite, (const std::string& arg), (override));
+    MOCK_METHOD(int, fullWrite, (const string& arg), (override));
     MOCK_METHOD(int, fullRead, (), (override));
 };
 
-class TestShellFixture : public testing::Test {
+class TestShellFixture : public Test {
 protected:
     TestShell shell;
     TestShellMock mock;
@@ -27,7 +27,7 @@ protected:
     void expectInvalidArgumentForWrite(const string& command) {
         try {
             shell.write(command);
-            FAIL() << "Expected std::invalid_argument";
+            FAIL() << "Expected invalid_argument";
         }
         catch (const invalid_argument& e) {
             EXPECT_EQ(string(e.what()), "INVALID COMMAND");
@@ -40,7 +40,7 @@ protected:
     void expectInvalidArgumentForRead(const string& command) {
         try {
             shell.read(command);
-            FAIL() << "Expected std::invalid_argument";
+            FAIL() << "Expected invalid_argument";
         }
         catch (const invalid_argument& e) {
             EXPECT_EQ(string(e.what()), "INVALID COMMAND");
