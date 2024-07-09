@@ -1,10 +1,6 @@
 /* Copyright 2024 Code Love you */
 
-#include <iostream>
 #include <sstream>
-#include <cstring>
-#include <cstdlib>
-#include <stdexcept>
 
 #include "TestShell.h"
 
@@ -92,7 +88,6 @@ int TestShell::read(const std::string& arg) {
   }
 
   cmd += arg;
-  std::cout << cmd << std::endl;
 
   ret = system(cmd.c_str());
   if (ret != 0) {
@@ -101,7 +96,6 @@ int TestShell::read(const std::string& arg) {
   }
 
   cmd = "type result.txt";
-  std::cout << cmd << std::endl;
 
   ret = system(cmd.c_str());
   if (ret != 0) {
