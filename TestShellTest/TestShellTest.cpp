@@ -6,6 +6,7 @@
 #include "../TestShell/TestShell.cpp"
 
 using namespace std;
+using namespace testing;
 
 class TestShellMock : public TestShell {
 public:
@@ -88,4 +89,22 @@ TEST_F(TestShellFixture, read_invalid_argument1) {
 
 TEST_F(TestShellFixture, read_invalid_argument2) {
     expectInvalidArgumentForRead("read 100");
+}
+
+TEST_F(TestShellFixture, fullWrite_fail) {
+    EXPECT_EQ(mock.fullWrite(""), -1);
+}
+
+TEST_F(TestShellFixture, fullWrite_pass) {
+    EXPECT_CALL(mock, write(_)).Times(100)
+        .WillRepeatedly(Return(0));
+
+    mock.fullWrite("0x12345678");
+}
+
+TEST_F(TestShellFixture, fullRead_pass) {
+    EXPECT_CALL(mock, read(_)).Times(100)
+        .WillRepeatedly(Return(0));
+
+    mock.fullRead();
 }
