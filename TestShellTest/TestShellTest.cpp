@@ -9,12 +9,12 @@ using namespace std;
 
 class TestShellMock : public TestShell {
  public:
-  MOCK_METHOD(bool, write, (const std::string& arg), (override));
-  MOCK_METHOD(bool, read, (const std::string& arg), (override));
+  MOCK_METHOD(int, write, (const std::string& arg), (override));
+  MOCK_METHOD(int, read, (const std::string& arg), (override));
   MOCK_METHOD(void, exit, (), (override));
   MOCK_METHOD(void, help, (), (override));
-  MOCK_METHOD(bool, fullWrite, (const std::string& arg), (override));
-  MOCK_METHOD(bool, fullRead, (), (override));
+  MOCK_METHOD(int, fullWrite, (const std::string& arg), (override));
+  MOCK_METHOD(int, fullRead, (), (override));
 };
 
 class TestShellFixture : public testing::Test {
