@@ -7,26 +7,28 @@
 FileManager::FileManager() {
 }
 
-std::fstream* FileManager::init(std::string name) {
-    return nullptr;
+bool FileManager::init(std::string name) {
+    return true;
 }
 
-std::fstream * FileManager::open(std::string) {
-    return nullptr;
+bool FileManager::open(std::string name) {
+    return true;
 }
 
-unsigned int FileManager::read(std::fstream* fs, int index) {
+bool FileManager::close(std::string name) {
+    return true;
+}
+
+unsigned int FileManager::read(std::string name, int index) {
     return 0;
 }
 
-bool FileManager::write(std::fstream* fs, int index, unsigned int value) {
+bool FileManager::write(std::string name, int index, unsigned int value) {
     return true;
 }
 
-bool FileManager::write(std::fstream* fs, unsigned int value) {
+bool FileManager::write(std::string name, unsigned int value) {
     return true;
 }
 
-bool FileManager::close(std::fstream* fs) {
-    return true;
-}
+
