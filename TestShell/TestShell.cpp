@@ -9,7 +9,8 @@ void TestShell::run(void) {
     std::string input_str;
 
     while (1) {
-        std::cin >> input_str;
+        std::getline(std::cin, input_str);
+        if (input_str.empty()) continue;
         this->execute(input_str);
     }
 }
