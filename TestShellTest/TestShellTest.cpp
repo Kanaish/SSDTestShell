@@ -17,6 +17,12 @@ TEST(ShellTest, execute_test_invalid_argument1) {
 	EXPECT_THROW(shell.execute(str), runtime_error);
 }
 
+TEST(ShellTest, execute_test_invalid_argument) {
+	string str{ "read 3 0xAAAABBB0CC" };
+	TestShell shell;
+	EXPECT_THROW(shell.execute(str), runtime_error);
+}
+
 TEST(ShellTest, execute_test_invalid_argument2) {
 	TestShell shell;
 	std::string str{ "read 100 0xAAAABBBB" };

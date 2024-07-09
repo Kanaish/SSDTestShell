@@ -6,7 +6,7 @@ using namespace std;
 class TestShell {
 public:
 	void run(void);
-	void execute(string smd);
+	void execute(string cmd);
 	virtual bool write(string cmd);
 	virtual bool read(string cmd);
 	bool exit(void);
