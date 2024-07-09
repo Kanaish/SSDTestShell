@@ -20,12 +20,17 @@ class FileManagerReaderMock : public FileManagerInterface {
     MOCK_METHOD(bool, write, (std::string, std::string), (override));
 };
 
-TEST(SSDReaderTest, FileManagerReaderMockReadTest) {
+class SSDReaderFileManagerMockFixture: public testing::Test {
+ public:
     testing::NiceMock<FileManagerReaderMock> mock;
     std::string value = "0x12345678";
+    std::string nand_file = NAND_NAME_PATH;
+    std::string result_file = RESULT_NAME_PATH;
+};
+
+TEST_F(SSDReaderFileManagerMockFixture, FileManagerReaderMockReadTest) {
     std::string result;
     int index = 0;
-    std::string nand_file = NAND_NAME_PATH;
 
     EXPECT_CALL(mock, read(nand_file, index))
         .WillRepeatedly(testing::Return(std::string(value)));
@@ -35,11 +40,9 @@ TEST(SSDReaderTest, FileManagerReaderMockReadTest) {
     EXPECT_EQ(result, value);
 }
 
-TEST(SSDReaderTest, FileManagerReaderMockWriteTest) {
-    testing::NiceMock<FileManagerReaderMock> mock;
-    std::string value = "0x12345678";
+TEST_F(SSDReaderFileManagerMockFixture, FileManagerReaderMockWriteTest) {
     bool result;
-    int index = 0;
+
     std::string result_file = RESULT_NAME_PATH;
 
     EXPECT_CALL(mock, write(result_file, value))
@@ -50,14 +53,10 @@ TEST(SSDReaderTest, FileManagerReaderMockWriteTest) {
     EXPECT_EQ(result, true);
 }
 
-TEST(SSDReaderTest, NormalReadTestWithMock) {
-    testing::NiceMock<FileManagerReaderMock> mock;
-
-    std::string value = "0x12345678";
+TEST_F(SSDReaderFileManagerMockFixture, NormalReadTestWithMock) {
     bool result;
     int index = 0;
-    std::string nand_file = NAND_NAME_PATH;
-    std::string result_file = RESULT_NAME_PATH;
+
 
     EXPECT_CALL(mock, read(nand_file, index))
         .Times(1)
@@ -72,13 +71,9 @@ TEST(SSDReaderTest, NormalReadTestWithMock) {
     EXPECT_THAT(result, testing::Eq(true));
 }
 
-TEST(SSDReaderTest, ExceptionReadWithMock) {
-    testing::NiceMock<FileManagerReaderMock> mock;
-    std::string value = "0x12345678";
+TEST_F(SSDReaderFileManagerMockFixture, ExceptionReadWithMock) {
     bool result;
     int index = 0;
-    std::string nand_file = NAND_NAME_PATH;
-    std::string result_file = RESULT_NAME_PATH;
 
     EXPECT_CALL(mock, read(nand_file, index))
         .WillRepeatedly(testing::Throw(std::exception()));
@@ -91,14 +86,9 @@ TEST(SSDReaderTest, ExceptionReadWithMock) {
     EXPECT_THAT(result, testing::Eq(false));
 }
 
-TEST(SSDReaderTest, ExceptionWriteWithMock) {
-    testing::NiceMock<FileManagerReaderMock> mock;
-    std::string value = "0x12345678";
+TEST_F(SSDReaderFileManagerMockFixture, ExceptionWriteWithMock) {
     bool result;
-
     int index = 0;
-    std::string nand_file = NAND_NAME_PATH;
-    std::string result_file = RESULT_NAME_PATH;
 
     EXPECT_CALL(mock, read(nand_file, index))
         .Times(1)
@@ -113,7 +103,7 @@ TEST(SSDReaderTest, ExceptionWriteWithMock) {
     EXPECT_THAT(result, testing::Eq(false));
 }
 
-#if 0
+/*
 TEST(SSDReaderTest, NormalReadTest) {
     FileManager m;
     unsigned int value = 0;
@@ -128,7 +118,7 @@ TEST(SSDReaderTest, NormalReadTest) {
 
     EXPECT_THAT(result, testing::Eq(true));
 }
-#endif
+*/
 
 
 
