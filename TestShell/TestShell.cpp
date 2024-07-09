@@ -119,3 +119,9 @@ int TestShell::fullWrite(const std::string& arg) {
 int TestShell::fullRead(void) {
     return 0;
 }
+
+void TestShell::testApp1(void) {
+}
+
+void TestShell::testApp2(void) {
+}

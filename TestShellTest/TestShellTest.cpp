@@ -21,7 +21,7 @@ public:
 class TestShellFixture : public Test {
 protected:
     TestShell shell;
-    TestShellMock mock;
+    NiceMock<TestShellMock> mock;
     string str;
 
     void expectInvalidArgumentForWrite(const string& command) {

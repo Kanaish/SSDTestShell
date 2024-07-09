@@ -17,6 +17,8 @@ public:
 protected:
     virtual void exit(void);
     virtual void help(void);
+    virtual void testApp1(void);
+    virtual void testApp2(void);
 
 private:
     bool isValidCommand(const std::string& cmd);
@@ -31,6 +33,8 @@ private:
       {"exit", [this](const std::string&) { this->exit(); }},
       {"help", [this](const std::string&) { this->help(); }},
       {"fullwrite", [this](const std::string& arg) { this->fullWrite(arg); }},
-      {"fullread", [this](const std::string&) { this->fullRead(); }}
+      {"fullread", [this](const std::string&) { this->fullRead(); }},
+      {"testapp1", [this](const std::string&) {this->testApp1(); }},
+      {"testapp2", [this](const std::string&) {this->testApp1(); }},
     };
 };
