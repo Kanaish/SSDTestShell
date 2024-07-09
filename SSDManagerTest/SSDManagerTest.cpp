@@ -99,7 +99,7 @@ TEST(SSDManagerTest, validFailTest7) {
     EXPECT_EQ(ssd.isValidInput(), false);
 }
 
-TEST(SSDManagerTest, validFailTes8) {
+TEST(SSDManagerTest, validFailTest8) {
     // Arrange
     int argc = 4;
     char* argv[] = { "ssd", "W", "2", "0xABCDEFGH" };
@@ -109,7 +109,7 @@ TEST(SSDManagerTest, validFailTes8) {
     EXPECT_EQ(ssd.isValidInput(), false);
 }
 
-TEST(SSDManagerTest, validFailTes9) {
+TEST(SSDManagerTest, validFailTest9) {
     // Arrange
     int argc = 4;
     char* argv[] = { "ssd", "R", "2", "0xABCDEFGH" };
