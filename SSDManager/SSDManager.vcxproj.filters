@@ -27,6 +27,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SSDManager.h">
+    <ClInclude Include="FileManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManagerInterface.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

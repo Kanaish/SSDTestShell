@@ -1,0 +1,27 @@
+Usage:
+  write <LBA> <data>
+    - Writes <data> to LBA <LBA>.
+    - Example: write 3 0xAAAABBBB
+    - Sends command to ssd.
+
+  read <LBA>
+    - Reads from LBA <LBA>.
+    - Example: read 3
+    - Sends command to ssd.
+    - Outputs the result to the screen from result.txt.
+
+  fullwrite <data>
+    - Writes <data> to LBA 0 through 99.
+    - Example: fullwrite 0xABCDFFFF
+    - Writes 0xABCDFFFF to all LBAs.
+
+  fullread
+    - Reads from LBA 0 through 99.
+    - Example: fullread
+    - Outputs all LBA values to the screen.
+
+  exit
+    - Exits the shell.
+
+  help
+    - Displays usage instructions for all commands.

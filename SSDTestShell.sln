@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSDManager", "SSDManager\SSDManager.vcxproj", "{82DA4BAA-2233-43ED-B1D8-7300D85591FC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShellTest", "TestShellTest\TestShellTest.vcxproj", "{B9296A19-AE05-4B30-956E-ED81F94046D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E71B4962-D9F0-4BA3-850C-04112A2C27EF} = {E71B4962-D9F0-4BA3-850C-04112A2C27EF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSDManagerTest", "SSDManagerTest\SSDManagerTest.vcxproj", "{58551D5B-FD5C-442D-890E-59E6A545E247}"
 EndProject
