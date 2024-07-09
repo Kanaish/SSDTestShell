@@ -1,7 +1,8 @@
 /* Copyright 2024 Code Love you */
 
 #include <sstream>
-
+#include <fstream>
+#include <iostream>
 #include "TestShell.h"
 
 void TestShell::run(void) {
@@ -120,8 +121,10 @@ int TestShell::fullRead(void) {
     return 0;
 }
 
-void TestShell::testApp1(void) {
+int TestShell::testApp1(void) {
+
 }
 
-void TestShell::testApp2(void) {
+int TestShell::testApp2(void) {
+
 }

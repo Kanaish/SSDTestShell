@@ -17,8 +17,8 @@ public:
 protected:
     virtual void exit(void);
     virtual void help(void);
-    virtual void testApp1(void);
-    virtual void testApp2(void);
+    virtual int testApp1(void);
+    virtual int testApp2(void);
 
 private:
     bool isValidCommand(const std::string& cmd);

@@ -108,3 +108,11 @@ TEST_F(TestShellFixture, fullRead_pass) {
 
     mock.fullRead();
 }
+
+TEST_F(TestShellFixture, testApp1_pass) {
+    EXPECT_CALL(mock, fullWrite("0xAAAABBBB")).Times(1)
+        .WillOnce(Return(true));
+    EXPECT_CALL(mock, fullRead()).Times(1)
+        .WillOnce(Return(true));
+    mock.execute("testapp1");
+}
