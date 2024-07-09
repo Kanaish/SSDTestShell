@@ -1,6 +1,5 @@
 /* Copyright 2024 Code Love you */
 
-#include <stdexcept>
 #include "SSDManager.h"
 
 SSDManager::SSDManager(int argc, char** argv) {
@@ -83,12 +82,14 @@ bool SSDManager::isValidIndex(int argc) {
     }
 
     std::string& index = parsed_input[2];
-    try {
-        if (stoi(index) < 0 || stoi(index) > 99) {
+
+    for (char& c : index) {
+        if (std::isdigit(c) == false) {
             return false;
         }
     }
-    catch (std::exception& e) {  // stoi() fail
+
+    if (stoi(index) < 0 || stoi(index) > 99) {
         return false;
     }
 
@@ -121,7 +122,7 @@ bool SSDManager::isValidWriteInput(int argc) {
             return false;
         }
         for (char& c : value.substr(2, 8)) {
-            if (c < '0' || (c > '9' && c < 'A') || c > 'F') {
+            if (std::isxdigit(c) == false) {
                 return false;
             }
         }
