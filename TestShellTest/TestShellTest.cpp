@@ -91,16 +91,16 @@ TEST_F(TestShellFixture, read_invalid_argument2) {
 }
 
 TEST_F(TestShellFixture, fullWrite_invalid_argument1) {
-  shell.fullWrite("");
+  EXPECT_EQ(-1, shell.fullWrite(""));
 }
 
 TEST_F(TestShellFixture, fullWrite_pass) {
   str = "write 3 0xAAAABBBB";
   EXPECT_CALL(mock, write(str)).Times(100);
-  shell.fullWrite(str);
+  mock.fullWrite("0xAAAABBBB");
 }
 
 TEST_F(TestShellFixture, fullRead_pass) {
   EXPECT_CALL(mock, read("read")).Times(100);
-  shell.fullRead();
+  mock.fullRead();
 }
