@@ -13,7 +13,7 @@ bool TestShell::isValidCommand(string cmd)
 	return true;
 }
 
-void TestShell::execute(string input_str)
+void TestShell::execute(string cmd)
 {
 }
 
