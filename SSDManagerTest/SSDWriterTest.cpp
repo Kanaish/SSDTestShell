@@ -27,6 +27,7 @@ public:
     int index = 1;
     string write_value = "0x00000000";
 };
+
 // Write Checke behavior -> call once ,true return
 TEST_F(SSDWriteTestFixture, Write_behavior_call_fm_write_functon) {
     EXPECT_CALL(fm, write(nand_file, index, write_value))
