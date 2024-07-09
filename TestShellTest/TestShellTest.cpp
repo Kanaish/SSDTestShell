@@ -26,7 +26,7 @@ class TestShellFixture : public testing::Test {
   void expectInvalidArgumentForWrite(const string& command) {
     try {
       shell.write(command);
-      FAIL() << "Expected invalid_argument";
+      FAIL() << "Expected std::invalid_argument";
     }
     catch (const invalid_argument& e) {
       EXPECT_EQ(string(e.what()), "INVALID COMMAND");
@@ -55,25 +55,23 @@ TEST_F(TestShellFixture, execute_invalid_command) {
 }
 
 TEST_F(TestShellFixture, execute_write) {
-  str = "write 3 0xAAAABBBB";
-  EXPECT_CALL(mock, write(str)).Times(1);
-  shell.execute(str);
+  EXPECT_CALL(mock, write("3 0xAAAABBBB")).Times(1);
+  mock.execute("write 3 0xAAAABBBB");
 }
 
 TEST_F(TestShellFixture, execute_read) {
-  str = "read 3";
-  EXPECT_CALL(mock, read(str)).Times(1);
-  shell.execute(str);
+  EXPECT_CALL(mock, read("3")).Times(1);
+  mock.execute("read 3");
 }
 
 TEST_F(TestShellFixture, execute_exit) {
   EXPECT_CALL(mock, exit).Times(1);
-  shell.execute("exit");
+  mock.execute("exit");
 }
 
 TEST_F(TestShellFixture, execute_help) {
   EXPECT_CALL(mock, help).Times(1);
-  shell.execute("help");
+  mock.execute("help");
 }
 
 TEST_F(TestShellFixture, write_invalid_argument1) {
