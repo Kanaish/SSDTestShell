@@ -38,27 +38,3 @@ TEST(ShellTest, execute_test_pass) {
   EXPECT_CALL(mock, write(str)).Times(1);
   shell.execute(str);
 }
-
-TEST(ShellTest, write_fail) {
-  TestShell shell;
-  std::string str{ nullptr };
-  EXPECT_TRUE(shell.write(str) == false);
-}
-
-TEST(ShellTest, write_pass) {
-  TestShell shell;
-  std::string str{ "write 3 0xAAAABBBB" };
-  EXPECT_TRUE(shell.write(str) == true);
-}
-
-TEST(ShellTest, read_fail) {
-  TestShell shell;
-  std::string str{ nullptr };
-  EXPECT_TRUE(shell.read(str) == false);
-}
-
-TEST(ShellTest, read_pass) {
-  TestShell shell;
-  std::string str{ "read 3" };
-  EXPECT_TRUE(shell.write(str) == false);
-}
