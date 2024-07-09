@@ -1,62 +1,94 @@
 /* Copyright 2024 Code Love you */
 
+#include <stdexcept>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-
 #include "../SSDManager/SSDReader.cpp"
-#include <stdexcept>
 
-using namespace testing;
+static const std::string RESULT_NAME_PATH = "result.txt";
+static const std::string NAND_NAME_PATH = "nand.txt";
 
-/*
-    std::fstream* open(std::string);
-    std::fstream* init(std::string name);
-    unsigned int read(std::fstream* fs, int index);
-    bool write(std::fstream* fs, int index, unsigned int value);
-    bool write(std::fstream* fs, unsigned int value);
-    bool close(std::fstream* fs);
-*/
-
-class FileManagerMock : public FileManager {
+class FileManagerMock : public FileManagerInterface {
  public:
-    MOCK_METHOD(std::fstream*, init, (std::string), (override));
-    MOCK_METHOD(std::fstream*, open, (std::string), (override));
-
-    MOCK_METHOD(unsigned int, read, (std::fstream*, int), (override));
-
-    MOCK_METHOD(bool, write, (std::fstream*, int, unsigned int), (override));
-    MOCK_METHOD(bool, write, (std::fstream*, unsigned int), (override));
-
-    MOCK_METHOD(bool, close, (std::fstream*), (override));
+    MOCK_METHOD(std::string, read, (std::string, int), (override));
+    MOCK_METHOD(bool, write, (std::string, int, std::string), (override));
+    MOCK_METHOD(bool, write, (std::string, std::string), (override));
 };
 
-TEST(SSDReaderTest, NormalReadTest) {
+TEST(SSDReaderTest, NormalReadTestWithMock) {
     testing::NiceMock<FileManagerMock> mock;
-    unsigned int result = 0x12345678;
+    std::string value = "0x12345678";
+    bool result;
     int index = 0;
-    std::fstream* f_ssd = (std::fstream*) 0x1234;
-    std::fstream* f_result = (std::fstream*) 0x5678;
+    std::string nand_file = NAND_NAME_PATH;
+    std::string result_file = RESULT_NAME_PATH;
 
-    EXPECT_CALL(mock, init(RESULT_NAME_PATH))
-        .Times(1)  // behavior Verification
-        .WillRepeatedly(Return(f_result));  // stub Verification
-    EXPECT_CALL(mock, open(RESULT_NAME_PATH))
-        .Times(1)  //  behavior Verification
-        .WillRepeatedly(Return(f_result));  // stub Verification
-    EXPECT_CALL(mock, open(NAND_NAME_PATH))
-        .Times(1)  // behavior Verification
-        .WillRepeatedly(Return(f_ssd));  // stub Verification
+    EXPECT_CALL(mock, read(nand_file, index))
+        .Times(1)
+        .WillRepeatedly(testing::Return(std::string(value)));
 
-    EXPECT_CALL(mock, read(f_ssd, index))
-        .Times(1)  // behavior Verification
-        .WillRepeatedly(Return(result));  // stub Verification
+    EXPECT_CALL(mock, write(result_file, value))
+        .Times(1)
+        .WillRepeatedly(testing::Return(true));
 
-    EXPECT_CALL(mock, write(f_result, result))
-        .Times(1)  // behavior Verification
-        .WillRepeatedly(Return(true));  // stub Verification
+    SSDReader reader{ &mock };
+    result = reader.read(nand_file, result_file, index);
+    EXPECT_THAT(result, testing::Eq(true));
+}
+TEST(SSDReaderTest, ExceptionReadWithMock) {
+    testing::NiceMock<FileManagerMock> mock;
+    std::string value = "0x12345678";
+    bool result;
+    int index = 0;
+    std::string nand_file = NAND_NAME_PATH;
+    std::string result_file = RESULT_NAME_PATH;
 
-    SSDReader reader(&mock);
-    reader.read(index);
+    EXPECT_CALL(mock, read(nand_file, index))
+        .WillRepeatedly(testing::Throw(std::exception()));
+
+    EXPECT_CALL(mock, write(result_file, value))
+        .WillRepeatedly(testing::Return(true));
+
+    SSDReader reader{ &mock };
+    result = reader.read(nand_file, result_file, index);
+    EXPECT_THAT(result, testing::Eq(false));
+}
+
+TEST(SSDReaderTest, ExceptionWriteWithMock) {
+    testing::NiceMock<FileManagerMock> mock;
+    std::string value = "0x12345678";
+    bool result;
+
+    int index = 0;
+    std::string nand_file = NAND_NAME_PATH;
+    std::string result_file = RESULT_NAME_PATH;
+
+    EXPECT_CALL(mock, read(nand_file, index))
+        .Times(1)
+        .WillRepeatedly(testing::Return(std::string(value)));
+
+    EXPECT_CALL(mock, write(result_file, value))
+        .Times(1)
+        .WillOnce(testing::Throw(std::exception()));
+
+    SSDReader reader{ &mock };
+    result = reader.read(nand_file, result_file, index);
+    EXPECT_THAT(result, testing::Eq(false));
+}
+
+TEST(SSDReaderTest, NormalReadTest) {
+    FileManager m;
+    unsigned int value = 0;
+    bool result;
+
+    int index = 0;
+    std::string nand_file = NAND_NAME_PATH;
+    std::string result_file = RESULT_NAME_PATH;
+
+    SSDReader reader{ &m };
+    result = reader.read(nand_file, result_file, index);
+
+    EXPECT_THAT(result, testing::Eq(true));
 }
 
 
