@@ -1,5 +1,4 @@
-//    "Copyright [2024] <YD>
-#include <fstream>
+/* Copyright 2024 Code Love you */
 #include <iostream>
 #include <stdexcept>
 #include "SSDWriter.h"
