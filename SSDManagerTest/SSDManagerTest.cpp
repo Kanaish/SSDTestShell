@@ -19,10 +19,20 @@ TEST(SSDManagerTest, constructorTest) {
     EXPECT_EQ(ssd.getParsedCommand(), expected);
 }
 
-TEST(SSDManagerTest, validOkayTest) {
+TEST(SSDManagerTest, validOkayTest1) {
     // Arrange
     int argc = 4;
     char* argv[] = { "ssd", "W", "2", "0x1298CDEF" };
+    SSDManager ssd(argc, argv);
+
+    // Act, Assert
+    EXPECT_EQ(ssd.isValidInput(), true);
+}
+
+TEST(SSDManagerTest, validOkayTest2) {
+    // Arrange
+    int argc = 4;
+    char* argv[] = { "ssd", "W", "2", "0X1298cDeF" };
     SSDManager ssd(argc, argv);
 
     // Act, Assert
@@ -42,7 +52,7 @@ TEST(SSDManagerTest, validFailTest1) {
 TEST(SSDManagerTest, validFailTest2) {
     // Arrange
     int argc = 4;
-    char* argv[] = { "ssd", "Write", "2", "0x1298CDEF" };
+    char* argv[] = { "ssd", "Write", "2", "0X1298cDeF" };
     SSDManager ssd(argc, argv);
 
     // Act, Assert

@@ -68,8 +68,17 @@ bool SSDManager::isValidCommand(int argc) {
         return false;
     }
 
-    std::string cmd = parsed_input[1];
-    if (cmd != "W" && cmd != "R") {
+    std::string& cmd = parsed_input[1];
+
+    if (cmd.length() > 1) {
+        return false;
+    }
+    if (std::isalpha(cmd[0]) == false) {
+        return false;
+    }
+
+    char cmdCode = std::toupper(cmd[0]);
+    if (cmdCode != 'W' && cmdCode != 'R') {
         return false;
     }
 
@@ -98,8 +107,9 @@ bool SSDManager::isValidIndex(int argc) {
 
 bool SSDManager::isValidReadInput(int argc) {
     std::string& cmd = parsed_input[1];
+    char cmdCode = std::toupper(cmd[0]);
 
-    if (cmd == "R" && argc != 3) {
+    if (cmdCode == 'R' && argc != 3) {
         return false;
     }
 
@@ -108,8 +118,9 @@ bool SSDManager::isValidReadInput(int argc) {
 
 bool SSDManager::isValidWriteInput(int argc) {
     std::string& cmd = parsed_input[1];
+    char cmdCode = std::toupper(cmd[0]);
 
-    if (cmd == "W") {
+    if (cmdCode == 'W') {
         if (argc != 4) {
             return false;
         }
@@ -118,7 +129,10 @@ bool SSDManager::isValidWriteInput(int argc) {
         if (value.length() != 10) {
             return false;
         }
-        if (value.substr(0, 2) != "0x") {
+        if (value.substr(0, 1) != "0") {
+            return false;
+        }
+        if (std::toupper(value.substr(1, 1)[0]) != 'X') {
             return false;
         }
         for (char& c : value.substr(2, 8)) {
