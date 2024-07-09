@@ -2,7 +2,8 @@
 
 #pragma once
 #include <string>
-#include "FileManagerInterface.h"
+//#include "FileManagerInterface.h"
+#include "FileManager.h"
 
 class SSDReader {
  public:
