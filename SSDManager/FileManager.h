@@ -13,7 +13,7 @@ public:
     bool write(std::string name, std::string value);
 private:
     const std::string EMPTY = "0x00000000";
-    const int MAX_SIZE = 100;
+    const int VALUE_LEN = 10;
     const std::string RESULT = "result.txt";
     const std::string NAND = "nand.txt";
 };

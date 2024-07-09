@@ -5,7 +5,6 @@
 #include "../SSDManager/FileManager.cpp"
 #include "../SSDManager/FileManagerInterface.h"
 
-#define TEST_INDEX     (0)
 #define TEST_VALUE     "0xAAAAAAAA"
 
 #define TEST_RESULT    "test_result.txt"
@@ -18,7 +17,16 @@ using namespace testing;
 
 TEST(FileManagerTest, file_manager_test_read) {
     FileManager fm;
-    EXPECT_THAT(fm.read(TEST_RESULT, TEST_INDEX), "");
+    stringstream testBuf;
+    string textBuf;
+
+    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
+    for (int i = 0; i < 50; i++) {
+        fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
+    }
+
+    EXPECT_THAT(fm.read(TEST_NAND, 0), "0x10000000");
+    EXPECT_THAT(fm.read(TEST_NAND, 99), "0x00000000");
 }
 
 TEST(FileManagerTest, file_manager_test_write_different_index) {

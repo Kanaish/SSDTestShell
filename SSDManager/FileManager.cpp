@@ -10,7 +10,29 @@ FileManager::FileManager() {
 }
 
 std::string FileManager::read(std::string name, int index) {
-    return "";
+    std::fstream nandFile(name, std::ios::in | std::ios::out);
+    std::string ret;
+    if (nandFile.is_open())
+    {
+        std::stringstream buffer;
+        buffer << nandFile.rdbuf();
+        std::string tokenLba = std::string("LBA" + std::to_string(index));
+        size_t pos = buffer.str().find(tokenLba);
+
+        if (pos != std::string::npos) {
+            size_t posValue = buffer.str().find(" ", pos);
+            ret = buffer.str().substr(posValue + 1, VALUE_LEN);
+        }
+        else {
+            ret = EMPTY;
+        }
+    }
+    else {
+        throw std::invalid_argument("File is not opened");
+    }
+    nandFile.close();
+    return ret;
+
 }
 
 bool FileManager::write(std::string name, int index, std::string value) {
