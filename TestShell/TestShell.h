@@ -20,6 +20,8 @@ class TestShell {
 
  private:
   bool isValidCommand(const std::string& cmd);
+  bool isValidIndex(const std::string& str);
+  bool isValidAddress(const std::string& str);
   bool isValidArgument(const std::string& arg);
 
   const std::unordered_map<std::string,
