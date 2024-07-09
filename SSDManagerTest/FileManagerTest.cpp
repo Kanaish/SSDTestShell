@@ -4,7 +4,6 @@
 #include "gmock/gmock.h"
 #include "../SSDManager/FileManager.cpp"
 #include "../SSDManager/FileManagerInterface.h"
-#include <string>
 
 #define TEST_INDEX  (0)
 #define TEST_VALUE  ("0xAAAAAAAA")
