@@ -19,16 +19,28 @@ bool FileManager::close(std::string name) {
     return true;
 }
 
-unsigned int FileManager::read(std::string name, int index) {
-    return 0;
+std::string FileManager::read(std::string name, int index) {
+    return "";
 }
 
-bool FileManager::write(std::string name, int index, unsigned int value) {
+bool FileManager::write(std::string name, int index, std::string value) {
+    
+    nandFile.open("nand.txt", std::ios::out | std::ios::in | std::ios::ate);
+    
+    if (nandFile.is_open())
+    {
+        return true;
+    }
+    else
+    {
+        std::cout << "Open Failed\n";
+        /* TO DO : implement exception with throw */
+        return false;
+    }
+    nandFile.close();
     return true;
 }
 
-bool FileManager::write(std::string name, unsigned int value) {
+bool FileManager::write(std::string name, std::string value) {
     return true;
 }
-
-
