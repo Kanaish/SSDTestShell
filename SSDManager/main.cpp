@@ -1,9 +1,6 @@
 /* Copyright 2024 Code Love you */
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include "SSDManager.cpp"
+#include "SSDManager.h"
 
 int main(int argc, char** argv) {
     SSDManager ssd(argc, argv);
