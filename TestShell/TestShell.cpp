@@ -99,8 +99,9 @@ int TestShell::write(const std::string& arg) {
     ret = system(cmd.c_str());
     if (ret != 0) {
         throw std::invalid_argument("INVALID COMMAND");
-        return ret;
     }
+
+    return ret;
 }
 
 int TestShell::read(const std::string& arg) {
