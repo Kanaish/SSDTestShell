@@ -3,10 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
 #include "TestShell.h"
-
-#include "../SSDManager/FileManager.cpp"
 
 void TestShell::run(void) {
     std::string input_str;
@@ -122,8 +119,6 @@ int TestShell::read(const std::string& arg) {
         throw std::invalid_argument("INVALID COMMAND");
         return ret;
     }
-
-    FileManager* file_manager = new FileManager();
     std::cout << file_manager->read("../../resources/result.txt") << std::endl;
 
     return 0;
@@ -134,7 +129,6 @@ void TestShell::exit() {
 }
 
 void TestShell::help() {
-    FileManager* file_manager = new FileManager();
 
     std::cout << file_manager->read("../../resources/help.txt") << std::endl;
 }
@@ -157,7 +151,6 @@ int TestShell::fullWrite(const std::string& arg) {
 }
 
 int TestShell::fullRead() {
-    FileManager* file_manager = new FileManager();
 
     for (int i = 0; i < 100; ++i) {
         std::string cmd ;
@@ -177,14 +170,13 @@ int TestShell::testApp1(void) {
         return -1;
     }
     bool test_passed = true;
-    FileManager file_manager;
 
     for (int lba = 0; lba < 100; lba++) {
         if (read(std::to_string(lba)) == -1) {
             return -1;
         }
 
-        std::string result = file_manager.read("../../resources/result.txt");
+        std::string result = file_manager->read("../../resources/result.txt");
         if (result != write_value) {
             test_passed = false;
             break;
@@ -218,8 +210,7 @@ int TestShell::testApp2(void) {
             return -1;
         }
         bool test_passed = true;
-        FileManager file_manager;
-        std::string result = file_manager.read("../../resources/result.txt");
+        std::string result = file_manager->read("../../resources/result.txt");
         if (result != write_value) {
             test_passed = false;
             break;

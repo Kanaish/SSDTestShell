@@ -4,9 +4,11 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
+#include "FileManagerInterface.h"
 
 class TestShell {
 public:
+    TestShell(FileManagerInterface* file_manager) : file_manager(file_manager) {}
     void run(void);
     void execute(const std::string inputStr);
     virtual int write(const std::string& arg);
@@ -15,6 +17,9 @@ public:
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
+
+    FileManagerInterface* file_manager;
+
 
 protected:
     virtual void exit();
