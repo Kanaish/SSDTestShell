@@ -9,6 +9,23 @@
 FileManager::FileManager() {
 }
 
+std::string FileManager::read(std::string name) {
+    std::fstream resultFile(name, std::ios::in | std::ios::out);
+    std::string ret;
+    if (resultFile.is_open())
+    {
+        /* read result and store to the buffer */
+        std::stringstream buffer;
+        buffer << resultFile.rdbuf();
+        ret = buffer.str();
+    }
+    else {
+        throw std::invalid_argument("File is not opened");
+    }
+    resultFile.close();
+    return ret;
+}
+
 std::string FileManager::read(std::string name, int index) {
     std::fstream nandFile(name, std::ios::in | std::ios::out);
     std::string ret;
