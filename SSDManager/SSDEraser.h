@@ -9,5 +9,5 @@ public:
     bool erase(const std::string& nand_file, int index, int size);
 private:
     FileManagerInterface* file_mgr;
-    const std::string INIT_VAULE = "0x00000000";
+    const std::string INIT_VALUE = "0x00000000";
 };
