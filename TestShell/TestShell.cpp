@@ -301,7 +301,7 @@ void TestShell::erase_range(const std::string& arg) {
 
     if (!(iss >> second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex2(second_word))
+    if (!isValidIndex(second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
     if ((iss >> third_word))
