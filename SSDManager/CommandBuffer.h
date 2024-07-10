@@ -18,6 +18,6 @@ private:
     std::string generateCmdString(int index, std::string cmd);
     std::string generateValueString(int index, std::string cmd, std::string value);
 
-    const std::string CMD_BUF_FILE_NAME = "../resources/buffer.txt";
+    const std::string CMD_BUF_FILE_NAME = "../../resources/buffer.txt";
     const std::string LBA_STRING = "LBA";
 };
