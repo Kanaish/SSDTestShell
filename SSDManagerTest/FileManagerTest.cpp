@@ -81,8 +81,7 @@ TEST_F(FileManagerTestFixture, file_manager_test_write_during_read) {
     EXPECT_EQ(resultTextBuf, resultTextRef);
 }
 
-TEST_F(FileManagerTestFixture, file_manager_test_read_result)
-{
+TEST_F(FileManagerTestFixture, file_manager_test_read_result) {
     testWrite(TEST_NAND, TEST_NAND_MOD);
     string resultTextRef = fm.read(TEST_NAND, 5);
     fm.write(TEST_RESULT, resultTextRef);

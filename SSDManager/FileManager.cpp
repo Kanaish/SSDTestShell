@@ -9,13 +9,12 @@
 FileManager::FileManager() {
 }
 
-std::string FileManager::read(std::string name)
-{
+std::string FileManager::read(std::string name) {
     std::fstream resultFile(name, std::ios::in | std::ios::out);
     std::string ret;
     if (resultFile.is_open())
     {
-        /* read nand and store to the buffer */
+        /* read result and store to the buffer */
         std::stringstream buffer;
         buffer << resultFile.rdbuf();
         ret = buffer.str();
