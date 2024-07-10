@@ -42,7 +42,7 @@ bool CommandBuffer::createBufferFile() {
 }
 
 bool CommandBuffer::readBufferFile() {
-    std::fstream bufferFile(BUFFER_FILE_NAME);
+    std::fstream bufferFile(BUFFER_FILE_NAME, std::ios::in);
     if (!bufferFile) {
         return false;
     }
@@ -91,10 +91,30 @@ bool CommandBuffer::readBufferFile() {
         }
 
     }
+    bufferFile.close();
     return true;
 }
 
 bool CommandBuffer::writeBufferFile() {
+    std::ofstream bufferFile(BUFFER_FILE_NAME, std::ios::out | std::ios::trunc);
+    if (!bufferFile.is_open()) {
+        return false;
+    }
+
+    std::string cmdString = "";
+    bufferFile.seekp(0, std::ios::beg);
+    for (auto& cmdData: data) {
+        if (cmdData.cmd == 'W') {
+            cmdString = "W" + SPACE_STRING + std::to_string(cmdData.index) + SPACE_STRING + cmdData.write_value + DELIMETER_STRING;
+            bufferFile << cmdString;
+        }
+        else if (cmdData.cmd == 'E') {
+            cmdString = "E" + SPACE_STRING + std::to_string(cmdData.index) + SPACE_STRING + std::to_string(cmdData.erase_size) + DELIMETER_STRING;
+            bufferFile << cmdString;
+        }
+    }
+
+    bufferFile.close();
     return true;
 }
 
