@@ -1,12 +1,11 @@
 /* Copyright 2024 Code Love you */
 
 #pragma once
-#include <string>
-#include <vector>
 #include "FileManager.h"
 #include "SSDWriter.h"
 #include "SSDReader.h"
 #include "SSDEraser.h"
+#include "CommandBuffer.h"
 
 class SSDManager {
 public:
@@ -33,6 +32,7 @@ private:
     SSDWriter* ssd_writer;
     SSDReader* ssd_reader;
     SSDEraser* ssd_eraser;
+    CommandBuffer* command_buffer;
 
     bool isValidCommand();
     bool isValidIndex();

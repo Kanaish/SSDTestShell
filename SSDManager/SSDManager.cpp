@@ -14,6 +14,7 @@ SSDManager::SSDManager(int argc, char** argv) {
     ssd_writer = new SSDWriter(file_manager);
     ssd_reader = new SSDReader(file_manager);
     ssd_eraser = new SSDEraser(file_manager);
+    command_buffer = new CommandBuffer();
 }
 
 SSDManager::~SSDManager() {
@@ -21,6 +22,7 @@ SSDManager::~SSDManager() {
     delete ssd_writer;
     delete ssd_reader;
     delete ssd_eraser;
+    delete command_buffer;
 }
 
 bool SSDManager::isValidInput() {
@@ -53,13 +55,42 @@ bool SSDManager::executeCommand() {
     }
 
     if (cmd == 'R') {
-        return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
+        std::string buffer_ret = command_buffer->findMatchedWrite(index);
+        if (buffer_ret == "") {
+            return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
+        }
+        try {
+            return file_manager->write(RESULT_FILE, buffer_ret);
+        }
+        catch (std::exception& e) {
+            return false;
+        }
     }
-    if (cmd == 'W') {
-        return ssd_writer->write(NAND_FILE, index, write_value);
+
+    std::vector<BufferData> flushed_data;
+
+    if (cmd == 'W' || cmd == 'E') {
+        //TODO: Builder Pattern
+        BufferData data{ cmd, index, write_value, erase_size };
+
+        command_buffer->updateBuffer(data);
+
+        if (command_buffer->isFullBuffer()) {
+            flushed_data = command_buffer->flushBuffer();
+        }
     }
-    if (cmd == 'E') {
-        return ssd_eraser->erase(NAND_FILE, index, erase_size);
+
+    if (cmd == 'F') {
+        flushed_data = command_buffer->flushBuffer();
+    }
+
+    for (BufferData& data : flushed_data) {
+        if (data.cmd == 'W') {
+            return ssd_writer->write(NAND_FILE, index, write_value);
+        }
+        if (data.cmd == 'E') {
+            return ssd_eraser->erase(NAND_FILE, index, erase_size);
+        }
     }
 
     return false;
