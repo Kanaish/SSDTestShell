@@ -47,13 +47,15 @@ bool SSDManager::executeCommand() {
     }
 
     std::string& cmd = parsed_input[1];
+    char cmdCode = std::toupper(cmd[0]);
+
     int index = convertIndexInt();
 
-    if (cmd == "R") {
+    if (cmdCode == 'R') {
         return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
     }
 
-    if (cmd == "W") {
+    if (cmdCode == 'W') {
         std::string& value = parsed_input[3];
         return ssd_writer->write(NAND_FILE, index, value);
     }

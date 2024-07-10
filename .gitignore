@@ -398,4 +398,5 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Text file directory (contains empty files)
-resources/
+resources/nand.txt
+resources/result.txt

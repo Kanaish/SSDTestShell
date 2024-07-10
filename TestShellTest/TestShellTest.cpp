@@ -17,6 +17,7 @@ public:
     MOCK_METHOD(int, fullWrite, (const string& arg), (override));
     MOCK_METHOD(int, fullRead, (), (override));
     MOCK_METHOD(int, testApp1, (), (override));
+    MOCK_METHOD(int, testApp2, (), (override));
 };
 
 class TestShellFixture : public Test {
@@ -112,8 +113,19 @@ TEST_F(TestShellFixture, fullRead_pass) {
 
 TEST_F(TestShellFixture, testApp1_pass) {
     EXPECT_CALL(mock, fullWrite("0xAAAABBBB")).Times(1)
-        .WillOnce(Return(true));
+        .WillOnce(Return(0));
     EXPECT_CALL(mock, fullRead()).Times(1)
-        .WillOnce(Return(true));
-    mock.execute("testapp1");
+        .WillOnce(Return(0));
+    EXPECT_EQ(mock.TestShell::testApp1(), 0);
+}
+
+TEST_F(TestShellFixture, testApp2_pass) {
+    EXPECT_CALL(mock, write(_))
+        .Times(36)
+        .WillRepeatedly(Return(0));
+    EXPECT_CALL(mock, read(_))
+        .Times(6)
+        .WillRepeatedly(Return(0));
+
+    EXPECT_EQ(mock.testApp2(), 0);
 }
