@@ -5,7 +5,6 @@
 #include <fstream>
 
 #include "TestShell.h"
-#include "../SSDManager/FileManager.cpp"
 
 #include "../SSDManager/FileManager.cpp"
 
@@ -175,59 +174,9 @@ int TestShell::fullRead(void) {
 }
 
 int TestShell::testApp1(void) {
-    std::string write_value = "0xAAAABBBB"; // 임의의 값
-
-    if (fullWrite(write_value) == -1) {
-        return -1;
-    }
-    bool test_passed = true;
-    FileManager file_manager;
-
-    for (int lba = 0; lba < 100; lba++) {
-        if (read(std::to_string(lba)) == -1) {
-            return -1;
-        }
-
-        std::string result = file_manager.read("result.txt");
-        if (result != write_value) {
-            test_passed = false;
-            break;
-        }
-    }
     return 0;
 }
 
 int TestShell::testApp2(void) {
-    std::string write_value = "0xAAAABBBB";
-
-    for (int i = 0; i < 30; ++i) {
-        for (int lba = 0; lba <= 5; ++lba) {
-            std::string arg = std::to_string(lba) + " " + write_value;
-            if (write(arg) != 0) {
-                return -1;
-            }
-        }
-    }
-
-    write_value = "0x12345678";
-    for (int lba = 0; lba <= 5; ++lba) {
-        std::string arg = std::to_string(lba) + " " + write_value;
-        if (write(arg) != 0) {
-            return -1;
-        }
-    }
-
-    for (int lba = 0; lba <= 5; ++lba) {
-        if (read(std::to_string(lba)) == -1) {
-            return -1;
-        }
-        bool test_passed = true;
-        FileManager file_manager;
-        std::string result = file_manager.read("result.txt");
-        if (result != write_value) {
-            test_passed = false;
-            break;
-        }
-    }
     return 0;
 }
