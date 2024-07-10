@@ -133,6 +133,7 @@
     <ClCompile Include="SSDWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SSDManager.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FileManagerInterface.h" />
     <ClInclude Include="SSDWriter.h" />
