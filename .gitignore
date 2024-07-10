@@ -401,4 +401,5 @@ resources/nand.txt
 resources/result.txt
 
 # Log file directory
-log/*
+log/*.log
+log/*.zip

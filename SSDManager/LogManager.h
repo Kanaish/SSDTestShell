@@ -8,7 +8,7 @@ class LogManager
 {
 public:
     LogManager();
-    void logWrite(std::string mFunctionName, std::string className, std::string msg);
+    void logWrite(std::string className, std::string mFunctionName, std::string msg);
     void logPrint(std::string msg);
 private:
     std::string logGetCurrentTimeForLogging(void);

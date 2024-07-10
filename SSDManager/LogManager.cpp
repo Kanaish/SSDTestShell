@@ -13,7 +13,7 @@
 
 LogManager::LogManager() {
 }
-void LogManager::logWrite(std::string mFunctionName, std::string className, std::string msg) {
+void LogManager::logWrite(std::string className, std::string mFunctionName, std::string msg) {
     std::string logTitle(50, ' ');
     std::string buf = className + "::" + mFunctionName;
     logTitle.replace(0, buf.length(), buf);
@@ -29,10 +29,7 @@ void LogManager::logWrite(std::string mFunctionName, std::string className, std:
         if (pos > LIMIT_LOG_SIZE) {
             logFile.close();
             std::string logNewFileName = LOG_DIR +"Until_" + logGetCurrentTimeForFileName() + ".log";
-            //std::cout << pos << std::endl;
-            //std::cout << CURRENT_LOG.c_str() << logNewFileName.c_str() << std::endl;
-            //std::cout << "Log File Num : " << getOldLogFileNum() << std::endl;
-            //std::cout << "Oldest Log File Name : " << getOldestLogFileName() << std::endl;
+
             if (std::rename((LOG_DIR + CURRENT_LOG).c_str(), logNewFileName.c_str()) != 0) {
                 std::cerr << "Error renaming file" << std::endl;
                 return;
@@ -44,8 +41,6 @@ void LogManager::logWrite(std::string mFunctionName, std::string className, std:
 
                 size_t pos = oldestFileName.find(".log");
                 changedOldestFileName.replace(pos, 4, ".zip");
-                std::cout << "Oldest Log File Name : " << oldestFileName << std::endl;
-                std::cout << "Changed Log File Name : " << changedOldestFileName << std::endl;
                 if (std::rename(oldestFileName.c_str(), changedOldestFileName.c_str()) != 0) {
                     std::cerr << "Error renaming file" << std::endl;
                     return;
@@ -83,6 +78,7 @@ int LogManager::getOldLogFileNum(void) {
         const wchar_t* path = L"..\\log\\*_*_*_*_*_*.log";
 
         WIN32_FIND_DATA data;
+        /* Search all log files in current directory */
         HANDLE hFind = FindFirstFile(path, &data);
         if (hFind == INVALID_HANDLE_VALUE) {
             std::cerr << "Could not open directory: " << path << '\n';
@@ -109,7 +105,7 @@ std::string LogManager::getOldestLogFileName(void)
     SYSTEMTIME stUTC, stLocal;
     std::string oldestFile;
     const wchar_t* path = L"..\\log\\*_*_*_*_*_*.log";
-    // 현재 디렉토리의 모든 .log 파일을 검색합니다.
+    /* Search all log files in current directory */
     if ((hFind = FindFirstFile(path, &data)) != INVALID_HANDLE_VALUE) {
         oldestTime = data.ftLastWriteTime;
         oldestFile = WideStringToString(data.cFileName);
@@ -123,15 +119,11 @@ std::string LogManager::getOldestLogFileName(void)
 
         FindClose(hFind);
     }
-
-    // 가장 오래된 .log 파일의 이름을 출력합니다.
+    /* Return the oldest log file's name  */
     if (!oldestFile.empty()) {
-        // 파일 시간을 시스템 시간으로 변환합니다.
+        /* Convert file time into system time  */
         FileTimeToSystemTime(&oldestTime, &stUTC);
         SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
-
-        std::cout << "Oldest .log file: " << oldestFile;
-        std::cout << ", Last modified: " << stLocal.wYear << "-" << stLocal.wMonth << "-" << stLocal.wDay << " " << stLocal.wHour << ":" << stLocal.wMinute << "\n";
     }
     else {
         std::cout << "No .log files found.\n";
