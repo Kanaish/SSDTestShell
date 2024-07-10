@@ -50,13 +50,15 @@ bool TestShell::isValidAddress(const std::string& str) {
 
 bool TestShell::isValidArgument(const std::string& arg) {
     std::istringstream iss(arg);
-    std::string first_word, second_word;
+    std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word)) return false;
     if (!isValidIndex(first_word)) return false;
 
     if (!(iss >> second_word)) return false;
     if (!isValidAddress(second_word)) return false;
+
+    if ((iss >> third_word)) return false;
 
     return true;
 }
@@ -94,13 +96,15 @@ int TestShell::write(const std::string& arg) {
 }
 
 int TestShell::read(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word;
+
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
     std::string cmd = "../x64/Debug/SSDManager.exe r ";
     int ret;
-
-    if (!isValidIndex(arg)) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return -1;
-    }
 
     cmd += arg;
 
@@ -121,11 +125,16 @@ int TestShell::read(const std::string& arg) {
     return 0;
 }
 
-void TestShell::exit(void) {
-    std::exit(0);
+void TestShell::exit(const std::string& arg) {
+    if (arg.empty())
+        std::exit(0);
+
+    throw std::invalid_argument("INVALID COMMAND");
 }
 
-void TestShell::help(void) {
+void TestShell::help(const std::string& arg) {
+    if (!arg.empty())
+        throw std::invalid_argument("INVALID COMMAND");
 }
 
 int TestShell::fullWrite(const std::string& arg) {
@@ -151,7 +160,7 @@ int TestShell::fullWrite(const std::string& arg) {
     return 0;
 }
 
-int TestShell::fullRead(void) {
+int TestShell::fullRead(const std::string& arg) {
     FileManager* file_manager = new FileManager();
 
     for (int i = 0; i < 100; ++i) {
