@@ -9,8 +9,7 @@
 using namespace std;
 using namespace testing;
 class FileManagerWriterMock :public FileManagerInterface {
-public :
-
+public:
     MOCK_METHOD(string, read, (string name, int index), (override));
     MOCK_METHOD(bool, write, (string name, int index, string value), (override));
     MOCK_METHOD(bool, write, (string name, string value), (override));

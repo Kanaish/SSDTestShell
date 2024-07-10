@@ -5,42 +5,50 @@
 #include "../SSDManager/FileManager.cpp"
 #include "../SSDManager/FileManagerInterface.h"
 
-#define TEST_VALUE     "0xAAAAAAAA"
+#define TEST_RESULT          "test_result.txt"
+#define TEST_NAND            "test_nand.txt"
+#define TEST_NAND_DIFF       "test_nand_diff.txt"
+#define TEST_NAND_REF        "test_nand_ref.txt"
+#define TEST_NAND_DIFF_REF   "test_nand_diff_ref.txt"
 
-#define TEST_RESULT    "test_result.txt"
-#define TEST_NAND      "test_nand.txt"
-#define TEST_NAND_REF  "test_nand_ref.txt"
-#define TEST_NAND_DIFF_REF  "test_nand_diff_ref.txt"
+#define TEST_NAND_DIFF_MOD                  (25)
+#define TEST_NAND_MOD                       (100)
+#define TEST_NAND_MOD_FOR_EMPTY_READ        (50)
 
 using namespace std;
 using namespace testing;
 
-TEST(FileManagerTest, file_manager_test_read) {
+class FileManagerTestFixture : public Test {
+public:
     FileManager fm;
-    stringstream testBuf;
-    string textBuf;
-
-    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
-    for (int i = 0; i < 50; i++) {
-        fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
+    stringstream testBuf, testRef;
+    string textBuf = "";
+    string textRef = "";
+    stringstream resultTestBuf;
+    string resultTextBuf = "";
+    void testWrite(string name, int mod)
+    {
+        for (int i = 0; i < 100; i++) {
+            fm.write(name, i % mod, "0x" + to_string(10000000 + i));
+        }
     }
+    fstream testFile{ TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc };
+    fstream refFile{ TEST_NAND_REF, std::ios::in | std::ios::out | std::ios::beg };
+    fstream testDiffFile{ TEST_NAND_DIFF, std::ios::in | std::ios::out | std::ios::trunc };
+    fstream refDiffFile{ TEST_NAND_DIFF_REF, std::ios::in | std::ios::out | std::ios::beg };
+    fstream testResultFile{ TEST_RESULT, std::ios::in | std::ios::out | std::ios::trunc };
+};
+
+TEST_F(FileManagerTestFixture, file_manager_test_read) {
+    testWrite(TEST_NAND, TEST_NAND_MOD);
 
     EXPECT_THAT(fm.read(TEST_NAND, 0), "0x10000000");
-    EXPECT_THAT(fm.read(TEST_NAND, 99), "0x00000000");
+    EXPECT_THAT(fm.read(TEST_NAND, 99), "0x10000099");
 }
 
-TEST(FileManagerTest, file_manager_test_write_different_index) {
-    FileManager fm;
-    stringstream testBuf, testRef;
-    string textBuf, textRef;
-
-    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
-    for (int i = 0; i < 100; i++) {
-        fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
-    }
+TEST_F(FileManagerTestFixture, file_manager_test_write_different_index) {
+    testWrite(TEST_NAND, TEST_NAND_MOD);
     
-    fstream refFile(TEST_NAND_REF, std::ios::in | std::ios::out | std::ios::beg);
-
     testBuf << testFile.rdbuf();
     testRef << refFile.rdbuf();
 
@@ -50,20 +58,11 @@ TEST(FileManagerTest, file_manager_test_write_different_index) {
     EXPECT_EQ(textBuf, textRef);
 }
 
-TEST(FileManagerTest, file_manager_test_write_same_index) {
-    FileManager fm;
-    stringstream testBuf, testRef;
-    string textBuf, textRef;
+TEST_F(FileManagerTestFixture, file_manager_test_write_same_index) {
+    testWrite(TEST_NAND_DIFF, TEST_NAND_DIFF_MOD);
 
-    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
-    for (int i = 0; i < 100; i++) {
-        fm.write(TEST_NAND, i / 4, "0x" + to_string(10000000 + i));
-    }
-
-    fstream refFile(TEST_NAND_DIFF_REF, std::ios::in | std::ios::out | std::ios::beg);
-
-    testBuf << testFile.rdbuf();
-    testRef << refFile.rdbuf();
+    testBuf << testDiffFile.rdbuf();
+    testRef << refDiffFile.rdbuf();
 
     textBuf = testBuf.str();
     textRef = testRef.str();
@@ -71,20 +70,22 @@ TEST(FileManagerTest, file_manager_test_write_same_index) {
     EXPECT_EQ(textBuf, textRef);
 }
 
-TEST(FileManagerTest, file_manager_test_write_during_read) {
-    FileManager fm;
-    stringstream resultTestBuf;
-    string resultTextBuf;
-    fstream testFile(TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc);
-    fstream testResultFile(TEST_RESULT, std::ios::in | std::ios::out | std::ios::trunc);
-
-    for (int i = 0; i < 100; i++) {
-        fm.write(TEST_NAND, i, "0x" + to_string(10000000 + i));
-    }
+TEST_F(FileManagerTestFixture, file_manager_test_write_during_read) {
+    testWrite(TEST_NAND, TEST_NAND_MOD);
     string resultTextRef = fm.read(TEST_NAND, 5);
     fm.write(TEST_RESULT, resultTextRef);
 
     resultTestBuf << testResultFile.rdbuf();
     resultTextBuf = resultTestBuf.str();
+
+    EXPECT_EQ(resultTextBuf, resultTextRef);
+}
+
+TEST_F(FileManagerTestFixture, file_manager_test_read_result) {
+    testWrite(TEST_NAND, TEST_NAND_MOD);
+    string resultTextRef = fm.read(TEST_NAND, 5);
+    fm.write(TEST_RESULT, resultTextRef);
+    string resultTextBuf = fm.read(TEST_RESULT);
+
     EXPECT_EQ(resultTextBuf, resultTextRef);
 }

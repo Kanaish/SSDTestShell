@@ -3,16 +3,14 @@
 #include <stdexcept>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "../SSDManager/SSDReader.cpp"
 #include "../SSDManager/FileManager.h"
+#include "../SSDManager/SSDReader.cpp"
 
-static const std::string RESULT_NAME_PATH = "result.txt";
-static const std::string NAND_NAME_PATH = "nand.txt";
+static const std::string RESULT_NAME_PATH = "test_result.txt";
+static const std::string NAND_NAME_PATH = "test_nand.txt";
 
 class FileManagerReaderMock : public FileManagerInterface {
  public:
-
-
     MOCK_METHOD(std::string, read, (std::string, int), (override));
     MOCK_METHOD(bool, write, (std::string, int, std::string), (override));
     MOCK_METHOD(bool, write, (std::string, std::string), (override));
@@ -101,10 +99,9 @@ TEST_F(SSDReaderFileManagerMockFixture, ExceptionWriteWithMock) {
     EXPECT_THAT(result, testing::Eq(false));
 }
 
-/*
+
 TEST(SSDReaderTest, NormalReadTest) {
     FileManager m;
-    unsigned int value = 0;
     bool result;
 
     int index = 0;
@@ -116,7 +113,7 @@ TEST(SSDReaderTest, NormalReadTest) {
 
     EXPECT_THAT(result, testing::Eq(true));
 }
-*/
+
 
 
 

@@ -7,17 +7,17 @@ SSDManager::SSDManager(int argc, char** argv) {
         parsed_input.push_back(argv[i]);
     }
 
-    //// TODO: Factory Pattern
-    //file_manager = new FileManager();
-    //ssd_writer = new SSDWriter(file_manager);
-    //ssd_reader = new SSDReader(file_manager);
+    // TODO: Factory Pattern
+    file_manager = new FileManager();
+    ssd_writer = new SSDWriter(file_manager);
+    ssd_reader = new SSDReader(file_manager);
 }
 
-//SSDManager::~SSDManager() {
-//    delete file_manager;
-//    delete ssd_writer;
-//    delete ssd_reader;
-//}
+SSDManager::~SSDManager() {
+    delete file_manager;
+    delete ssd_writer;
+    delete ssd_reader;
+}
 
 bool SSDManager::isValidInput() {
     int argc = static_cast<int>(parsed_input.size());
@@ -41,23 +41,25 @@ bool SSDManager::isValidInput() {
     return true;
 }
 
-//bool SSDManager::executeCommand() {
-//    if (isValidInput() == false) {
-//        return false;
-//    }
+bool SSDManager::executeCommand() {
+    if (isValidInput() == false) {
+        return false;
+    }
 
-//    std::string& cmd = parsed_input[1];
-//    int index = convertIndexInt();
+    std::string& cmd = parsed_input[1];
+    int index = convertIndexInt();
 
-//    if (cmd == "R") {
-//        return ssd_reader.read(NAND_FILE, RESULT_FILE, index);
-//    }
+    if (cmd == "R") {
+        return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
+    }
 
-//    if (cmd == "W") {
-//        std::string& value = parsed_input[3];
-//        return ssd_writer.write(NAND_FILE, index, value);
-//    }
-//}
+    if (cmd == "W") {
+        std::string& value = parsed_input[3];
+        return ssd_writer->write(NAND_FILE, index, value);
+    }
+
+    return false;
+}
 
 std::vector<std::string> SSDManager::getParsedCommand() {
     return parsed_input;
