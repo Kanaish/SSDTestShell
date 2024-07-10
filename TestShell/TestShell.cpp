@@ -1,10 +1,24 @@
 /* Copyright 2024 Code Love you */
 
+#include <iostream>
 #include <sstream>
-
+#include <fstream>
 #include "TestShell.h"
 
 void TestShell::run(void) {
+    std::string input_str;
+
+    while (1) {
+        std::getline(std::cin, input_str);
+        if (input_str.empty()) continue;
+
+        try {
+            this->execute(input_str);
+        }
+        catch (std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+        }
+    }
 }
 
 bool TestShell::isValidCommand(const std::string& cmd) {
@@ -107,6 +121,7 @@ int TestShell::read(const std::string& arg) {
 }
 
 void TestShell::exit(void) {
+    std::exit(0);
 }
 
 void TestShell::help(void) {
@@ -117,5 +132,13 @@ int TestShell::fullWrite(const std::string& arg) {
 }
 
 int TestShell::fullRead(void) {
+    return 0;
+}
+
+int TestShell::testApp1(void) {
+    return 0;
+}
+
+int TestShell::testApp2(void) {
     return 0;
 }
