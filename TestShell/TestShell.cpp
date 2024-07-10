@@ -138,6 +138,9 @@ void TestShell::exit() {
 }
 
 void TestShell::help() {
+    FileManager* file_manager = new FileManager();
+
+    std::cout << file_manager->read("help.txt") << std::endl;
 }
 
 int TestShell::fullWrite(const std::string& arg) {
