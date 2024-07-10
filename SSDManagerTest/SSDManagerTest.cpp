@@ -16,7 +16,7 @@ TEST(SSDManagerTest, constructorTest) {
     SSDManager ssd(argc, argv);
 
     // Assert
-    EXPECT_EQ(ssd.getParsedCommand(), expected);
+    EXPECT_EQ(ssd.getParsedInput(), expected);
 }
 
 TEST(SSDManagerTest, validOkayTest1) {
