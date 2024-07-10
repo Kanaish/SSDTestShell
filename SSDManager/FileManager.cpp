@@ -32,7 +32,6 @@ std::string FileManager::read(std::string name, int index) {
     }
     nandFile.close();
     return ret;
-
 }
 
 bool FileManager::write(std::string name, int index, std::string value) {
@@ -40,7 +39,6 @@ bool FileManager::write(std::string name, int index, std::string value) {
     std::fstream nandFile(name, std::ios::in | std::ios::out);
 
     if (nandFile.is_open()) {
-        bool indexExistFlag = false;
         nandFile.seekp(0, std::ios::beg);
 
         std::stringstream buffer;
@@ -52,10 +50,9 @@ bool FileManager::write(std::string name, int index, std::string value) {
         if (pos != std::string::npos) {
             nandFile.seekp(pos, std::ios::beg);
             nandFile << "LBA" << index << " " << value << " ";
-            indexExistFlag = true;
         }
-        if (!indexExistFlag) {
-            nandFile.seekg(0, std::ios::end);
+        else {
+            nandFile.seekp(0, std::ios::end);
             nandFile << "LBA" << index << " " << value << " ";
         }
     }
@@ -67,16 +64,13 @@ bool FileManager::write(std::string name, int index, std::string value) {
     return true;
 }
 
-
 bool FileManager::write(std::string name, std::string value) {
     std::fstream resultFile(name, std::ios::in | std::ios::out);
-    if (resultFile.is_open())
-    {
-        resultFile.seekg(0, std::ios::beg);
+    if (resultFile.is_open()) {
+        resultFile.seekp(0, std::ios::beg);
         resultFile << value;
     }
-    else
-    {
+    else {
         throw std::invalid_argument("File is not opened");
         return false;
     }
