@@ -13,12 +13,12 @@ public:
     virtual int read(const std::string& arg);
     virtual int fullWrite(const std::string& arg);
     virtual int fullRead(void);
+    virtual int testApp1(void);
+    virtual int testApp2(void);
 
 protected:
     virtual void exit(void);
     virtual void help(void);
-    virtual int testApp1(void);
-    virtual int testApp2(void);
 
 private:
     bool isValidCommand(const std::string& cmd);
