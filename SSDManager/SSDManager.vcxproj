@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SSDReader.h" />
+    <ClInclude Include="SSDManager.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FileManagerInterface.h" />
     <ClInclude Include="SSDWriter.h" />
