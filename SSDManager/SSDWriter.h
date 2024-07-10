@@ -6,7 +6,7 @@
 class SSDWriter {
 public:
     explicit SSDWriter(FileManagerInterface* file_mgr);
-    bool writer(std::string nand_file, int index, std::string value);
+    bool write(std::string nand_file, int index, std::string value);
 private:
     FileManagerInterface* file_mgr;
 };

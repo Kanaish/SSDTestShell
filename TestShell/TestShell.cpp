@@ -9,6 +9,8 @@
 
 #include "../SSDManager/FileManager.cpp"
 
+#include "../SSDManager/FileManager.cpp"
+
 void TestShell::run(void) {
     std::string input_str;
 
