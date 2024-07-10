@@ -5,10 +5,10 @@
 int main(int argc, char** argv) {
     SSDManager ssd(argc, argv);
 
-    //bool successFlag = ssd.executeCommand();
-    //if (successFlag == false) {
-    //    return -1;
-    //}
+    bool success_flag = ssd.executeCommand();
+    if (success_flag == false) {
+        return -1;
+    }
 
     return 0;
 }
