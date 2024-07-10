@@ -35,6 +35,6 @@ private:
       {"fullwrite", [this](const std::string& arg) { this->fullWrite(arg); }},
       {"fullread", [this](const std::string&) { this->fullRead(); }},
       {"testapp1", [this](const std::string&) {this->testApp1(); }},
-      {"testapp2", [this](const std::string&) {this->testApp1(); }},
+      {"testapp2", [this](const std::string&) {this->testApp2(); }},
     };
 };

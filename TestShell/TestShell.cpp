@@ -122,9 +122,9 @@ int TestShell::fullRead(void) {
 }
 
 int TestShell::testApp1(void) {
-
+    return 0;
 }
 
 int TestShell::testApp2(void) {
-
+    return 0;
 }

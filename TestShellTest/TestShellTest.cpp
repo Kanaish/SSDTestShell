@@ -16,6 +16,7 @@ public:
     MOCK_METHOD(void, help, (), (override));
     MOCK_METHOD(int, fullWrite, (const string& arg), (override));
     MOCK_METHOD(int, fullRead, (), (override));
+    MOCK_METHOD(int, testApp1, (), (override));
 };
 
 class TestShellFixture : public Test {
