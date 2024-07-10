@@ -7,6 +7,8 @@ SSDManager::SSDManager(int argc, char** argv) {
         parsed_input.push_back(argv[i]);
     }
 
+    parsed_input_arg_cnt = argc;
+
     // TODO: Factory Pattern
     file_manager = new FileManager();
     ssd_writer = new SSDWriter(file_manager);
@@ -20,21 +22,19 @@ SSDManager::~SSDManager() {
 }
 
 bool SSDManager::isValidInput() {
-    int argc = static_cast<int>(parsed_input.size());
-
-    if (isValidCommand(argc) == false) {
+    if (isValidCommand() == false) {
         return false;
     }
 
-    if (isValidIndex(argc) == false) {
+    if (isValidIndex() == false) {
         return false;
     }
 
-    if (isValidWriteInput(argc) == false) {
+    if (isValidArgCnt() == false) {
         return false;
     }
 
-    if (isValidReadInput(argc) == false) {
+    if (isValidWriteInput() == false) {
         return false;
     }
 
@@ -46,97 +46,85 @@ bool SSDManager::executeCommand() {
         return false;
     }
 
-    std::string& cmd = parsed_input[1];
-    char cmdCode = std::toupper(cmd[0]);
-
-    int index = convertIndexInt();
-
-    if (cmdCode == 'R') {
+    if (cmd == 'R') {
         return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
     }
 
-    if (cmdCode == 'W') {
-        std::string& value = parsed_input[3];
+    if (cmd == 'W') {
         return ssd_writer->write(NAND_FILE, index, value);
     }
 
     return false;
 }
 
-std::vector<std::string> SSDManager::getParsedCommand() {
+std::vector<std::string> SSDManager::getParsedInput() {
     return parsed_input;
 }
 
-bool SSDManager::isValidCommand(int argc) {
-    if (argc < 2) {
+bool SSDManager::isValidCommand() {
+    if (parsed_input_arg_cnt < 2) {
         return false;
     }
 
-    std::string& cmd = parsed_input[1];
+    std::string& cmd_str = parsed_input[1];
 
-    if (cmd.length() > 1) {
+    if (cmd_str.length() > 1) {
         return false;
     }
-    if (std::isalpha(cmd[0]) == false) {
+    if (std::isalpha(cmd_str[0]) == false) {
         return false;
     }
 
-    char cmdCode = std::toupper(cmd[0]);
-    if (cmdCode != 'W' && cmdCode != 'R') {
+    cmd = std::toupper(cmd_str[0]);
+    if (cmd != 'W' && cmd != 'R') {
         return false;
     }
 
     return true;
 }
 
-bool SSDManager::isValidIndex(int argc) {
-    if (argc < 3) {
+bool SSDManager::isValidIndex() {
+    if (parsed_input_arg_cnt < 3) {
         return false;
     }
 
-    std::string& index = parsed_input[2];
-
-    for (char& c : index) {
+    std::string& index_str = parsed_input[2];
+    for (char& c : index_str) {
         if (std::isdigit(c) == false) {
             return false;
         }
     }
 
-    if (stoi(index) < 0 || stoi(index) > 99) {
+    index = stoi(index_str);
+    if (index < 0 || index > 99) {
         return false;
     }
 
     return true;
 }
 
-bool SSDManager::isValidReadInput(int argc) {
-    std::string& cmd = parsed_input[1];
-    char cmdCode = std::toupper(cmd[0]);
-
-    if (cmdCode == 'R' && argc != 3) {
+bool SSDManager::isValidArgCnt() {
+    if (cmd == 'R' && parsed_input_arg_cnt != 3) {
+        return false;
+    }
+    if (cmd == 'W' && parsed_input_arg_cnt != 4) {
         return false;
     }
 
     return true;
 }
 
-bool SSDManager::isValidWriteInput(int argc) {
-    std::string& cmd = parsed_input[1];
-    char cmdCode = std::toupper(cmd[0]);
+bool SSDManager::isValidWriteInput() {
+    if (cmd == 'W') {
+        value = parsed_input[3];
 
-    if (cmdCode == 'W') {
-        if (argc != 4) {
-            return false;
-        }
-
-        std::string& value = parsed_input[3];
         if (value.length() != 10) {
             return false;
         }
-        if (value.substr(0, 1) != "0") {
+        if (value[0] != '0') {
             return false;
         }
-        if (std::toupper(value.substr(1, 1)[0]) != 'X') {
+        if (std::toupper(value[1]) != 'X') {
             return false;
         }
         for (char& c : value.substr(2, 8)) {
@@ -148,8 +136,3 @@ bool SSDManager::isValidWriteInput(int argc) {
 
     return true;
 }
-
-int SSDManager::convertIndexInt() {
-    return stoi(parsed_input[2]);
-}
-
