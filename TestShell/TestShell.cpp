@@ -149,15 +149,9 @@ int TestShell::fullWrite(const std::string& arg) {
     if (!isValidAddress(first_word)) throw std::invalid_argument("INVALID COMMAND");
 
     for (int i = 0; i < 100; ++i) {
-        std::string cmd = "../x64/Debug/SSDManager.exe w ";
-        int ret;
-
-        cmd += std::to_string(i) + " ";
-        cmd += arg;
-        
-        ret = system(cmd.c_str());
-        if (ret == 0) continue;
-        throw std::invalid_argument("INVALID COMMAND");
+        std::string cmd;
+        cmd = std::to_string(i) + " " + first_word;
+        this->write(cmd);
     }
 
     return 0;
@@ -167,13 +161,11 @@ int TestShell::fullRead() {
     FileManager* file_manager = new FileManager();
 
     for (int i = 0; i < 100; ++i) {
-        std::string cmd = "../x64/Debug/SSDManager.exe r ";
-        int ret = 0;
+        std::string cmd ;
 
-        cmd += std::to_string(i) + " ";
+        cmd = std::to_string(i) + " ";
 
-        ret = system(cmd.c_str());
-        if (ret != 0) throw std::invalid_argument("INVALID COMMAND");
+        this->read(cmd);
 
         std::cout << file_manager->read("result.txt") << std::endl;
     }
