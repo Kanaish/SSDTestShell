@@ -3,7 +3,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include "TestShell.h"
+
 #include "../SSDManager/FileManager.cpp"
 
 void TestShell::run(void) {
@@ -74,6 +76,12 @@ void TestShell::execute(std::string input_str) {
         throw std::invalid_argument("INVALID COMMAND");
     }
 
+    if (cmd == "fullread" || cmd == "exit" || cmd == "help" || cmd == "testapp1" || cmd == "testapp2") {
+        if (!arg.empty()) {
+            throw std::invalid_argument("INVALID COMMAND");
+        }
+    }
+
     commandMap.at(cmd)(arg);
 }
 
@@ -125,16 +133,11 @@ int TestShell::read(const std::string& arg) {
     return 0;
 }
 
-void TestShell::exit(const std::string& arg) {
-    if (arg.empty())
-        std::exit(0);
-
-    throw std::invalid_argument("INVALID COMMAND");
+void TestShell::exit() {
+    std::exit(0);
 }
 
-void TestShell::help(const std::string& arg) {
-    if (!arg.empty())
-        throw std::invalid_argument("INVALID COMMAND");
+void TestShell::help() {
 }
 
 int TestShell::fullWrite(const std::string& arg) {
@@ -160,7 +163,7 @@ int TestShell::fullWrite(const std::string& arg) {
     return 0;
 }
 
-int TestShell::fullRead(const std::string& arg) {
+int TestShell::fullRead() {
     FileManager* file_manager = new FileManager();
 
     for (int i = 0; i < 100; ++i) {

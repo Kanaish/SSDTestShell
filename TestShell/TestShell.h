@@ -12,13 +12,13 @@ public:
     virtual int write(const std::string& arg);
     virtual int read(const std::string& arg);
     virtual int fullWrite(const std::string& arg);
-    virtual int fullRead(const std::string& arg);
+    virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
 
 protected:
-    virtual void exit(const std::string& arg);
-    virtual void help(const std::string& arg);
+    virtual void exit();
+    virtual void help();
 
 private:
     bool isValidCommand(const std::string& cmd);
@@ -30,10 +30,10 @@ private:
         std::function<void(const std::string&)>> commandMap = {
       {"write", [this](const std::string& arg) { this->write(arg); }},
       {"read", [this](const std::string& arg) { this->read(arg); }},
-      {"exit", [this](const std::string& arg) { this->exit(arg); }},
-      {"help", [this](const std::string& arg) { this->help(arg); }},
+      {"exit", [this](const std::string&) { this->exit(); }},
+      {"help", [this](const std::string&) { this->help(); }},
       {"fullwrite", [this](const std::string& arg) { this->fullWrite(arg); }},
-      {"fullread", [this](const std::string& arg) { this->fullRead(arg); }},
+      {"fullread", [this](const std::string& arg) { this->fullRead(); }},
       {"testapp1", [this](const std::string&) {this->testApp1(); }},
       {"testapp2", [this](const std::string&) {this->testApp2(); }},
     };
