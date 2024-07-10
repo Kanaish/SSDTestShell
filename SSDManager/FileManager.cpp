@@ -69,5 +69,17 @@ bool FileManager::write(std::string name, int index, std::string value) {
 
 
 bool FileManager::write(std::string name, std::string value) {
+    std::fstream resultFile(name, std::ios::in | std::ios::out);
+    if (resultFile.is_open())
+    {
+        resultFile.seekg(0, std::ios::beg);
+        resultFile << value;
+    }
+    else
+    {
+        throw std::invalid_argument("File is not opened");
+        return false;
+    }
+    resultFile.close();
     return true;
 }
