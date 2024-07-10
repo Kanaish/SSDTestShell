@@ -7,8 +7,9 @@
 #include "FileManagerInterface.h"
 
 class TestShell {
-public:
-    TestShell(FileManagerInterface* file_manager) : file_manager(file_manager) {}
+ public:
+    explicit TestShell(FileManagerInterface* file_manager)
+        : file_manager(file_manager) {}
     void run(void);
     void execute(const std::string inputStr);
     virtual int write(const std::string& arg);
@@ -22,18 +23,17 @@ public:
 
     FileManagerInterface* file_manager;
 
-
-protected:
+ protected:
     virtual void exit();
     virtual void help();
 
-private:
+ private:
     bool isValidCommand(const std::string& cmd);
     bool isValidIndex(const std::string& str);
     bool isValidIndex2(const std::string& str);
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
-    int doErase(int& start_lba, int& size);
+    int doErase(int start_lba, int size);
 
     const std::unordered_map<std::string,
         std::function<void(const std::string&)>> commandMap = {
