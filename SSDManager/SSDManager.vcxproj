@@ -130,6 +130,15 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SSDManager.cpp" />
+    <ClCompile Include="SSDReader.cpp" />
+    <ClCompile Include="SSDWriter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SSDReader.h" />
+    <ClInclude Include="SSDManager.h" />
+    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FileManagerInterface.h" />
+    <ClInclude Include="SSDWriter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
