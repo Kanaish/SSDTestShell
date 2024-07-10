@@ -16,7 +16,8 @@ private:
     int getOldLogFileNum(void);
     std::string getOldestLogFileName(void);
     std::string WideStringToString(const std::wstring& wstr);
-    const std::string LOG_DIR = "..\\log\\";
+    const std::string LOG_DIR = "..\\..\\log\\";
     const std::string CURRENT_LOG = "lastest.log";
+    const wchar_t* PATH = L"../../\\log\\*_*_*_*_*_*.log";;
     const int LIMIT_LOG_SIZE = 10*1000;
 };

@@ -6,7 +6,7 @@
 #include <ctime>
 #include <iostream>
 #include <windows.h>
-#include <cstring>
+#include <string>
 #include <locale>
 #include <codecvt>
 #include "LogManager.h"
@@ -75,7 +75,7 @@ std::string LogManager::logGetCurrentTimeForFileName(void) {
 }
 
 int LogManager::getOldLogFileNum(void) {
-        const wchar_t* path = L"..\\log\\*_*_*_*_*_*.log";
+        const wchar_t* path = PATH;
 
         WIN32_FIND_DATA data;
         /* Search all log files in current directory */
@@ -91,9 +91,6 @@ int LogManager::getOldLogFileNum(void) {
         } while (FindNextFile(hFind, &data) != 0);
 
         FindClose(hFind);
-
-        std::cout << "Number of .log files: " << count << '\n';
-
         return count;
 }
 
@@ -104,7 +101,7 @@ std::string LogManager::getOldestLogFileName(void)
     FILETIME oldestTime;
     SYSTEMTIME stUTC, stLocal;
     std::string oldestFile;
-    const wchar_t* path = L"..\\log\\*_*_*_*_*_*.log";
+    const wchar_t* path = PATH;
     /* Search all log files in current directory */
     if ((hFind = FindFirstFile(path, &data)) != INVALID_HANDLE_VALUE) {
         oldestTime = data.ftLastWriteTime;
