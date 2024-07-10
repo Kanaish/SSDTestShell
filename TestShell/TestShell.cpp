@@ -128,6 +128,25 @@ void TestShell::help(void) {
 }
 
 int TestShell::fullWrite(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word;
+
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidAddress(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    for (int i = 0; i < 100; ++i) {
+        std::string cmd = "../x64/Debug/SSDManager.exe w ";
+        int ret;
+
+        cmd += std::to_string(i) + " ";
+        cmd += arg;
+        
+        ret = system(cmd.c_str());
+        if (ret == 0) continue;
+        throw std::invalid_argument("INVALID COMMAND");
+    }
+
     return 0;
 }
 
