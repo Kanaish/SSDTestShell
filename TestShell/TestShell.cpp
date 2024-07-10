@@ -3,7 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include "TestShell.h"
+#include "../SSDManager/FileManager.cpp"
+
 #include "../SSDManager/FileManager.cpp"
 
 void TestShell::run(void) {
@@ -129,10 +132,43 @@ void TestShell::help(void) {
 }
 
 int TestShell::fullWrite(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word;
+
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidAddress(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    for (int i = 0; i < 100; ++i) {
+        std::string cmd = "../x64/Debug/SSDManager.exe w ";
+        int ret;
+
+        cmd += std::to_string(i) + " ";
+        cmd += arg;
+        
+        ret = system(cmd.c_str());
+        if (ret == 0) continue;
+        throw std::invalid_argument("INVALID COMMAND");
+    }
+
     return 0;
 }
 
 int TestShell::fullRead(void) {
+    FileManager* file_manager = new FileManager();
+
+    for (int i = 0; i < 100; ++i) {
+        std::string cmd = "../x64/Debug/SSDManager.exe r ";
+        int ret = 0;
+
+        cmd += std::to_string(i) + " ";
+
+        ret = system(cmd.c_str());
+        if (ret != 0) throw std::invalid_argument("INVALID COMMAND");
+
+        std::cout << file_manager->read("result.txt") << std::endl;
+    }
+
     return 0;
 }
 
