@@ -15,8 +15,8 @@ public:
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
-    void erase(const std::string& arg);
-    void erase_range(const std::string& arg);
+    int erase(const std::string& arg);
+    int erase_range(const std::string& arg);
 
 protected:
     virtual void exit();
@@ -28,6 +28,7 @@ private:
     bool isValidIndex2(const std::string& str);
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
+    int doErase(int& start_lba, int& size);
 
     const std::unordered_map<std::string,
         std::function<void(const std::string&)>> commandMap = {

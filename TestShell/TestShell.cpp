@@ -242,26 +242,9 @@ int TestShell::testApp2(void) {
     return 0;
 }
 
-void TestShell::erase(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word, third_word;
-
-    if (!(iss >> first_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex(first_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-
-    if (!(iss >> second_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex2(second_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-
-    if ((iss >> third_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-
-    int start_lba = std::stoi(first_word);
-    int size = std::stoi(second_word);
-    int ret;
+int TestShell::doErase(int& start_lba, int& size)
+{
+    int ret = 0;
 
     if (start_lba + size >= 100)
         size = 99 - start_lba;
@@ -288,9 +271,34 @@ void TestShell::erase(const std::string& arg) {
             throw std::invalid_argument("INVALID SYSTEM COMMAND");
         }
     }
+
+    return ret;
 }
 
-void TestShell::erase_range(const std::string& arg) {
+int TestShell::erase(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word, third_word;
+
+    if (!(iss >> first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex(first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    if (!(iss >> second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex2(second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    if ((iss >> third_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    int start_lba = std::stoi(first_word);
+    int size = std::stoi(second_word);
+
+    return doErase(start_lba, size);
+}
+
+int TestShell::erase_range(const std::string& arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
@@ -309,13 +317,11 @@ void TestShell::erase_range(const std::string& arg) {
 
     int start_lba = std::stoi(first_word);
     int end_lba = std::stoi(second_word);
-    int ret;
 
     if (start_lba >= end_lba)
         throw std::invalid_argument("INVALID ARGUMENT");
 
-    std::string modified_arg = "";
-    modified_arg += std::to_string(start_lba) + " ";
-    modified_arg += std::to_string(end_lba - start_lba);
-    this->erase(modified_arg);
+    int size = end_lba - start_lba;
+
+    return doErase(start_lba, size);
 }
