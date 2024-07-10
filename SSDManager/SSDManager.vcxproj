@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SSDManager.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="SSDWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="SSDReader.h" />
     <ClInclude Include="SSDManager.h" />
     <ClInclude Include="FileManager.h" />
