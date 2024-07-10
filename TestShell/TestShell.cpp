@@ -122,13 +122,8 @@ int TestShell::read(const std::string& arg) {
         return ret;
     }
 
-    cmd = "type result.txt";
-
-    ret = system(cmd.c_str());
-    if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return ret;
-    }
+    FileManager* file_manager = new FileManager();
+    std::cout << file_manager->read("../../resources/result.txt") << std::endl;
 
     return 0;
 }
@@ -169,8 +164,6 @@ int TestShell::fullRead() {
         cmd = std::to_string(i) + " ";
 
         this->read(cmd);
-
-        std::cout << file_manager->read("../../resources/result.txt") << std::endl;
     }
 
     return 0;
