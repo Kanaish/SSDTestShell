@@ -6,27 +6,29 @@
 #include "../TestShell/TestShell.cpp"
 
 using namespace std;
+using namespace testing;
 
 class TestShellMock : public TestShell {
 public:
-    MOCK_METHOD(int, write, (const std::string& arg), (override));
-    MOCK_METHOD(int, read, (const std::string& arg), (override));
+    MOCK_METHOD(int, write, (const string& arg), (override));
+    MOCK_METHOD(int, read, (const string& arg), (override));
     MOCK_METHOD(void, exit, (), (override));
     MOCK_METHOD(void, help, (), (override));
-    MOCK_METHOD(int, fullWrite, (const std::string& arg), (override));
+    MOCK_METHOD(int, fullWrite, (const string& arg), (override));
     MOCK_METHOD(int, fullRead, (), (override));
+    MOCK_METHOD(int, testApp1, (), (override));
 };
 
-class TestShellFixture : public testing::Test {
+class TestShellFixture : public Test {
 protected:
     TestShell shell;
-    TestShellMock mock;
+    NiceMock<TestShellMock> mock;
     string str;
 
     void expectInvalidArgumentForWrite(const string& command) {
         try {
             shell.write(command);
-            FAIL() << "Expected std::invalid_argument";
+            FAIL() << "Expected invalid_argument";
         }
         catch (const invalid_argument& e) {
             EXPECT_EQ(string(e.what()), "INVALID COMMAND");
@@ -39,7 +41,7 @@ protected:
     void expectInvalidArgumentForRead(const string& command) {
         try {
             shell.read(command);
-            FAIL() << "Expected std::invalid_argument";
+            FAIL() << "Expected invalid_argument";
         }
         catch (const invalid_argument& e) {
             EXPECT_EQ(string(e.what()), "INVALID COMMAND");
@@ -88,4 +90,30 @@ TEST_F(TestShellFixture, read_invalid_argument1) {
 
 TEST_F(TestShellFixture, read_invalid_argument2) {
     expectInvalidArgumentForRead("read 100");
+}
+
+TEST_F(TestShellFixture, fullWrite_fail) {
+    EXPECT_EQ(mock.fullWrite(""), -1);
+}
+
+TEST_F(TestShellFixture, fullWrite_pass) {
+    EXPECT_CALL(mock, write(_)).Times(100)
+        .WillRepeatedly(Return(0));
+
+    mock.fullWrite("0x12345678");
+}
+
+TEST_F(TestShellFixture, fullRead_pass) {
+    EXPECT_CALL(mock, read(_)).Times(100)
+        .WillRepeatedly(Return(0));
+
+    mock.fullRead();
+}
+
+TEST_F(TestShellFixture, testApp1_pass) {
+    EXPECT_CALL(mock, fullWrite("0xAAAABBBB")).Times(1)
+        .WillOnce(Return(true));
+    EXPECT_CALL(mock, fullRead()).Times(1)
+        .WillOnce(Return(true));
+    mock.execute("testapp1");
 }
