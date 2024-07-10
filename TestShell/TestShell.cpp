@@ -3,7 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include "TestShell.h"
+
+#include "../SSDManager/FileManager.cpp"
 
 void TestShell::run(void) {
     std::string input_str;
@@ -151,6 +154,20 @@ int TestShell::fullWrite(const std::string& arg) {
 }
 
 int TestShell::fullRead(void) {
+    FileManager* file_manager = new FileManager();
+
+    for (int i = 0; i < 100; ++i) {
+        std::string cmd = "../x64/Debug/SSDManager.exe r ";
+        int ret = 0;
+
+        cmd += std::to_string(i) + " ";
+
+        ret = system(cmd.c_str());
+        if (ret != 0) throw std::invalid_argument("INVALID COMMAND");
+
+        std::cout << file_manager->read("result.txt") << std::endl;
+    }
+
     return 0;
 }
 
