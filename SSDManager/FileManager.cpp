@@ -12,6 +12,7 @@ FileManager::FileManager() {
 std::string FileManager::read(std::string name) {
     std::fstream resultFile(name, std::ios::in | std::ios::out);
     std::string ret;
+    lm->logWrite(CLASS_NAME, __func__, "Result Read");
     if (resultFile.is_open())
     {
         /* read result and store to the buffer */
@@ -29,6 +30,7 @@ std::string FileManager::read(std::string name) {
 std::string FileManager::read(std::string name, int index) {
     std::fstream nandFile(name, std::ios::in | std::ios::out);
     std::string ret;
+    lm->logWrite(CLASS_NAME, __func__, "Nand Read");
     if (nandFile.is_open())
     {
         /* read nand and store to the buffer */
@@ -58,7 +60,7 @@ std::string FileManager::read(std::string name, int index) {
 bool FileManager::write(std::string name, int index, std::string value) {
 
     std::fstream nandFile(name, std::ios::in | std::ios::out);
-
+    lm->logWrite(CLASS_NAME, __func__, "Write Nand");
     if (nandFile.is_open()) {
         nandFile.seekp(0, std::ios::beg);
 
@@ -89,6 +91,7 @@ bool FileManager::write(std::string name, int index, std::string value) {
 
 bool FileManager::write(std::string name, std::string value) {
     std::fstream resultFile(name, std::ios::in | std::ios::out);
+    lm->logWrite(CLASS_NAME, __func__, "Write Result");
     if (resultFile.is_open()) {
         resultFile.seekp(0, std::ios::beg);
         resultFile << value;
@@ -109,4 +112,9 @@ std::string FileManager::generateToken(int index)
 std::string FileManager::generateMemoryBlock(std::string token, std::string value)
 {
     return token + " " + value + " ";
+}
+
+void FileManager::getLogManagerInstance(LogManager* plm)
+{
+    this->lm = plm;
 }

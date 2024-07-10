@@ -4,13 +4,14 @@
 #include <string>
 #include <vector>
 #include "FileManager.h"
+#include "LogManager.h"
 #include "SSDWriter.h"
 #include "SSDReader.h"
 #include "SSDEraser.h"
 
 class SSDManager {
 public:
-    SSDManager(int argc, char** argv);
+    SSDManager(int argc, char** argv, LogManager* plm);
     ~SSDManager();
 
     bool isValidInput();
@@ -20,6 +21,7 @@ public:
     const std::string NAND_FILE = "../../resources/nand.txt";
     const std::string RESULT_FILE = "../../resources/result.txt";
 
+    void getLogManagerInstance(LogManager* plm);
 private:
     std::vector<std::string> parsed_input;
     int parsed_input_arg_cnt;
@@ -39,4 +41,5 @@ private:
     bool isValidArgCnt();
     bool isValidWriteInput();
     bool isValidEraseInput();
+    LogManager* lm;
 };

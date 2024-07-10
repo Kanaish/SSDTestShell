@@ -13,3 +13,7 @@ bool  SSDWriter::write(std::string nand_file, int index, std::string value) {
         return false;
     }
 }
+void SSDWriter::getLogManagerInstance(LogManager* plm)
+{
+    this->lm = plm;
+}

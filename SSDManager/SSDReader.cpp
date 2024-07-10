@@ -34,4 +34,7 @@ bool SSDReader::writeResultValue(const std::string& result_file,
     }
 }
 
-
+void SSDReader::getLogManagerInstance(LogManager* plm)
+{
+    this->lm = plm;
+}
