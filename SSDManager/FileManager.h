@@ -9,6 +9,7 @@ class FileManager : public FileManagerInterface {
 public:
     FileManager();
     std::string read(std::string name, int index);
+    std::string read(std::string name);
     bool write(std::string name, int index, std::string value);
     bool write(std::string name, std::string value);
 private:
