@@ -4,12 +4,10 @@
 #include "SSDEraser.h"
 
 SSDEraser::SSDEraser(FileManagerInterface* fm) :file_mgr{ fm } {}
-bool  SSDEraser::erase(std::string nand_file, int index, int size) {
+bool  SSDEraser::erase(const std::string& nand_file, int index, int size) {
     try {
-        bool ret = false;
         for (int i = 0; i < size; i++) {
-            ret = file_mgr->write(nand_file, index + i, "0x00000000");
-            if (ret == false)  return ret;
+            if (file_mgr->write(nand_file, index + i, INIT_VALUE) == false)  return false ;
         }
         return true;
     }
@@ -17,7 +15,4 @@ bool  SSDEraser::erase(std::string nand_file, int index, int size) {
         std::cerr << "Caught standard exception: " << e.what() << std::endl;
         return false;
     }
-
-
-
 }
