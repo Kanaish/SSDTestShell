@@ -15,6 +15,8 @@ public:
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
+    void erase(const std::string& arg);
+    void erase_range(const std::string& arg);
 
 protected:
     virtual void exit();
@@ -23,6 +25,7 @@ protected:
 private:
     bool isValidCommand(const std::string& cmd);
     bool isValidIndex(const std::string& str);
+    bool isValidIndex2(const std::string& str);
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
 
@@ -36,5 +39,7 @@ private:
       {"fullread", [this](const std::string& arg) { this->fullRead(); }},
       {"testapp1", [this](const std::string&) {this->testApp1(); }},
       {"testapp2", [this](const std::string&) {this->testApp2(); }},
+      {"erase", [this](const std::string& arg) {this->erase(arg); }},
+      {"erase_range", [this](const std::string& arg) {this->erase_range(arg); }},
     };
 };

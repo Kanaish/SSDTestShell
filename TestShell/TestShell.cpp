@@ -42,6 +42,20 @@ bool TestShell::isValidIndex(const std::string& str) {
     return true;
 }
 
+bool TestShell::isValidIndex2(const std::string& str) {
+    if (str.empty()) return false;
+    for (char c : str) {
+        if (!std::isdigit(c)) return false;
+    }
+
+    int index = std::stoi(str);
+    if (index < 0 || index > 100) {
+        return false;
+    }
+
+    return true;
+}
+
 bool TestShell::isValidAddress(const std::string& str) {
     if (str.size() != 10 || str.substr(0, 2) != "0x") return false;
     for (size_t i = 2; i < str.size(); ++i) {
@@ -226,4 +240,72 @@ int TestShell::testApp2(void) {
         }
     }
     return 0;
+}
+
+void TestShell::erase(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word, third_word;
+
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    if (!(iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidIndex2(second_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    if ((iss >> third_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    int start_lba = std::stoi(first_word);
+    int size = std::stoi(second_word);
+    int ret;
+
+    if (start_lba + size >= 100)
+        size = 99 - start_lba;
+
+    while (size > 10) {
+        std::string cmd = "SSDManager.exe e ";
+        cmd += std::to_string(start_lba) + " " + std::to_string(10);
+
+        ret = system(cmd.c_str());
+        if (ret != 0) {
+            throw std::invalid_argument("INVALID COMMAND");
+        }
+
+        size -= 10;
+        start_lba += 10;
+    }
+
+    if (size != 0) {
+        std::string cmd = "SSDManager.exe e ";
+        cmd += std::to_string(start_lba) + " " + std::to_string(size);
+
+        ret = system(cmd.c_str());
+        if (ret != 0) {
+            throw std::invalid_argument("INVALID COMMAND");
+        }
+    }
+}
+
+void TestShell::erase_range(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word, third_word;
+
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    if (!(iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidIndex2(second_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    if ((iss >> third_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    int start_lba = std::stoi(first_word);
+    int end_lba = std::stoi(second_word);
+    int ret;
+
+    if (start_lba >= end_lba)
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    std::string modified_arg = "";
+    modified_arg += std::to_string(start_lba) + " ";
+    modified_arg += std::to_string(end_lba - start_lba);
+    this->erase(modified_arg);
 }
