@@ -246,13 +246,18 @@ void TestShell::erase(const std::string& arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
-    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!(iss >> first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex(first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
 
-    if (!(iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidIndex2(second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!(iss >> second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex2(second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
 
-    if ((iss >> third_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> third_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
 
     int start_lba = std::stoi(first_word);
     int size = std::stoi(second_word);
@@ -267,7 +272,7 @@ void TestShell::erase(const std::string& arg) {
 
         ret = system(cmd.c_str());
         if (ret != 0) {
-            throw std::invalid_argument("INVALID COMMAND");
+            throw std::invalid_argument("INVALID SYSTEM COMMAND");
         }
 
         size -= 10;
@@ -280,7 +285,7 @@ void TestShell::erase(const std::string& arg) {
 
         ret = system(cmd.c_str());
         if (ret != 0) {
-            throw std::invalid_argument("INVALID COMMAND");
+            throw std::invalid_argument("INVALID SYSTEM COMMAND");
         }
     }
 }
@@ -289,13 +294,18 @@ void TestShell::erase_range(const std::string& arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
-    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!(iss >> first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex(first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
 
-    if (!(iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidIndex2(second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!(iss >> second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex2(second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
 
-    if ((iss >> third_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> third_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
 
     int start_lba = std::stoi(first_word);
     int end_lba = std::stoi(second_word);
