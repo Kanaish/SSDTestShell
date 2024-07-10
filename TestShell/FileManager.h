@@ -17,5 +17,4 @@ private:
     std::string generateMemoryBlock(std::string token, std::string value);
     const std::string EMPTY = "0x00000000";
     const int VALUE_LEN = 10;
-    const std::string CLASS_NAME = "FileManager";
 };

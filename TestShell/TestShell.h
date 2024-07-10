@@ -4,9 +4,11 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
+#include "FileManagerInterface.h"
 
 class TestShell {
 public:
+    TestShell(FileManagerInterface* file_manager) : file_manager(file_manager) {}
     void run(void);
     void execute(const std::string inputStr);
     virtual int write(const std::string& arg);
@@ -15,6 +17,11 @@ public:
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
+    int erase(const std::string& arg);
+    int erase_range(const std::string& arg);
+
+    FileManagerInterface* file_manager;
+
 
 protected:
     virtual void exit();
@@ -23,8 +30,10 @@ protected:
 private:
     bool isValidCommand(const std::string& cmd);
     bool isValidIndex(const std::string& str);
+    bool isValidIndex2(const std::string& str);
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
+    int doErase(int& start_lba, int& size);
 
     const std::unordered_map<std::string,
         std::function<void(const std::string&)>> commandMap = {
@@ -36,5 +45,7 @@ private:
       {"fullread", [this](const std::string& arg) { this->fullRead(); }},
       {"testapp1", [this](const std::string&) {this->testApp1(); }},
       {"testapp2", [this](const std::string&) {this->testApp2(); }},
+      {"erase", [this](const std::string& arg) {this->erase(arg); }},
+      {"erase_range", [this](const std::string& arg) {this->erase_range(arg); }},
     };
 };

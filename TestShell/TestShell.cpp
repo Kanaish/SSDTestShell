@@ -3,10 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
 #include "TestShell.h"
-
-#include "../SSDManager/FileManager.cpp"
 
 void TestShell::run(void) {
     std::string input_str;
@@ -36,6 +33,20 @@ bool TestShell::isValidIndex(const std::string& str) {
 
     int index = std::stoi(str);
     if (index < 0 || index > 99) {
+        return false;
+    }
+
+    return true;
+}
+
+bool TestShell::isValidIndex2(const std::string& str) {
+    if (str.empty()) return false;
+    for (char c : str) {
+        if (!std::isdigit(c)) return false;
+    }
+
+    int index = std::stoi(str);
+    if (index < 0 || index > 100) {
         return false;
     }
 
@@ -122,8 +133,6 @@ int TestShell::read(const std::string& arg) {
         throw std::invalid_argument("INVALID COMMAND");
         return ret;
     }
-
-    FileManager* file_manager = new FileManager();
     std::cout << file_manager->read("../../resources/result.txt") << std::endl;
 
     return 0;
@@ -134,7 +143,6 @@ void TestShell::exit() {
 }
 
 void TestShell::help() {
-    FileManager* file_manager = new FileManager();
 
     std::cout << file_manager->read("../../resources/help.txt") << std::endl;
 }
@@ -157,7 +165,6 @@ int TestShell::fullWrite(const std::string& arg) {
 }
 
 int TestShell::fullRead() {
-    FileManager* file_manager = new FileManager();
 
     for (int i = 0; i < 100; ++i) {
         std::string cmd ;
@@ -177,14 +184,13 @@ int TestShell::testApp1(void) {
         return -1;
     }
     bool test_passed = true;
-    FileManager file_manager;
 
     for (int lba = 0; lba < 100; lba++) {
         if (read(std::to_string(lba)) == -1) {
             return -1;
         }
 
-        std::string result = file_manager.read("../../resources/result.txt");
+        std::string result = file_manager->read("../../resources/result.txt");
         if (result != write_value) {
             test_passed = false;
             break;
@@ -218,12 +224,95 @@ int TestShell::testApp2(void) {
             return -1;
         }
         bool test_passed = true;
-        FileManager file_manager;
-        std::string result = file_manager.read("../../resources/result.txt");
+        std::string result = file_manager->read("../../resources/result.txt");
         if (result != write_value) {
             test_passed = false;
             break;
         }
     }
     return 0;
+}
+
+int TestShell::doErase(int& start_lba, int& size)
+{
+    int ret = 0;
+
+    if (start_lba + size >= 100)
+        size = 99 - start_lba;
+
+    while (size > 10) {
+        std::string cmd = "SSDManager.exe e ";
+        cmd += std::to_string(start_lba) + " " + std::to_string(10);
+
+        ret = system(cmd.c_str());
+        if (ret != 0) {
+            throw std::invalid_argument("INVALID SYSTEM COMMAND");
+        }
+
+        size -= 10;
+        start_lba += 10;
+    }
+
+    if (size != 0) {
+        std::string cmd = "SSDManager.exe e ";
+        cmd += std::to_string(start_lba) + " " + std::to_string(size);
+
+        ret = system(cmd.c_str());
+        if (ret != 0) {
+            throw std::invalid_argument("INVALID SYSTEM COMMAND");
+        }
+    }
+
+    return ret;
+}
+
+int TestShell::erase(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word, third_word;
+
+    if (!(iss >> first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex(first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    if (!(iss >> second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex2(second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    if ((iss >> third_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    int start_lba = std::stoi(first_word);
+    int size = std::stoi(second_word);
+
+    return doErase(start_lba, size);
+}
+
+int TestShell::erase_range(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word, third_word;
+
+    if (!(iss >> first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex(first_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    if (!(iss >> second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+    if (!isValidIndex(second_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    if ((iss >> third_word))
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    int start_lba = std::stoi(first_word);
+    int end_lba = std::stoi(second_word);
+
+    if (start_lba >= end_lba)
+        throw std::invalid_argument("INVALID ARGUMENT");
+
+    int size = end_lba - start_lba;
+
+    return doErase(start_lba, size);
 }

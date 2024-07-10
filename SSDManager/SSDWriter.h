@@ -9,4 +9,5 @@ public:
     bool write(std::string nand_file, int index, std::string value);
 private:
     FileManagerInterface* file_mgr;
+    const std::string CLASS_NAME = "SDDWriter";
 };
