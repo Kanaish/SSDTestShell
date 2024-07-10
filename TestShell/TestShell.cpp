@@ -86,7 +86,7 @@ void TestShell::execute(std::string input_str) {
 }
 
 int TestShell::write(const std::string& arg) {
-    std::string cmd = "../x64/Debug/SSDManager.exe w ";
+    std::string cmd = "SSDManager.exe w ";
     int ret;
 
     if (!isValidArgument(arg)) {
@@ -111,7 +111,7 @@ int TestShell::read(const std::string& arg) {
     if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
     if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
 
-    std::string cmd = "../x64/Debug/SSDManager.exe r ";
+    std::string cmd = "SSDManager.exe r ";
     int ret;
 
     cmd += arg;
@@ -170,7 +170,7 @@ int TestShell::fullRead() {
 
         this->read(cmd);
 
-        std::cout << file_manager->read("result.txt") << std::endl;
+        std::cout << file_manager->read("../../resources/result.txt") << std::endl;
     }
 
     return 0;
@@ -190,7 +190,7 @@ int TestShell::testApp1(void) {
             return -1;
         }
 
-        std::string result = file_manager.read("result.txt");
+        std::string result = file_manager.read("../../resources/result.txt");
         if (result != write_value) {
             test_passed = false;
             break;
@@ -225,7 +225,7 @@ int TestShell::testApp2(void) {
         }
         bool test_passed = true;
         FileManager file_manager;
-        std::string result = file_manager.read("result.txt");
+        std::string result = file_manager.read("../../resources/result.txt");
         if (result != write_value) {
             test_passed = false;
             break;
