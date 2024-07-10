@@ -10,7 +10,7 @@ using namespace std;
 using namespace testing;
 
 class MockFileManager : public FileManagerInterface {
-public:
+ public:
     MOCK_METHOD(string, read, (string name), (override));
     MOCK_METHOD(string, read, (string name, int index), (override));
     MOCK_METHOD(bool, write, (string name, int index, string value), (override));
@@ -18,8 +18,8 @@ public:
 };
 
 class TestShellWithMockFileManager : public TestShell {
-public:
-    TestShellWithMockFileManager(FileManagerInterface* fileManager)
+ public:
+    explicit TestShellWithMockFileManager(FileManagerInterface* fileManager)
         : TestShell(fileManager) {}
 
     MOCK_METHOD(int, write, (const string& arg), (override));
@@ -29,13 +29,14 @@ public:
 };
 
 class TestShellFixture : public Test {
-protected:
+ protected:
     NiceMock<MockFileManager> mockFileManager;
     NiceMock<TestShellWithMockFileManager> shellWithMock;
     FileManager file_manager;
     TestShell shell{ &file_manager };
 
-   TestShellFixture() : shellWithMock(&mockFileManager), shell(&file_manager) {}
+    TestShellFixture()
+        : shellWithMock(&mockFileManager), shell(&file_manager) {}
 
     void expectInvalidArgumentForFullWrite(const string& command) {
         try {
@@ -48,7 +49,6 @@ protected:
         catch (...) {
             FAIL() << "Expected invalid_argument";
         }
-
     }
 
     void expectInvalidArgumentForWrite(const string & command) {

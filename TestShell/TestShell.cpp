@@ -87,7 +87,8 @@ void TestShell::execute(std::string input_str) {
         throw std::invalid_argument("INVALID COMMAND");
     }
 
-    if (cmd == "fullread" || cmd == "exit" || cmd == "help" || cmd == "testapp1" || cmd == "testapp2") {
+    if (cmd == "fullread" || cmd == "exit" || cmd == "help"
+        || cmd == "testapp1" || cmd == "testapp2") {
         if (!arg.empty()) {
             throw std::invalid_argument("INVALID COMMAND");
         }
@@ -119,9 +120,15 @@ int TestShell::read(const std::string& arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word;
 
-    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
-    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!(iss >> first_word)) {
+        throw std::invalid_argument("INVALID COMMAND");
+    }
+    if ((iss >> second_word)) {
+        throw std::invalid_argument("INVALID COMMAND");
+    }
+    if (!isValidIndex(first_word)) {
+        throw std::invalid_argument("INVALID COMMAND");
+    }
 
     std::string cmd = "SSDManager.exe r ";
     int ret;
@@ -143,7 +150,6 @@ void TestShell::exit() {
 }
 
 void TestShell::help() {
-
     std::cout << file_manager->read("../../resources/help.txt") << std::endl;
 }
 
@@ -151,9 +157,15 @@ int TestShell::fullWrite(const std::string& arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word;
 
-    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
-    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidAddress(first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!(iss >> first_word)) {
+        throw std::invalid_argument("INVALID COMMAND");
+    }
+    if ((iss >> second_word)) {
+        throw std::invalid_argument("INVALID COMMAND");
+    }
+    if (!isValidAddress(first_word)) {
+        throw std::invalid_argument("INVALID COMMAND");
+    }
 
     for (int i = 0; i < 100; ++i) {
         std::string cmd;
@@ -165,9 +177,8 @@ int TestShell::fullWrite(const std::string& arg) {
 }
 
 int TestShell::fullRead() {
-
     for (int i = 0; i < 100; ++i) {
-        std::string cmd ;
+        std::string cmd;
 
         cmd = std::to_string(i) + " ";
 
@@ -178,7 +189,7 @@ int TestShell::fullRead() {
 }
 
 int TestShell::testApp1(void) {
-    std::string write_value = "0xAAAABBBB"; // 임의의 값
+    std::string write_value = "0xAAAABBBB";
 
     if (fullWrite(write_value) == -1) {
         return -1;
@@ -233,8 +244,7 @@ int TestShell::testApp2(void) {
     return 0;
 }
 
-int TestShell::doErase(int& start_lba, int& size)
-{
+int TestShell::doErase(int start_lba, int size) {
     int ret = 0;
 
     if (start_lba + size >= 100)
