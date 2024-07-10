@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <iostream>
 #include "TestShell.h"
 
 void TestShell::run(void) {
@@ -123,6 +122,8 @@ void TestShell::help(void) {
 }
 
 int TestShell::fullWrite(const std::string& arg) {
+    this->write();
+
     return 0;
 }
 
