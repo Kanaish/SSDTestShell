@@ -13,30 +13,25 @@ bool SSDReader::read(const std::string& nand_file,
 }
 
 std::string SSDReader::readSSDValue(const std::string& nand_file, int index) {
-    std::string result;
     try {
-        result = fm->read(nand_file, index);
+        return fm->read(nand_file, index);
     }
     catch (std::exception& e) {
         std::cerr << e.what() << ":nand_file\n";
         return "";
     }
-    return result;
 }
 
 bool SSDReader::writeResultValue(const std::string& result_file,
-    std::string result) {
-    bool ret;
+    std::string& result) {
 
     try {
-        ret = fm->write(result_file, result);
+        return fm->write(result_file, result);
     }
     catch (std::exception& e) {
         std::cerr << e.what() << ":result_file\n";
         return false;
     }
-
-    return ret;
 }
 
 
