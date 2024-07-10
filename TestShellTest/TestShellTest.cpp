@@ -23,7 +23,7 @@ class TestShellWithMockFileManager : public TestShell {
         : TestShell(fileManager) {}
 
     MOCK_METHOD(int, write, (const string& arg), (override));
-    MOCK_METHOD(int, read, (const string& arg), (override));
+    MOCK_METHOD(int, read, (const string& arg, bool isPrint), (override));
     MOCK_METHOD(void, exit, (), (override));
     MOCK_METHOD(void, help, (), (override));
 };
@@ -89,7 +89,7 @@ TEST_F(TestShellFixture, execute_write) {
 }
 
 TEST_F(TestShellFixture, execute_read) {
-    EXPECT_CALL(shellWithMock, read("3"))
+    EXPECT_CALL(shellWithMock, read("3", true))
         .Times(1)
         .WillOnce(Return(0));
     shellWithMock.execute("read 3");
@@ -133,7 +133,7 @@ TEST_F(TestShellFixture, fullWrite_pass) {
 }
 
 TEST_F(TestShellFixture, fullRead_pass) {
-    EXPECT_CALL(shellWithMock, read(_))
+    EXPECT_CALL(shellWithMock, read(_, _))
         .Times(100)
         .WillRepeatedly(Return(0));
     EXPECT_EQ(shellWithMock.fullRead(), 0);
@@ -143,7 +143,7 @@ TEST_F(TestShellFixture, testApp1_pass) {
     EXPECT_CALL(shellWithMock, write(_))
         .Times(100)
         .WillRepeatedly(Return(0));
-    EXPECT_CALL(shellWithMock, read(_))
+    EXPECT_CALL(shellWithMock, read(_, _))
         .Times(100)
         .WillRepeatedly(Return(0));
     EXPECT_CALL(mockFileManager, read(_))

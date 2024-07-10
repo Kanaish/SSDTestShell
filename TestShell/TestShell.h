@@ -13,7 +13,7 @@ class TestShell {
     void run(void);
     void execute(const std::string inputStr);
     virtual int write(const std::string& arg);
-    virtual int read(const std::string& arg);
+    virtual int read(const std::string& arg, bool isPrint = true);
     virtual int fullWrite(const std::string& arg);
     virtual int fullRead();
     virtual int testApp1(void);
@@ -34,6 +34,7 @@ class TestShell {
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
     int doErase(int start_lba, int size);
+    void runScenarioFile(const std::string& filename);
 
     const std::unordered_map<std::string,
         std::function<void(const std::string&)>> commandMap = {
@@ -48,4 +49,6 @@ class TestShell {
       {"erase", [this](const std::string& arg) {this->erase(arg); }},
       {"erase_range", [this](const std::string& arg) {this->erase_range(arg); }},
     };
+
+    const std::string TEST_SCENARIO_NAME = "run_list";
 };

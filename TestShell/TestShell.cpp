@@ -11,12 +11,21 @@ void TestShell::run(void) {
     while (1) {
         std::getline(std::cin, input_str);
         if (input_str.empty()) continue;
-
-        try {
-            this->execute(input_str);
+        if (input_str.substr(0, 8) == TEST_SCENARIO_NAME) {
+            try {
+                runScenarioFile(input_str);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error running scenario file: " << e.what() << std::endl;
+            }
         }
-        catch (std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        else {
+            try {
+                this->execute(input_str);
+            }
+            catch (std::invalid_argument& e) {
+                std::cout << e.what() << std::endl;
+            }
         }
     }
 }
@@ -116,7 +125,7 @@ int TestShell::write(const std::string& arg) {
     return ret;
 }
 
-int TestShell::read(const std::string& arg) {
+int TestShell::read(const std::string& arg, bool isPrint) {
     std::istringstream iss(arg);
     std::string first_word, second_word;
 
@@ -140,7 +149,10 @@ int TestShell::read(const std::string& arg) {
         throw std::invalid_argument("INVALID COMMAND");
         return ret;
     }
-    std::cout << file_manager->read("../../resources/result.txt") << std::endl;
+
+    if (isPrint) {
+        std::cout << file_manager->read("../../resources/result.txt") << std::endl;
+    }
 
     return 0;
 }
@@ -197,7 +209,7 @@ int TestShell::testApp1(void) {
     bool test_passed = true;
 
     for (int lba = 0; lba < 100; lba++) {
-        if (read(std::to_string(lba)) == -1) {
+        if (read(std::to_string(lba), false) == -1) {
             return -1;
         }
 
@@ -231,7 +243,7 @@ int TestShell::testApp2(void) {
     }
 
     for (int lba = 0; lba <= 5; ++lba) {
-        if (read(std::to_string(lba)) == -1) {
+        if (read(std::to_string(lba), false) == -1) {
             return -1;
         }
         bool test_passed = true;
@@ -325,4 +337,30 @@ int TestShell::erase_range(const std::string& arg) {
     int size = end_lba - start_lba;
 
     return doErase(start_lba, size);
+}
+
+void TestShell::runScenarioFile(const std::string& filename) {
+    try {
+        std::string fullPath = "../../resources/" + filename;
+        std::string file_content = file_manager->read(fullPath);
+        if (file_content.empty()) {
+            throw std::runtime_error("File is not opened or is empty");
+        }
+
+        std::istringstream infile(file_content);
+        std::string line;
+        while (std::getline(infile, line)) {
+            if (line.empty()) continue;
+
+            std::cout << line << " --- Run...";
+            execute(line);
+            std::cout << "Pass" << std::endl;
+        }
+    }
+    catch (const std::runtime_error& e) {
+        std::cerr << "Error reading file: " << filename << " - " << e.what() << std::endl;
+    }
+    catch (const std::invalid_argument& e) {
+        std::cerr << "Error executing command from file: " << filename << " - " << e.what() << std::endl;
+    }
 }
