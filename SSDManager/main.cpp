@@ -5,8 +5,8 @@
 int main(int argc, char** argv) {
     SSDManager ssd(argc, argv);
 
-    bool successFlag = ssd.executeCommand();
-    if (successFlag == false) {
+    bool success_flag = ssd.executeCommand();
+    if (success_flag == false) {
         return -1;
     }
 
