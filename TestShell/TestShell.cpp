@@ -11,7 +11,13 @@ void TestShell::run(void) {
     while (1) {
         std::getline(std::cin, input_str);
         if (input_str.empty()) continue;
-        this->execute(input_str);
+
+        try {
+            this->execute(input_str);
+        }
+        catch (std::invalid_argument& e) {
+            std::cout << e.what() << std::endl;
+        }
     }
 }
 
@@ -122,8 +128,6 @@ void TestShell::help(void) {
 }
 
 int TestShell::fullWrite(const std::string& arg) {
-    this->write();
-
     return 0;
 }
 
