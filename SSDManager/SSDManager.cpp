@@ -115,7 +115,7 @@ bool SSDManager::isValidCommand() {
     }
 
     cmd = std::toupper(cmd_str[0]);
-    if (cmd != 'W' && cmd != 'R' && cmd != 'E') {
+    if (cmd != 'W' && cmd != 'R' && cmd != 'E' && cmd != 'F') {
         return false;
     }
 
@@ -123,6 +123,10 @@ bool SSDManager::isValidCommand() {
 }
 
 bool SSDManager::isValidIndex() {
+    if (cmd == 'F') {
+        return true;
+    }
+
     if (parsed_input_arg_cnt < 3) {
         return false;
     }
@@ -150,6 +154,9 @@ bool SSDManager::isValidArgCnt() {
         return false;
     }
     if (cmd == 'E' && parsed_input_arg_cnt != 4) {
+        return false;
+    }
+    if (cmd == 'F' && parsed_input_arg_cnt != 2) {
         return false;
     }
 
