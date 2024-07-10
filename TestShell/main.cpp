@@ -1,8 +1,10 @@
 #include "TestShell.h"
+#include "FileManager.h"
 
 int main()
 {
-	TestShell app;
+	FileManager file_manager;
+	TestShell app{ &file_manager };
 
 	app.run();
 
