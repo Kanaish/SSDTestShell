@@ -248,9 +248,9 @@ int TestShell::doErase(int start_lba, int size) {
     int ret = 0;
 
     if (start_lba + size >= 100)
-        size = 99 - start_lba;
+        size = 100 - start_lba;
 
-    while (size > 10) {
+    while (size >= 10) {
         std::string cmd = "SSDManager.exe e ";
         cmd += std::to_string(start_lba) + " " + std::to_string(10);
 
@@ -310,7 +310,7 @@ int TestShell::erase_range(const std::string& arg) {
 
     if (!(iss >> second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex(second_word))
+    if (!isValidIndex2(second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
     if ((iss >> third_word))
