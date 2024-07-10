@@ -39,4 +39,5 @@ class SSDManager {
     bool isValidIndex();
     bool isValidArgCnt();
     bool isValidWriteInput();
+    const std::string CLASS_NAME = "SSDManager";
 };
