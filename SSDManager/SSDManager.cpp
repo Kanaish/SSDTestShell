@@ -13,12 +13,14 @@ SSDManager::SSDManager(int argc, char** argv) {
     file_manager = new FileManager();
     ssd_writer = new SSDWriter(file_manager);
     ssd_reader = new SSDReader(file_manager);
+    ssd_eraser = new SSDEraser(file_manager);
 }
 
 SSDManager::~SSDManager() {
     delete file_manager;
     delete ssd_writer;
     delete ssd_reader;
+    delete ssd_eraser;
 }
 
 bool SSDManager::isValidInput() {
@@ -38,6 +40,10 @@ bool SSDManager::isValidInput() {
         return false;
     }
 
+    if (isValidEraseInput() == false) {
+        return false;
+    }
+
     return true;
 }
 
@@ -49,9 +55,11 @@ bool SSDManager::executeCommand() {
     if (cmd == 'R') {
         return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
     }
-
     if (cmd == 'W') {
-        return ssd_writer->write(NAND_FILE, index, value);
+        return ssd_writer->write(NAND_FILE, index, write_value);
+    }
+    if (cmd == 'E') {
+        return ssd_eraser->erase(NAND_FILE, index, erase_size);
     }
 
     return false;
@@ -76,7 +84,7 @@ bool SSDManager::isValidCommand() {
     }
 
     cmd = std::toupper(cmd_str[0]);
-    if (cmd != 'W' && cmd != 'R') {
+    if (cmd != 'W' && cmd != 'R' && cmd != 'E') {
         return false;
     }
 
@@ -110,28 +118,57 @@ bool SSDManager::isValidArgCnt() {
     if (cmd == 'W' && parsed_input_arg_cnt != 4) {
         return false;
     }
+    if (cmd == 'E' && parsed_input_arg_cnt != 4) {
+        return false;
+    }
 
     return true;
 }
 
 bool SSDManager::isValidWriteInput() {
     if (cmd == 'W') {
-        value = parsed_input[3];
+        write_value = parsed_input[3];
 
-        if (value.length() != 10) {
+        if (write_value.length() != 10) {
             return false;
         }
-        if (value[0] != '0') {
+        if (write_value[0] != '0') {
             return false;
         }
-        if (std::toupper(value[1]) != 'X') {
+        if (std::toupper(write_value[1]) != 'X') {
             return false;
         }
-        for (char& c : value.substr(2, 8)) {
+        for (char& c : write_value.substr(2, 8)) {
             if (std::isxdigit(c) == false) {
                 return false;
             }
         }
+    }
+
+    return true;
+}
+
+bool SSDManager::isValidEraseInput() {
+    if (cmd == 'E') {
+        std::string& erase_size_str = parsed_input[3];
+
+        for (char& c : erase_size_str) {
+            if (std::isdigit(c) == false) {
+                return false;
+            }
+        }
+
+
+        erase_size = stoi(erase_size_str);
+
+        if (erase_size > 10) {
+            erase_size = 10;
+        }
+        if (index + erase_size > 99) {
+            erase_size = 99 - index + 1;
+        }
+
+        return true;
     }
 
     return true;
