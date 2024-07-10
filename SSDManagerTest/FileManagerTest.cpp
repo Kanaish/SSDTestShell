@@ -18,13 +18,6 @@
 using namespace std;
 using namespace testing;
 
-class FileManagerMock : public FileManagerInterface
-{
-public:
-    MOCK_METHOD(bool, write , (string, int, string), ());
-    MOCK_METHOD(bool, write, (string, string), ());
-    MOCK_METHOD(bool, read, (string, string), ());
-};
 class FileManagerTestFixture : public Test {
 public:
     FileManager fm;
