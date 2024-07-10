@@ -16,4 +16,5 @@ class SSDReader {
     std::string readSSDValue(const std::string& nand_file, int index);
 
     FileManagerInterface* fm;
+    const std::string CLASS_NAME = "SDDReader";
 };

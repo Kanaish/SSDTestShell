@@ -32,4 +32,5 @@ class SSDManager {
     bool isValidWriteInput(int argc);
 
     int convertIndexInt();
+    const std::string CLASS_NAME = "SSDManager";
 };

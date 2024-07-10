@@ -29,7 +29,6 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-[Ll]og/
 [Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
@@ -400,3 +399,6 @@ FodyWeavers.xsd
 # Text file directory (contains empty files)
 resources/nand.txt
 resources/result.txt
+
+# Log file directory
+log/*
