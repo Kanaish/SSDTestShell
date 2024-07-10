@@ -3,7 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include "TestShell.h"
+
+#include "../SSDManager/FileManager.cpp"
 
 void TestShell::run(void) {
     std::string input_str;
@@ -49,13 +52,15 @@ bool TestShell::isValidAddress(const std::string& str) {
 
 bool TestShell::isValidArgument(const std::string& arg) {
     std::istringstream iss(arg);
-    std::string first_word, second_word;
+    std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word)) return false;
     if (!isValidIndex(first_word)) return false;
 
     if (!(iss >> second_word)) return false;
     if (!isValidAddress(second_word)) return false;
+
+    if ((iss >> third_word)) return false;
 
     return true;
 }
@@ -71,11 +76,17 @@ void TestShell::execute(std::string input_str) {
         throw std::invalid_argument("INVALID COMMAND");
     }
 
+    if (cmd == "fullread" || cmd == "exit" || cmd == "help" || cmd == "testapp1" || cmd == "testapp2") {
+        if (!arg.empty()) {
+            throw std::invalid_argument("INVALID COMMAND");
+        }
+    }
+
     commandMap.at(cmd)(arg);
 }
 
 int TestShell::write(const std::string& arg) {
-    std::string cmd = "../x64/Debug/SSDManager.exe w ";
+    std::string cmd = "SSDManager.exe w ";
     int ret;
 
     if (!isValidArgument(arg)) {
@@ -93,13 +104,15 @@ int TestShell::write(const std::string& arg) {
 }
 
 int TestShell::read(const std::string& arg) {
-    std::string cmd = "../x64/Debug/SSDManager.exe r ";
-    int ret;
+    std::istringstream iss(arg);
+    std::string first_word, second_word;
 
-    if (!isValidIndex(arg)) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return -1;
-    }
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    std::string cmd = "SSDManager.exe r ";
+    int ret;
 
     cmd += arg;
 
@@ -109,36 +122,107 @@ int TestShell::read(const std::string& arg) {
         return ret;
     }
 
-    cmd = "type result.txt";
+    FileManager* file_manager = new FileManager();
+    std::cout << file_manager->read("../../resources/result.txt") << std::endl;
 
-    ret = system(cmd.c_str());
-    if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return ret;
+    return 0;
+}
+
+void TestShell::exit() {
+    std::exit(0);
+}
+
+void TestShell::help() {
+    FileManager* file_manager = new FileManager();
+
+    std::cout << file_manager->read("help.txt") << std::endl;
+}
+
+int TestShell::fullWrite(const std::string& arg) {
+    std::istringstream iss(arg);
+    std::string first_word, second_word;
+
+    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
+    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
+    if (!isValidAddress(first_word)) throw std::invalid_argument("INVALID COMMAND");
+
+    for (int i = 0; i < 100; ++i) {
+        std::string cmd;
+        cmd = std::to_string(i) + " " + first_word;
+        this->write(cmd);
     }
 
     return 0;
 }
 
-void TestShell::exit(void) {
-    std::exit(0);
-}
+int TestShell::fullRead() {
+    FileManager* file_manager = new FileManager();
 
-void TestShell::help(void) {
-}
+    for (int i = 0; i < 100; ++i) {
+        std::string cmd ;
 
-int TestShell::fullWrite(const std::string& arg) {
-    return 0;
-}
+        cmd = std::to_string(i) + " ";
 
-int TestShell::fullRead(void) {
+        this->read(cmd);
+    }
+
     return 0;
 }
 
 int TestShell::testApp1(void) {
+    std::string write_value = "0xAAAABBBB"; // 임의의 값
+
+    if (fullWrite(write_value) == -1) {
+        return -1;
+    }
+    bool test_passed = true;
+    FileManager file_manager;
+
+    for (int lba = 0; lba < 100; lba++) {
+        if (read(std::to_string(lba)) == -1) {
+            return -1;
+        }
+
+        std::string result = file_manager.read("../../resources/result.txt");
+        if (result != write_value) {
+            test_passed = false;
+            break;
+        }
+    }
     return 0;
 }
 
 int TestShell::testApp2(void) {
+    std::string write_value = "0xAAAABBBB";
+
+    for (int i = 0; i < 30; ++i) {
+        for (int lba = 0; lba <= 5; ++lba) {
+            std::string arg = std::to_string(lba) + " " + write_value;
+            if (write(arg) != 0) {
+                return -1;
+            }
+        }
+    }
+
+    write_value = "0x12345678";
+    for (int lba = 0; lba <= 5; ++lba) {
+        std::string arg = std::to_string(lba) + " " + write_value;
+        if (write(arg) != 0) {
+            return -1;
+        }
+    }
+
+    for (int lba = 0; lba <= 5; ++lba) {
+        if (read(std::to_string(lba)) == -1) {
+            return -1;
+        }
+        bool test_passed = true;
+        FileManager file_manager;
+        std::string result = file_manager.read("../../resources/result.txt");
+        if (result != write_value) {
+            test_passed = false;
+            break;
+        }
+    }
     return 0;
 }

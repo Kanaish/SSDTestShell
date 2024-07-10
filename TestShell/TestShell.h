@@ -12,13 +12,13 @@ public:
     virtual int write(const std::string& arg);
     virtual int read(const std::string& arg);
     virtual int fullWrite(const std::string& arg);
-    virtual int fullRead(void);
-
-protected:
-    virtual void exit(void);
-    virtual void help(void);
+    virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
+
+protected:
+    virtual void exit();
+    virtual void help();
 
 private:
     bool isValidCommand(const std::string& cmd);
@@ -33,7 +33,7 @@ private:
       {"exit", [this](const std::string&) { this->exit(); }},
       {"help", [this](const std::string&) { this->help(); }},
       {"fullwrite", [this](const std::string& arg) { this->fullWrite(arg); }},
-      {"fullread", [this](const std::string&) { this->fullRead(); }},
+      {"fullread", [this](const std::string& arg) { this->fullRead(); }},
       {"testapp1", [this](const std::string&) {this->testApp1(); }},
       {"testapp2", [this](const std::string&) {this->testApp2(); }},
     };
