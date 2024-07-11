@@ -3,10 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-
+#include <thread>
+#include <chrono>
 #include "TestShell.h"
-
-#include "../SSDManager/FileManager.cpp"
+#include "SSDAPILibrary.h"
 
 void TestShell::run(void) {
     std::string input_str;
@@ -14,12 +14,21 @@ void TestShell::run(void) {
     while (1) {
         std::getline(std::cin, input_str);
         if (input_str.empty()) continue;
-
-        try {
-            this->execute(input_str);
+        if (input_str.substr(0, 8) == TEST_SCENARIO_NAME) {
+            try {
+                runScenarioFile(input_str);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error running scenario file: " << e.what() << std::endl;
+            }
         }
-        catch (std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        else {
+            try {
+                this->execute(input_str);
+            }
+            catch (std::invalid_argument& e) {
+                std::cerr << e.what() << std::endl;
+            }
         }
     }
 }
@@ -28,44 +37,7 @@ bool TestShell::isValidCommand(const std::string& cmd) {
     return commandMap.find(cmd) != commandMap.end();
 }
 
-bool TestShell::isValidIndex(const std::string& str) {
-    if (str.empty()) return false;
-    for (char c : str) {
-        if (!std::isdigit(c)) return false;
-    }
-
-    int index = std::stoi(str);
-    if (index < 0 || index > 99) {
-        return false;
-    }
-
-    return true;
-}
-
-bool TestShell::isValidAddress(const std::string& str) {
-    if (str.size() != 10 || str.substr(0, 2) != "0x") return false;
-    for (size_t i = 2; i < str.size(); ++i) {
-        if (!std::isxdigit(str[i])) return false;
-    }
-    return true;
-}
-
-bool TestShell::isValidArgument(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word, third_word;
-
-    if (!(iss >> first_word)) return false;
-    if (!isValidIndex(first_word)) return false;
-
-    if (!(iss >> second_word)) return false;
-    if (!isValidAddress(second_word)) return false;
-
-    if ((iss >> third_word)) return false;
-
-    return true;
-}
-
-void TestShell::execute(std::string input_str) {
+int TestShell::execute(std::string input_str, bool fromScenarioFile) {
     size_t pos = input_str.find(' ');
     std::string cmd = (pos == std::string::npos) ?
         input_str : input_str.substr(0, pos);
@@ -76,131 +48,92 @@ void TestShell::execute(std::string input_str) {
         throw std::invalid_argument("INVALID COMMAND");
     }
 
-    if (cmd == "fullread" || cmd == "exit" || cmd == "help" || cmd == "testapp1" || cmd == "testapp2") {
+    if (cmd == "fullread" || cmd == "exit" || cmd == "help"
+        || cmd == "testapp1" || cmd == "testapp2" || cmd =="flush") {
         if (!arg.empty()) {
             throw std::invalid_argument("INVALID COMMAND");
         }
     }
 
-    commandMap.at(cmd)(arg);
-}
-
-int TestShell::write(const std::string& arg) {
-    std::string cmd = "SSDManager.exe w ";
-    int ret;
-
-    if (!isValidArgument(arg)) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return -1;
-    }
-
-    cmd += arg;
-
-    ret = system(cmd.c_str());
+    int ret = commandMap.at(cmd)(arg);
+    
     if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
+        if (fromScenarioFile) {
+            return -1;
+        }
+        switch (ret) {
+        case (SYSTEM_ERROR):
+            throw std::invalid_argument("SYSTEM_ERROR");
+        case (INVALID_ARGUMENT):
+            throw std::invalid_argument("INVALID ARGUMENT");
+        case (INVALID_COMMAND) :
+            throw std::invalid_argument("INVALID COMMAND");
+        case (TEST_FAIL) : 
+            throw std::invalid_argument("TEST FAIL");
+        default:
+            throw std::invalid_argument("error");
+        }
     }
-
     return ret;
 }
 
-int TestShell::read(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word;
+int TestShell::write(const std::string& arg) {
+    return SSDAPIWrite(arg.c_str());
+}
 
-    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
-    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidIndex(first_word)) throw std::invalid_argument("INVALID COMMAND");
+int TestShell::read(const std::string& arg, bool isPrint) {
+    return SSDAPIRead(arg.c_str(), isPrint);
+}
 
-    std::string cmd = "SSDManager.exe r ";
-    int ret;
-
-    cmd += arg;
-
-    ret = system(cmd.c_str());
-    if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return ret;
-    }
-
-    FileManager* file_manager = new FileManager();
-    std::cout << file_manager->read("../../resources/result.txt") << std::endl;
-
+int TestShell::exit() {
+    std::exit(0);
     return 0;
 }
 
-void TestShell::exit() {
-    std::exit(0);
-}
-
-void TestShell::help() {
-    FileManager* file_manager = new FileManager();
-
+int TestShell::help() {
     std::cout << file_manager->read("../../resources/help.txt") << std::endl;
+    return 0;
 }
 
 int TestShell::fullWrite(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word;
-
-    if (!(iss >> first_word)) throw std::invalid_argument("INVALID COMMAND");
-    if ((iss >> second_word)) throw std::invalid_argument("INVALID COMMAND");
-    if (!isValidAddress(first_word)) throw std::invalid_argument("INVALID COMMAND");
-
-    for (int i = 0; i < 100; ++i) {
-        std::string cmd;
-        cmd = std::to_string(i) + " " + first_word;
-        this->write(cmd);
-    }
-
-    return 0;
+    return SSDAPIFullWrite(arg.c_str());
 }
 
 int TestShell::fullRead() {
-    FileManager* file_manager = new FileManager();
-
-    for (int i = 0; i < 100; ++i) {
-        std::string cmd ;
-
-        cmd = std::to_string(i) + " ";
-
-        this->read(cmd);
-    }
-
-    return 0;
+    return SSDAPIFullRead();
 }
 
 int TestShell::testApp1(void) {
-    std::string write_value = "0xAAAABBBB"; // 임의의 값
-
-    if (fullWrite(write_value) == -1) {
-        return -1;
+    std::string write_value = "0xAAAABBBB";
+    int ret = SSDAPIFullWrite(write_value.c_str());
+    if (ret != 0) {
+        return ret;
     }
-    bool test_passed = true;
-    FileManager file_manager;
 
     for (int lba = 0; lba < 100; lba++) {
-        if (read(std::to_string(lba)) == -1) {
-            return -1;
+        ret = SSDAPIRead(std::to_string(lba).c_str(), false);
+        if (ret != 0) {
+            return ret;
         }
 
-        std::string result = file_manager.read("../../resources/result.txt");
-        if (result != write_value) {
-            test_passed = false;
+        std::string line = file_manager->read("../../resources/result.txt");
+        if (line != write_value) {
+            ret = TEST_FAIL;
             break;
         }
     }
-    return 0;
+    return ret;
 }
 
 int TestShell::testApp2(void) {
     std::string write_value = "0xAAAABBBB";
-
+    int ret = 0;
     for (int i = 0; i < 30; ++i) {
         for (int lba = 0; lba <= 5; ++lba) {
             std::string arg = std::to_string(lba) + " " + write_value;
-            if (write(arg) != 0) {
-                return -1;
+            ret = SSDAPIWrite(arg.c_str());
+            if (ret != 0) {
+                return ret;
             }
         }
     }
@@ -208,22 +141,68 @@ int TestShell::testApp2(void) {
     write_value = "0x12345678";
     for (int lba = 0; lba <= 5; ++lba) {
         std::string arg = std::to_string(lba) + " " + write_value;
-        if (write(arg) != 0) {
-            return -1;
+        ret = SSDAPIWrite(arg.c_str());
+        if (ret != 0) {
+            return ret;
         }
     }
 
     for (int lba = 0; lba <= 5; ++lba) {
-        if (read(std::to_string(lba)) == -1) {
-            return -1;
+        SSDAPIRead(std::to_string(lba).c_str(), false);
+        if (ret != 0) {
+            return ret;
         }
-        bool test_passed = true;
-        FileManager file_manager;
-        std::string result = file_manager.read("../../resources/result.txt");
-        if (result != write_value) {
-            test_passed = false;
+        std::string line = file_manager->read("../../resources/result.txt");
+        if (line != write_value) {
+            ret = TEST_FAIL;
             break;
         }
     }
-    return 0;
+
+    return ret;
+}
+
+int TestShell::erase(const std::string& arg) {
+    return SSDAPIErase(arg.c_str());
+}
+
+int TestShell::erase_range(const std::string& arg) {
+    return SSDAPIEraseRange(arg.c_str());
+}
+
+void TestShell::runScenarioFile(const std::string& filename) {
+    try {
+        std::string fullPath = "../../resources/" + filename;
+        std::string file_content = file_manager->read(fullPath);
+        if (file_content.empty()) {
+            throw std::runtime_error("File is not opened or is empty");
+        }
+
+        std::istringstream infile(file_content);
+        std::string line;
+        while (std::getline(infile, line)) {
+            if (line.empty()) continue;
+
+            std::cout << line << " --- Run...";
+            int result = execute(line, true);
+            if (result != 0) {
+                std::cout << "FAIL!" << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::exit(1);
+            }
+            else std::cout << "Pass" << std::endl;
+        }
+    }
+    catch (const std::runtime_error& e) {
+        std::cerr << "Error reading file: " << filename << " - " << e.what() << std::endl;
+    }
+    catch (const std::invalid_argument& e) {
+        std::cerr << "Error executing command from file: " << filename << " - " << e.what() << std::endl;
+    }
+}
+
+int TestShell::flush(void) {
+    int ret = SSDAPIFlush();
+
+    return ret;
 }

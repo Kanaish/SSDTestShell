@@ -1,10 +1,8 @@
 /* Copyright 2024 Code Love you */
 #pragma once
-#include <iostream>
-#include <fstream>
-#include <string>
+
 #include "FileManagerInterface.h"
-#include "LogManager.h"
+
 class FileManager : public FileManagerInterface {
 public:
     FileManager();
@@ -17,5 +15,4 @@ private:
     std::string generateMemoryBlock(std::string token, std::string value);
     const std::string EMPTY = "0x00000000";
     const int VALUE_LEN = 10;
-    const std::string CLASS_NAME = "FileManager";
 };

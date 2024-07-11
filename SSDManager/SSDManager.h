@@ -2,6 +2,7 @@
 
 #pragma once
 #include "FileManager.h"
+#include "LogManager.h"
 #include "SSDWriter.h"
 #include "SSDReader.h"
 #include "SSDEraser.h"
@@ -41,4 +42,5 @@ private:
     bool isValidEraseInput();
 
     std::string convertToUpperValue(std::string&);
+    const std::string CLASS_NAME = "SDDManager";
 };

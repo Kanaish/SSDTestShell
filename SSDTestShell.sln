@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShell", "TestShell\TestShell.vcxproj", "{E71B4962-D9F0-4BA3-850C-04112A2C27EF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSDAPILibrary", "SSDAPILibrary\SSDAPILibrary.vcxproj", "{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -59,6 +61,14 @@ Global
 		{E71B4962-D9F0-4BA3-850C-04112A2C27EF}.Release|x64.Build.0 = Release|x64
 		{E71B4962-D9F0-4BA3-850C-04112A2C27EF}.Release|x86.ActiveCfg = Release|Win32
 		{E71B4962-D9F0-4BA3-850C-04112A2C27EF}.Release|x86.Build.0 = Release|Win32
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Debug|x64.ActiveCfg = Debug|x64
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Debug|x64.Build.0 = Debug|x64
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Debug|x86.ActiveCfg = Debug|Win32
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Debug|x86.Build.0 = Debug|Win32
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Release|x64.ActiveCfg = Release|x64
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Release|x64.Build.0 = Release|x64
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Release|x86.ActiveCfg = Release|Win32
+		{0923881B-BE7A-4BA9-82FD-68A4E34AAFD5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
