@@ -90,8 +90,8 @@ std::string CommandBuffer::findMatchedWrite(int index) {
 }
 
 bool CommandBuffer::createBufferFile() {
-    std::fstream bufferFile(BUFFER_FILE_NAME);
-    if (!bufferFile) {
+    std::fstream buffer_file(BUFFER_FILE_NAME);
+    if (!buffer_file) {
         std::ofstream ofs(BUFFER_FILE_NAME);
         if (!ofs)
         {
@@ -102,15 +102,15 @@ bool CommandBuffer::createBufferFile() {
 }
 
 bool CommandBuffer::readBufferFile() {
-    std::fstream bufferFile(BUFFER_FILE_NAME, std::ios::in);
-    if (!bufferFile) {
+    std::fstream buffer_file(BUFFER_FILE_NAME, std::ios::in);
+    if (!buffer_file) {
         return false;
     }
 
     /* read nand and store to the buffer */
     std::stringstream buffer;
     std::string cmd;
-    buffer << bufferFile.rdbuf();
+    buffer << buffer_file.rdbuf();
     
     std::string token;
     BufferData buf_data;
@@ -151,13 +151,13 @@ bool CommandBuffer::readBufferFile() {
         }
 
     }
-    bufferFile.close();
+    buffer_file.close();
     return true;
 }
 
 bool CommandBuffer::writeBufferFile() {
-    std::ofstream bufferFile(BUFFER_FILE_NAME, std::ios::out | std::ios::trunc);
-    if (!bufferFile.is_open()) {
+    std::ofstream buffer_file(BUFFER_FILE_NAME, std::ios::out | std::ios::trunc);
+    if (!buffer_file.is_open()) {
         return false;
     }
 
@@ -165,28 +165,28 @@ bool CommandBuffer::writeBufferFile() {
     std::string space_str(1, SPACE_STRING);
     std::string delimeter_str(1, DELIMETER_STRING);
 
-    bufferFile.seekp(0, std::ios::end);
-    for (auto& cmdData: data) {
-        if (cmdData.cmd == 'W') {
-            cmd_str = "W" + space_str + std::to_string(cmdData.index) + space_str + cmdData.write_value + delimeter_str;
-            bufferFile << cmd_str;
+    buffer_file.seekp(0, std::ios::end);
+    for (auto& cmd_data: data) {
+        if (cmd_data.cmd == 'W') {
+            cmd_str = "W" + space_str + std::to_string(cmd_data.index) + space_str + cmd_data.write_value + delimeter_str;
+            buffer_file << cmd_str;
         }
-        else if (cmdData.cmd == 'E') {
-            cmd_str = "E" + space_str + std::to_string(cmdData.index) + space_str + std::to_string(cmdData.erase_size) + delimeter_str;
-            bufferFile << cmd_str;
+        else if (cmd_data.cmd == 'E') {
+            cmd_str = "E" + space_str + std::to_string(cmd_data.index) + space_str + std::to_string(cmd_data.erase_size) + delimeter_str;
+            buffer_file << cmd_str;
         }
     }
 
-    bufferFile.close();
+    buffer_file.close();
     return true;
 }
 
 bool CommandBuffer::flushBufferFile() {
-    std::ofstream bufferFile(BUFFER_FILE_NAME, std::ios::out | std::ios::trunc);
-    if (!bufferFile.is_open()) {
+    std::ofstream buffer_file(BUFFER_FILE_NAME, std::ios::out | std::ios::trunc);
+    if (!buffer_file.is_open()) {
         return false;
     }
 
-    bufferFile.close();
+    buffer_file.close();
     return true;
 }
