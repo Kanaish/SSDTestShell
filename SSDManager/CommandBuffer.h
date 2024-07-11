@@ -38,7 +38,7 @@ private:
 
     // 최적화 알고리즘 함수들 넣기
     void ignoreDupWrite(BufferData& new_data);
-    bool mergeLastErase(BufferData& new_data);
+    void mergeLastErase(BufferData& new_data);
 
     std::vector<BufferData> data;
     const char DELIMETER_STRING = ','; // "W 1 0x12345678,E 10 5,W 2 0x12345678,"

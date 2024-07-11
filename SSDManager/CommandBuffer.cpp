@@ -39,7 +39,7 @@ void CommandBuffer::ignoreDupWrite(BufferData& new_data) {
     data.push_back(new_data);
 }
 
-bool CommandBuffer::mergeLastErase(BufferData& new_data) {
+void CommandBuffer::mergeLastErase(BufferData& new_data) {
     BufferData& tail_data = data[data.size() - 1];
     if (tail_data.cmd != 'E') {
         data.push_back(new_data);
