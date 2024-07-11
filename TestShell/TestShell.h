@@ -18,6 +18,7 @@ class TestShell {
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
+    void transStringtoIntInt(const std::string& arg, int& left_arg, int& right_arg);
     int erase(const std::string& arg);
     int erase_range(const std::string& arg);
 
