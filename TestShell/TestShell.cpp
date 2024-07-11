@@ -162,38 +162,6 @@ int TestShell::testApp2(void) {
     return ret;
 }
 
-int TestShell::doErase(int start_lba, int size) {
-    int ret = 0;
-
-    if (start_lba + size >= 100)
-        size = 100 - start_lba;
-
-    while (size >= 10) {
-        std::string cmd = "SSDManager.exe e ";
-        cmd += std::to_string(start_lba) + " " + std::to_string(10);
-
-        ret = system(cmd.c_str());
-        if (ret != 0) {
-            return SYSTEM_ERROR;
-        }
-
-        size -= 10;
-        start_lba += 10;
-    }
-
-    if (size != 0) {
-        std::string cmd = "SSDManager.exe e ";
-        cmd += std::to_string(start_lba) + " " + std::to_string(size);
-
-        ret = system(cmd.c_str());
-        if (ret != 0) {
-            return SYSTEM_ERROR;
-        }
-    }
-
-    return ret;
-}
-
 int TestShell::erase(const std::string& arg) {
     return SSDAPIErase(arg.c_str());
 }
