@@ -88,7 +88,7 @@ void TestShell::execute(std::string input_str) {
     }
 
     if (cmd == "fullread" || cmd == "exit" || cmd == "help"
-        || cmd == "testapp1" || cmd == "testapp2") {
+        || cmd == "testapp1" || cmd == "testapp2" || cmd =="flush") {
         if (!arg.empty()) {
             throw std::invalid_argument("INVALID COMMAND");
         }
@@ -317,4 +317,15 @@ int TestShell::erase_range(const std::string& arg) {
     int size = end_lba - start_lba;
 
     return doErase(start_lba, size);
+}
+
+int TestShell::flush(void) {
+    std::string cmd = "SSDManager.exe f";
+
+    int ret = system(cmd.c_str());
+    if (ret == 0) {
+        return ret;
+    }
+
+    throw std::invalid_argument("INVALID SYSTEM COMMAND");
 }

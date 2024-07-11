@@ -21,6 +21,7 @@ class TestShell {
     void transStringtoIntInt(const std::string& arg, int& left_arg, int& right_arg);
     int erase(const std::string& arg);
     int erase_range(const std::string& arg);
+    int flush(void);
 
     FileManagerInterface* file_manager;
 
@@ -48,5 +49,6 @@ class TestShell {
       {"testapp2", [this](const std::string&) {this->testApp2(); }},
       {"erase", [this](const std::string& arg) {this->erase(arg); }},
       {"erase_range", [this](const std::string& arg) {this->erase_range(arg); }},
+      {"flush", [this](const std::string&) {this->flush(); }},
     };
 };
