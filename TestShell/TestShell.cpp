@@ -12,7 +12,6 @@
 
 void TestShell::run(void) {
     std::string input_str;
-    LOG("Test Shell Run");
     while (1) {
         std::getline(std::cin, input_str);
         if (input_str.empty()) continue;
@@ -40,7 +39,6 @@ bool TestShell::isValidCommand(const std::string& cmd) {
 }
 
 int TestShell::execute(std::string input_str, bool fromScenarioFile) {
-    LOG("Test Execute");
     size_t pos = input_str.find(' ');
     std::string cmd = (pos == std::string::npos) ?
         input_str : input_str.substr(0, pos);

@@ -12,10 +12,10 @@ using namespace testing;
 
 class FileManagerEraserMock :public FileManagerInterface {
 public:
-    MOCK_METHOD(string, read, (string name), ());
-    MOCK_METHOD(string, read, (string name, int index), ());
-    MOCK_METHOD(bool, write, (string name, int index, string value), ());
-    MOCK_METHOD(bool, write, (string name, string value), ());
+    MOCK_METHOD(string, read, (string name), (override));
+    MOCK_METHOD(string, read, (string name, int index), (override));
+    MOCK_METHOD(bool, write, (string name, int index, string value), (override));
+    MOCK_METHOD(bool, write, (string name, string value), (override));
 };
 
 
