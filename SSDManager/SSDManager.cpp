@@ -8,7 +8,6 @@ SSDManager::SSDManager(int argc, char** argv) {
     }
 
     parsed_input_arg_cnt = argc;
-
     // TODO: Factory Pattern
     file_manager = new FileManager();
     ssd_writer = new SSDWriter(file_manager);
@@ -32,7 +31,7 @@ bool SSDManager::isValidInput() {
         return false;
     }
 
-    if (isValidArgCnt() == false) {
+    if (isValidArgCnt() == false) { 
         return false;
     }
 

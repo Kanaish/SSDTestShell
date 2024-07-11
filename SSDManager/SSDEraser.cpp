@@ -5,6 +5,7 @@
 
 SSDEraser::SSDEraser(FileManagerInterface* fm) :file_mgr{ fm } {}
 bool  SSDEraser::erase(const std::string& nand_file, int index, int size) {
+    LOG("SSD Erase is started");
     try {
         for (int i = 0; i < size; i++) {
             if (file_mgr->write(nand_file, index + i, INIT_VALUE) == false)  return false ;
@@ -15,4 +16,5 @@ bool  SSDEraser::erase(const std::string& nand_file, int index, int size) {
         std::cerr << "Caught standard exception: " << e.what() << std::endl;
         return false;
     }
+    LOG("SSD Erase is completed");
 }

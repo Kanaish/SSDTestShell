@@ -6,20 +6,25 @@
 #include <ctime>
 #include <iostream>
 #include <windows.h>
-#include <cstring>
+#include <string>
 #include <locale>
 #include <codecvt>
 #include "LogManager.h"
 
-LogManager::LogManager() {
+LogManager& LogManager::getLogManagerInstance(void) {
+    static LogManager instance;
+    return instance;
 }
+
+LogManager::LogManager() {
+
+}
+
 void LogManager::logWrite(std::string className, std::string mFunctionName, std::string msg) {
     std::string logTitle(50, ' ');
     std::string buf = className + "::" + mFunctionName;
     logTitle.replace(0, buf.length(), buf);
     std::string logMessage = logGetCurrentTimeForLogging() + logTitle + msg + "\n";
-    
-    logPrint(logMessage);
 
     std::ofstream logFile(LOG_DIR + CURRENT_LOG, std::ios::out | std::ios::app);
     if (logFile.is_open()) {
@@ -53,8 +58,12 @@ void LogManager::logWrite(std::string className, std::string mFunctionName, std:
     }
     logFile.close();
 }
-void LogManager::logPrint(std::string msg) {
-    std::cout << msg;
+void LogManager::logPrint(std::string className, std::string mFunctionName, std::string msg) {
+    std::string logTitle(50, ' ');
+    std::string buf = className + "::" + mFunctionName;
+    logTitle.replace(0, buf.length(), buf);
+    std::string logMessage = logGetCurrentTimeForLogging() + logTitle + msg;
+    std::cout << logMessage << std::endl;
 }
 std::string LogManager::logGetCurrentTimeForLogging(void) {
     std::time_t t = std::time(nullptr);
@@ -75,7 +84,7 @@ std::string LogManager::logGetCurrentTimeForFileName(void) {
 }
 
 int LogManager::getOldLogFileNum(void) {
-        const wchar_t* path = L"..\\log\\*_*_*_*_*_*.log";
+        const wchar_t* path = PATH;
 
         WIN32_FIND_DATA data;
         /* Search all log files in current directory */
@@ -91,9 +100,6 @@ int LogManager::getOldLogFileNum(void) {
         } while (FindNextFile(hFind, &data) != 0);
 
         FindClose(hFind);
-
-        std::cout << "Number of .log files: " << count << '\n';
-
         return count;
 }
 
@@ -104,7 +110,7 @@ std::string LogManager::getOldestLogFileName(void)
     FILETIME oldestTime;
     SYSTEMTIME stUTC, stLocal;
     std::string oldestFile;
-    const wchar_t* path = L"..\\log\\*_*_*_*_*_*.log";
+    const wchar_t* path = PATH;
     /* Search all log files in current directory */
     if ((hFind = FindFirstFile(path, &data)) != INVALID_HANDLE_VALUE) {
         oldestTime = data.ftLastWriteTime;
