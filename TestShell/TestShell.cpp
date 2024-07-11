@@ -36,7 +36,7 @@ bool TestShell::isValidCommand(const std::string& cmd) {
     return commandMap.find(cmd) != commandMap.end();
 }
 
-bool TestShell::isValidIndex(const std::string& str) {
+bool TestShell::isValidLBA(const std::string& str) {
     if (str.empty()) return false;
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -50,7 +50,7 @@ bool TestShell::isValidIndex(const std::string& str) {
     return true;
 }
 
-bool TestShell::isValidIndex2(const std::string& str) {
+bool TestShell::isValidSize(const std::string& str) {
     if (str.empty()) return false;
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -77,7 +77,7 @@ bool TestShell::isValidArgument(const std::string& arg) {
     std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word)) return false;
-    if (!isValidIndex(first_word)) return false;
+    if (!isValidLBA(first_word)) return false;
 
     if (!(iss >> second_word)) return false;
     if (!isValidAddress(second_word)) return false;
@@ -99,7 +99,7 @@ int TestShell::execute(std::string input_str, bool fromScenarioFile) {
     }
 
     if (cmd == "fullread" || cmd == "exit" || cmd == "help"
-        || cmd == "testapp1" || cmd == "testapp2") {
+        || cmd == "testapp1" || cmd == "testapp2" || cmd =="flush") {
         if (!arg.empty()) {
             throw std::invalid_argument("INVALID COMMAND");
         }
@@ -136,7 +136,8 @@ int TestShell::write(const std::string& arg) {
     }
     cmd += arg;
 
-    if (system(cmd.c_str()) != 0) {
+    ret = system(cmd.c_str());
+    if (ret != 0) {
         return SYSTEM_ERROR;
     }
     return 0;
@@ -152,7 +153,8 @@ int TestShell::read(const std::string& arg, bool isPrint) {
     if ((iss >> second_word)) {
         return INVALID_COMMAND;
     }
-    if (!isValidIndex(first_word)) {
+
+    if (!isValidLBA(first_word)) {
         return INVALID_COMMAND;
     }
 
@@ -287,9 +289,9 @@ int TestShell::doErase(int start_lba, int size) {
     int ret = 0;
 
     if (start_lba + size >= 100)
-        size = 99 - start_lba;
+        size = 100 - start_lba;
 
-    while (size > 10) {
+    while (size >= 10) {
         std::string cmd = "SSDManager.exe e ";
         cmd += std::to_string(start_lba) + " " + std::to_string(10);
 
@@ -315,47 +317,48 @@ int TestShell::doErase(int start_lba, int size) {
     return ret;
 }
 
-int TestShell::erase(const std::string& arg) {
+int TestShell::transStringtoIntInt(const std::string& arg,
+    int* left_arg, int* right_arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word))
         return INVALID_ARGUMENT;
-    if (!isValidIndex(first_word))
+    if (!isValidLBA(first_word))
         return INVALID_ARGUMENT;
 
     if (!(iss >> second_word))
         return INVALID_ARGUMENT;
-    if (!isValidIndex2(second_word))
+    if (!isValidSize(second_word))
         return INVALID_ARGUMENT;
 
     if ((iss >> third_word))
         return INVALID_ARGUMENT;
 
-    int start_lba = std::stoi(first_word);
-    int size = std::stoi(second_word);
+    *left_arg = std::stoi(first_word);
+    *right_arg = std::stoi(second_word);
+
+    return 0;
+}
+
+int TestShell::erase(const std::string& arg) {
+    int start_lba, size;
+    int ret = 0;
+    ret  = transStringtoIntInt(arg, &start_lba, &size);
+    if (ret != 0) {
+        return ret;
+    }
 
     return doErase(start_lba, size);
 }
 
 int TestShell::erase_range(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word, third_word;
-
-    if (!(iss >> first_word))
-        return INVALID_ARGUMENT;
-    if (!isValidIndex(first_word))
-        return INVALID_ARGUMENT;
-    if (!(iss >> second_word))
-        return INVALID_ARGUMENT;
-    if (!isValidIndex(second_word))
-        return INVALID_ARGUMENT;
-
-    if ((iss >> third_word))
-        return INVALID_ARGUMENT;
-
-    int start_lba = std::stoi(first_word);
-    int end_lba = std::stoi(second_word);
+    int start_lba, end_lba;
+    int ret = 0;
+    ret = transStringtoIntInt(arg, &start_lba, &end_lba);
+    if (ret != 0) {
+        return ret;
+    }
 
     if (start_lba >= end_lba)
         return INVALID_ARGUMENT;
@@ -394,4 +397,14 @@ void TestShell::runScenarioFile(const std::string& filename) {
     catch (const std::invalid_argument& e) {
         std::cerr << "Error executing command from file: " << filename << " - " << e.what() << std::endl;
     }
+}
+
+int TestShell::flush(void) {
+    std::string cmd = "SSDManager.exe f";
+
+    int ret = system(cmd.c_str());
+    if (ret != 0) {
+        return SYSTEM_ERROR;
+    }
+    return 0;
 }

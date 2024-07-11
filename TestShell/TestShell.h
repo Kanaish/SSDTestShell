@@ -18,8 +18,11 @@ class TestShell {
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
+    int transStringtoIntInt(const std::string& arg,
+        int* left_arg, int* right_arg);
     int erase(const std::string& arg);
     int erase_range(const std::string& arg);
+    int flush(void);
 
     FileManagerInterface* file_manager;
 
@@ -30,8 +33,8 @@ class TestShell {
  private:
 
     bool isValidCommand(const std::string& cmd);
-    bool isValidIndex(const std::string& str);
-    bool isValidIndex2(const std::string& str);
+    bool isValidLBA(const std::string& str);
+    bool isValidSize(const std::string& str);
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
     int doErase(int start_lba, int size);
@@ -49,6 +52,7 @@ class TestShell {
       {"testapp2", [this](const std::string&) { return this->testApp2(); }},
       {"erase", [this](const std::string& arg) { return this->erase(arg); }},
       {"erase_range", [this](const std::string& arg) { return this->erase_range(arg); }},
+      {"flush", [this](const std::string&) { return this->flush(); }},
     };
 
     const std::string TEST_SCENARIO_NAME = "run_list";
