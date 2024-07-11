@@ -42,16 +42,16 @@ bool CommandBuffer::narrowEraseRangeSeveralTimes(BufferData& new_data) {
     return has_change_in_data;
 }
 
-bool CommandBuffer::narrowEraseRange(BufferData& new_data, int new_data_pos) {
+bool CommandBuffer::narrowEraseRange(BufferData& write_data, int write_data_pos) {
     bool has_change_in_data = false;
 
-    for (int i = new_data_pos - 1; i >= 0; i--) {
+    for (int i = write_data_pos - 1; i >= 0; i--) {
         if (data[i].cmd != 'E') {
             continue;
         }
 
         bool invalid_erase_data = false;
-        if (data[i].index == new_data.index) {
+        if (data[i].index == write_data.index) {
             has_change_in_data = true;
             if (data[i].index == 99) {
                 invalid_erase_data = true;
@@ -61,7 +61,7 @@ bool CommandBuffer::narrowEraseRange(BufferData& new_data, int new_data_pos) {
                 data[i].erase_size--;
             }
         }
-        else if (data[i].getLastIndex() == new_data.index) {
+        else if (data[i].getLastIndex() == write_data.index) {
             has_change_in_data = true;
             data[i].erase_size--;
         }
