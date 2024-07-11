@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include "CommandBuffer.h"
+#include "LogManager.h"
 
 CommandBuffer::CommandBuffer() {
     createBufferFile();
