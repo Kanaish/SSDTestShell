@@ -4,11 +4,15 @@
 #include <string>
 #include <vector>
 
-typedef struct BufferData {
+struct BufferData {
     char cmd;
     int index;
     std::string write_value;
     int erase_size;
+
+    int getLastIndex() {
+        return index + erase_size - 1;
+    }
 };
 
 class CommandBuffer {
@@ -34,6 +38,7 @@ private:
 
     // 최적화 알고리즘 함수들 넣기
     void ignoreDupWrite(BufferData& new_data);
+    bool mergeLastErase(BufferData& new_data);
 
     std::vector<BufferData> data;
     const char DELIMETER_STRING = ','; // "W 1 0x12345678,E 10 5,W 2 0x12345678,"

@@ -13,15 +13,23 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
         return false;
     }
 
+    if (data.empty()) {
+        data.push_back(new_data);
+    }
+
     if (new_data.cmd == 'W') {
         ignoreDupWrite(new_data); // Opt1
     }
+    if (new_data.cmd == 'E') {
+        ignoreDupWrite(new_data); // Opt2
+        mergeLastErase(new_data); // Opt3
+    }
+
 
     return true;
 }
 
-void CommandBuffer::ignoreDupWrite(BufferData& new_data)
-{
+void CommandBuffer::ignoreDupWrite(BufferData& new_data) {
     for (int i = data.size() - 1; i >= 0; i--) {
         if (data[i].cmd == 'W' && data[i].index == new_data.index) {
             data.erase(data.begin() + i);
@@ -29,6 +37,35 @@ void CommandBuffer::ignoreDupWrite(BufferData& new_data)
         }
     }
     data.push_back(new_data);
+}
+
+bool CommandBuffer::mergeLastErase(BufferData& new_data) {
+    BufferData& tail_data = data[data.size() - 1];
+    if (tail_data.cmd != 'E') {
+        data.push_back(new_data);
+        return;
+    }
+
+    BufferData& left_data = new_data.index <= tail_data.index ? new_data : tail_data;
+    BufferData& right_data = new_data.index <= tail_data.index ? tail_data : new_data;
+    const int MAX_ERASE_SIZE = 10;
+
+    if (right_data.index <= left_data.getLastIndex()) {
+        int collapsed_erase_size = right_data.getLastIndex() - left_data.index + 1;
+
+        if (collapsed_erase_size > MAX_ERASE_SIZE) {
+            data.push_back(BufferData{'E', left_data.index, "", MAX_ERASE_SIZE });
+            data.push_back(BufferData{'E', left_data.index + MAX_ERASE_SIZE, "", collapsed_erase_size - MAX_ERASE_SIZE });
+            return;
+        }
+        else {
+            data.push_back(BufferData{ 'E', left_data.index, "", collapsed_erase_size });
+            return;
+        }
+    }
+
+    data.push_back(new_data);
+    return;
 }
 
 bool CommandBuffer::isFullBuffer() {
