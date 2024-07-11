@@ -105,14 +105,13 @@ int TestShell::fullRead() {
 
 int TestShell::testApp1(void) {
     std::string write_value = "0xAAAABBBB";
-    int ret = 0;
-    ret = fullWrite(write_value);
+    int ret = SSDAPIFullWrite(write_value.c_str());
     if (ret != 0) {
         return ret;
     }
 
     for (int lba = 0; lba < 100; lba++) {
-        ret = read(std::to_string(lba), false);
+        ret = SSDAPIRead(std::to_string(lba).c_str(), false);
         if (ret != 0) {
             return ret;
         }
@@ -132,7 +131,7 @@ int TestShell::testApp2(void) {
     for (int i = 0; i < 30; ++i) {
         for (int lba = 0; lba <= 5; ++lba) {
             std::string arg = std::to_string(lba) + " " + write_value;
-            ret = write(arg);
+            ret = SSDAPIWrite(arg.c_str());
             if (ret != 0) {
                 return ret;
             }
@@ -142,14 +141,14 @@ int TestShell::testApp2(void) {
     write_value = "0x12345678";
     for (int lba = 0; lba <= 5; ++lba) {
         std::string arg = std::to_string(lba) + " " + write_value;
-        ret = write(arg);
+        ret = SSDAPIWrite(arg.c_str());
         if (ret != 0) {
             return ret;
         }
     }
 
     for (int lba = 0; lba <= 5; ++lba) {
-        ret = read(std::to_string(lba), false);
+        SSDAPIRead(std::to_string(lba).c_str(), false);
         if (ret != 0) {
             return ret;
         }
@@ -159,6 +158,7 @@ int TestShell::testApp2(void) {
             break;
         }
     }
+
     return ret;
 }
 
