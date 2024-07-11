@@ -26,7 +26,7 @@ void TestShell::run(void) {
                 this->execute(input_str);
             }
             catch (std::invalid_argument& e) {
-                std::cout << e.what() << std::endl;
+                std::cerr << e.what() << std::endl;
             }
         }
     }
