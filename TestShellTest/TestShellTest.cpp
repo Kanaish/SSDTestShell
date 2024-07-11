@@ -4,17 +4,18 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "../TestShell/TestShell.cpp"
-#include "../TestShell/FileManager.cpp"
+#include "../SSDManager/FileManager.cpp"
+#include "../SSDManager/LogManager.cpp"
 
 using namespace std;
 using namespace testing;
 
 class MockFileManager : public FileManagerInterface {
  public:
-    MOCK_METHOD(string, read, (string name), (override));
-    MOCK_METHOD(string, read, (string name, int index), (override));
-    MOCK_METHOD(bool, write, (string name, int index, string value), (override));
-    MOCK_METHOD(bool, write, (string name, string value), (override));
+    MOCK_METHOD(string, read, (string name), ());
+    MOCK_METHOD(string, read, (string name, int index), ());
+    MOCK_METHOD(bool, write, (string name, int index, string value), ());
+    MOCK_METHOD(bool, write, (string name, string value), ());
 };
 
 class TestShellWithMockFileManager : public TestShell {
