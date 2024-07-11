@@ -7,7 +7,6 @@
 
 #include "framework.h"
 #include "SSDAPILibrary.h"
-#include "LogManager.h"
 
 static const int LBA_START_INDEX = 0;
 static const int LBA_LAST_INDEX = 99;
