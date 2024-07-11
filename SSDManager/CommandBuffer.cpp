@@ -88,6 +88,11 @@ bool CommandBuffer::ignoreDupWrite(BufferData& new_data, int left, int right) {
 }
 
 bool CommandBuffer::mergeLastErase(BufferData& new_data) {
+    if (data.empty()) {
+        data.push_back(new_data);
+        return false;
+    }
+
     BufferData& tail_data = data[data.size() - 1];
     if (tail_data.cmd != 'E') {
         data.push_back(new_data);
