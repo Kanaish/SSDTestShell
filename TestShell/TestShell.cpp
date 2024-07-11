@@ -6,6 +6,7 @@
 #include <thread>
 #include <chrono>
 #include "TestShell.h"
+#include "SSDAPILibrary.h"
 
 void TestShell::run(void) {
     std::string input_str;
@@ -34,57 +35,6 @@ void TestShell::run(void) {
 
 bool TestShell::isValidCommand(const std::string& cmd) {
     return commandMap.find(cmd) != commandMap.end();
-}
-
-bool TestShell::isValidLBA(const std::string& str) {
-    if (str.empty()) return false;
-    for (char c : str) {
-        if (!std::isdigit(c)) return false;
-    }
-
-    int index = std::stoi(str);
-    if (index < SSD_START_INDEX || index > SSD_LAST_INDEX) {
-        return false;
-    }
-
-    return true;
-}
-
-bool TestShell::isValidSize(const std::string& str) {
-    if (str.empty()) return false;
-    for (char c : str) {
-        if (!std::isdigit(c)) return false;
-    }
-
-    int index = std::stoi(str);
-    if (index < SSD_START_INDEX || index > ERASE_MAX_SIZE) {
-        return false;
-    }
-
-    return true;
-}
-
-bool TestShell::isValidAddress(const std::string& str) {
-    if (str.size() != 10 || str.substr(0, 2) != "0x") return false;
-    for (size_t i = 2; i < str.size(); ++i) {
-        if (!std::isxdigit(str[i])) return false;
-    }
-    return true;
-}
-
-bool TestShell::isValidArgument(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word, third_word;
-
-    if (!(iss >> first_word)) return false;
-    if (!isValidLBA(first_word)) return false;
-
-    if (!(iss >> second_word)) return false;
-    if (!isValidAddress(second_word)) return false;
-
-    if ((iss >> third_word)) return false;
-
-    return true;
 }
 
 int TestShell::execute(std::string input_str, bool fromScenarioFile) {
@@ -128,51 +78,11 @@ int TestShell::execute(std::string input_str, bool fromScenarioFile) {
 }
 
 int TestShell::write(const std::string& arg) {
-    std::string cmd = "SSDManager.exe w ";
-    int ret;
-
-    if (!isValidArgument(arg)) {
-        return INVALID_COMMAND;
-    }
-    cmd += arg;
-
-    ret = system(cmd.c_str());
-    if (ret != 0) {
-        return SYSTEM_ERROR;
-    }
-    return 0;
+    return SSDAPIWrite(arg.c_str());
 }
 
 int TestShell::read(const std::string& arg, bool isPrint) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word;
-
-    if (!(iss >> first_word)) {
-        return INVALID_COMMAND;
-    }
-    if ((iss >> second_word)) {
-        return INVALID_COMMAND;
-    }
-
-    if (!isValidLBA(first_word)) {
-        return INVALID_COMMAND;
-    }
-
-    std::string cmd = "SSDManager.exe r ";
-    int ret;
-
-    cmd += arg;
-
-    ret = system(cmd.c_str());
-    if (ret != 0) {
-        return SYSTEM_ERROR;
-    }
-
-    if (isPrint) {
-        std::cout << file_manager->read("../../resources/result.txt") << std::endl;
-    }
-
-    return 0;
+    return SSDAPIRead(arg.c_str(), isPrint);
 }
 
 int TestShell::exit() {
@@ -186,44 +96,11 @@ int TestShell::help() {
 }
 
 int TestShell::fullWrite(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word;
-
-    if (!(iss >> first_word)) {
-        return INVALID_COMMAND;
-    }
-    if ((iss >> second_word)) {
-        return INVALID_COMMAND;
-    }
-    if (!isValidAddress(first_word)) {
-        return INVALID_COMMAND;
-    }
-
-    int ret = 0;
-    for (int i = 0; i < 100; ++i) {
-        std::string cmd;
-        cmd = std::to_string(i) + " " + first_word;
-        ret = this->write(cmd);
-        if (ret != 0) {
-            return ret;
-        }
-    }
-    return ret;
+    return SSDAPIFullWrite(arg.c_str());
 }
 
 int TestShell::fullRead() {
-    int ret = 0;
-    for (int i = 0; i < 100; ++i) {
-        std::string cmd;
-
-        cmd = std::to_string(i) + " ";
-        ret = this->read(cmd);
-        if (ret != 0) {
-            return ret;
-        }
-    }
-
-    return ret;
+    return SSDAPIFullRead();
 }
 
 int TestShell::testApp1(void) {
@@ -317,55 +194,12 @@ int TestShell::doErase(int start_lba, int size) {
     return ret;
 }
 
-int TestShell::transStringtoIntInt(const std::string& arg,
-    int* left_arg, int* right_arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word, third_word;
-
-    if (!(iss >> first_word))
-        return INVALID_ARGUMENT;
-    if (!isValidLBA(first_word))
-        return INVALID_ARGUMENT;
-
-    if (!(iss >> second_word))
-        return INVALID_ARGUMENT;
-    if (!isValidSize(second_word))
-        return INVALID_ARGUMENT;
-
-    if ((iss >> third_word))
-        return INVALID_ARGUMENT;
-
-    *left_arg = std::stoi(first_word);
-    *right_arg = std::stoi(second_word);
-
-    return 0;
-}
-
 int TestShell::erase(const std::string& arg) {
-    int start_lba, size;
-    int ret = 0;
-    ret  = transStringtoIntInt(arg, &start_lba, &size);
-    if (ret != 0) {
-        return ret;
-    }
-
-    return doErase(start_lba, size);
+    return SSDAPIErase(arg.c_str());
 }
 
 int TestShell::erase_range(const std::string& arg) {
-    int start_lba, end_lba;
-    int ret = 0;
-    ret = transStringtoIntInt(arg, &start_lba, &end_lba);
-    if (ret != 0) {
-        return ret;
-    }
-
-    if (start_lba >= end_lba)
-        return INVALID_ARGUMENT;
-
-    int size = end_lba - start_lba;
-
-    return doErase(start_lba, size);
+    return SSDAPIEraseRange(arg.c_str());
 }
 
 void TestShell::runScenarioFile(const std::string& filename) {
@@ -400,11 +234,7 @@ void TestShell::runScenarioFile(const std::string& filename) {
 }
 
 int TestShell::flush(void) {
-    std::string cmd = "SSDManager.exe f";
+    int ret = SSDAPIFlush();
 
-    int ret = system(cmd.c_str());
-    if (ret != 0) {
-        return SYSTEM_ERROR;
-    }
-    return 0;
+    return ret;
 }

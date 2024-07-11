@@ -18,8 +18,6 @@ class TestShell {
     virtual int fullRead();
     virtual int testApp1(void);
     virtual int testApp2(void);
-    int transStringtoIntInt(const std::string& arg,
-        int* left_arg, int* right_arg);
     int erase(const std::string& arg);
     int erase_range(const std::string& arg);
     int flush(void);
@@ -39,10 +37,6 @@ class TestShell {
  private:
 
     bool isValidCommand(const std::string& cmd);
-    bool isValidLBA(const std::string& str);
-    bool isValidSize(const std::string& str);
-    bool isValidAddress(const std::string& str);
-    bool isValidArgument(const std::string& arg);
     int doErase(int start_lba, int size);
     void runScenarioFile(const std::string& filename);
 
