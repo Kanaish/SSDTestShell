@@ -26,6 +26,12 @@ class TestShell {
 
     FileManagerInterface* file_manager;
 
+    static const int SYSTEM_ERROR = -1;
+    static const int INVALID_ARGUMENT = -2;
+    static const int INVALID_COMMAND = -3;
+    static const int TEST_FAIL = -4;
+
+
  protected:
     virtual int exit();
     virtual int help();
@@ -56,8 +62,9 @@ class TestShell {
     };
 
     const std::string TEST_SCENARIO_NAME = "run_list";
-    static const int SYSTEM_ERROR = -1;
-    static const int INVALID_ARGUMENT = -2;
-    static const int INVALID_COMMAND = -3;
-    static const int TEST_FAIL = -4;
+
+    static const int SSD_START_INDEX = 0;
+    static const int SSD_LAST_INDEX = 99;
+    static const int ERASE_MAX_SIZE = 100;
+    static const int ERASE_MAX_SIZE_FOR_SSD = 10;
 };
