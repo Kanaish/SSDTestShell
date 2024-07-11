@@ -215,17 +215,12 @@ int SSDAPIFullRead(void) {
 }
 
 int SSDAPIErase(const char* arg) {
-    int start_lba, end_lba;
+    int start_lba, size;
     int ret = 0;
-    ret = transStringtoIntInt(arg, &start_lba, &end_lba);
+    ret = transStringtoIntInt(arg, &start_lba, &size);
     if (ret != 0) {
         return ret;
     }
-
-    if (start_lba >= end_lba)
-        return INVALID_ARGUMENT;
-
-    int size = end_lba - start_lba;
 
     return doErase(start_lba, size);
 }
