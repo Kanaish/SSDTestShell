@@ -19,14 +19,43 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
 
     if (new_data.cmd == 'W') {
         ignoreDupWrite(new_data); // Opt1
-        data.push_back(new_data);
+        narrowRangeOfConsecutiveLastErases(new_data); // Opt 4
     }
     if (new_data.cmd == 'E') {
         ignoreDupWrite(new_data); // Opt2
         mergeLastErase(new_data); // Opt3
     }
 
-    return true;
+    return writeBufferFile();
+}
+
+void CommandBuffer::narrowRangeOfConsecutiveLastErases(BufferData& new_data) {
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i].cmd != 'E') {
+            break;
+        }
+
+        bool invalid_erase_data = false;
+        if (data[i].index == new_data.index) {
+            if (data[i].index == 99) {
+                invalid_erase_data = true;
+            }
+            else {
+                data[i].index++;
+                data[i].erase_size--;
+            }
+        }
+        else if (data[i].getLastIndex() == new_data.index) {
+            data[i].erase_size--;
+        }
+        invalid_erase_data |= data[i].erase_size <= 0 ;
+
+        if (invalid_erase_data == true) {
+            data.erase(data.begin() + i);
+        }
+    }
+
+    data.push_back(new_data);
 }
 
 bool CommandBuffer::ignoreDupWrite(BufferData& new_data) {
