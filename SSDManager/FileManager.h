@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include "FileManagerInterface.h"
-
+#include "LogManager.h"
 class FileManager : public FileManagerInterface {
 public:
     FileManager();

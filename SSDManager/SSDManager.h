@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "FileManager.h"
+#include "LogManager.h"
 #include "SSDWriter.h"
 #include "SSDReader.h"
 #include "SSDEraser.h"
@@ -39,4 +40,5 @@ private:
     bool isValidArgCnt();
     bool isValidWriteInput();
     bool isValidEraseInput();
+    const std::string CLASS_NAME = "SDDManager";
 };
