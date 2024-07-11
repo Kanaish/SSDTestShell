@@ -110,7 +110,7 @@ int TestShell::write(const std::string& arg) {
 
     ret = system(cmd.c_str());
     if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
+        throw std::invalid_argument("INVALID SYSTEM COMMAND");
     }
 
     return ret;
@@ -137,7 +137,7 @@ int TestShell::read(const std::string& arg) {
 
     ret = system(cmd.c_str());
     if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
+        throw std::invalid_argument("INVALID SYSTEM COMMAND");
         return ret;
     }
     std::cout << file_manager->read("../../resources/result.txt") << std::endl;
