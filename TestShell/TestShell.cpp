@@ -8,10 +8,10 @@
 
 #include "TestShell.h"
 #include "SSDAPILibrary.h"
+#include "LogManager.h"
 
 void TestShell::run(void) {
     std::string input_str;
-
     while (1) {
         std::getline(std::cin, input_str);
         if (input_str.empty()) continue;

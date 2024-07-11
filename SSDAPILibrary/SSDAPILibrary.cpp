@@ -1,6 +1,11 @@
 /* Copyright 2024 Code Love you */
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <stdexcept>
+#include <string>
 
-#include "pch.h"
+#include "framework.h"
 #include "SSDAPILibrary.h"
 #include "FileManager.h"
 

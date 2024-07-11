@@ -56,7 +56,15 @@ class TestShell {
     };
 
     const std::string TEST_SCENARIO_NAME = "run_list";
+    const std::string CLASS_NAME = "TEST_SHELL";
+
+    static const int SSD_START_INDEX = 0;
+    static const int SSD_LAST_INDEX = 99;
+    static const int ERASE_MAX_SIZE = 100;
+    static const int ERASE_MAX_SIZE_FOR_SSD = 10;
+
     const std::string HELP_FILE_PATH = "../../resources/help.txt";
     const std::string RESULT_FILE_PATH = "../../resources/result.txt";
     const std::string RESOURCE_PATH = "../../resources/";
+
 };

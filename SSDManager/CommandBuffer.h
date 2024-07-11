@@ -52,4 +52,5 @@ class CommandBuffer {
     const char DELIMETER_STRING = ',';
     const char SPACE_STRING = ' ';
     const int BUFFER_MAX = 10;
+    const std::string CLASS_NAME = "CommandBuffer";
 };
