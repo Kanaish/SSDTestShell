@@ -63,8 +63,8 @@ class TestShell {
     static const int ERASE_MAX_SIZE = 100;
     static const int ERASE_MAX_SIZE_FOR_SSD = 10;
 
-    const std::string HELP_FILE_PATH = "../../resources/help.txt";
-    const std::string RESULT_FILE_PATH = "../../resources/result.txt";
-    const std::string RESOURCE_PATH = "../../resources/";
+    const std::string HELP_FILE_PATH = "..\\..\\resources/help.txt";
+    const std::string RESULT_FILE_PATH = "..\\..\\resources/result.txt";
+    const std::string RESOURCE_PATH = "..\\..\\resources\\";
 
 };
