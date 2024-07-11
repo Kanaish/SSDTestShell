@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <thread>
+#include <chrono>
 #include "TestShell.h"
 
 void TestShell::run(void) {
@@ -11,12 +13,21 @@ void TestShell::run(void) {
     while (1) {
         std::getline(std::cin, input_str);
         if (input_str.empty()) continue;
-
-        try {
-            this->execute(input_str);
+        if (input_str.substr(0, 8) == TEST_SCENARIO_NAME) {
+            try {
+                runScenarioFile(input_str);
+            }
+            catch (const std::exception& e) {
+                std::cerr << "Error running scenario file: " << e.what() << std::endl;
+            }
         }
-        catch (std::invalid_argument& e) {
-            std::cout << e.what() << std::endl;
+        else {
+            try {
+                this->execute(input_str);
+            }
+            catch (std::invalid_argument& e) {
+                std::cerr << e.what() << std::endl;
+            }
         }
     }
 }
@@ -76,7 +87,7 @@ bool TestShell::isValidArgument(const std::string& arg) {
     return true;
 }
 
-void TestShell::execute(std::string input_str) {
+int TestShell::execute(std::string input_str, bool fromScenarioFile) {
     size_t pos = input_str.find(' ');
     std::string cmd = (pos == std::string::npos) ?
         input_str : input_str.substr(0, pos);
@@ -94,7 +105,26 @@ void TestShell::execute(std::string input_str) {
         }
     }
 
-    commandMap.at(cmd)(arg);
+    int ret = commandMap.at(cmd)(arg);
+    
+    if (ret != 0) {
+        if (fromScenarioFile) {
+            return -1;
+        }
+        switch (ret) {
+        case (SYSTEM_ERROR):
+            throw std::invalid_argument("SYSTEM_ERROR");
+        case (INVALID_ARGUMENT):
+            throw std::invalid_argument("INVALID ARGUMENT");
+        case (INVALID_COMMAND) :
+            throw std::invalid_argument("INVALID COMMAND");
+        case (TEST_FAIL) : 
+            throw std::invalid_argument("TEST FAIL");
+        default:
+            throw std::invalid_argument("error");
+        }
+    }
+    return ret;
 }
 
 int TestShell::write(const std::string& arg) {
@@ -102,32 +132,30 @@ int TestShell::write(const std::string& arg) {
     int ret;
 
     if (!isValidArgument(arg)) {
-        throw std::invalid_argument("INVALID COMMAND");
-        return -1;
+        return INVALID_COMMAND;
     }
-
     cmd += arg;
 
     ret = system(cmd.c_str());
     if (ret != 0) {
-        throw std::invalid_argument("INVALID SYSTEM COMMAND");
+        return SYSTEM_ERROR;
     }
-
-    return ret;
+    return 0;
 }
 
-int TestShell::read(const std::string& arg) {
+int TestShell::read(const std::string& arg, bool isPrint) {
     std::istringstream iss(arg);
     std::string first_word, second_word;
 
     if (!(iss >> first_word)) {
-        throw std::invalid_argument("INVALID COMMAND");
+        return INVALID_COMMAND;
     }
     if ((iss >> second_word)) {
-        throw std::invalid_argument("INVALID COMMAND");
+        return INVALID_COMMAND;
     }
+
     if (!isValidLBA(first_word)) {
-        throw std::invalid_argument("INVALID COMMAND");
+        return INVALID_COMMAND;
     }
 
     std::string cmd = "SSDManager.exe r ";
@@ -137,20 +165,24 @@ int TestShell::read(const std::string& arg) {
 
     ret = system(cmd.c_str());
     if (ret != 0) {
-        throw std::invalid_argument("INVALID SYSTEM COMMAND");
-        return ret;
+        return SYSTEM_ERROR;
     }
-    std::cout << file_manager->read("../../resources/result.txt") << std::endl;
+
+    if (isPrint) {
+        std::cout << file_manager->read("../../resources/result.txt") << std::endl;
+    }
 
     return 0;
 }
 
-void TestShell::exit() {
+int TestShell::exit() {
     std::exit(0);
+    return 0;
 }
 
-void TestShell::help() {
+int TestShell::help() {
     std::cout << file_manager->read("../../resources/help.txt") << std::endl;
+    return 0;
 }
 
 int TestShell::fullWrite(const std::string& arg) {
@@ -158,66 +190,74 @@ int TestShell::fullWrite(const std::string& arg) {
     std::string first_word, second_word;
 
     if (!(iss >> first_word)) {
-        throw std::invalid_argument("INVALID COMMAND");
+        return INVALID_COMMAND;
     }
     if ((iss >> second_word)) {
-        throw std::invalid_argument("INVALID COMMAND");
+        return INVALID_COMMAND;
     }
     if (!isValidAddress(first_word)) {
-        throw std::invalid_argument("INVALID COMMAND");
+        return INVALID_COMMAND;
     }
 
+    int ret = 0;
     for (int i = 0; i < 100; ++i) {
         std::string cmd;
         cmd = std::to_string(i) + " " + first_word;
-        this->write(cmd);
+        ret = this->write(cmd);
+        if (ret != 0) {
+            return ret;
+        }
     }
-
-    return 0;
+    return ret;
 }
 
 int TestShell::fullRead() {
+    int ret = 0;
     for (int i = 0; i < 100; ++i) {
         std::string cmd;
 
         cmd = std::to_string(i) + " ";
-
-        this->read(cmd);
+        ret = this->read(cmd);
+        if (ret != 0) {
+            return ret;
+        }
     }
 
-    return 0;
+    return ret;
 }
 
 int TestShell::testApp1(void) {
     std::string write_value = "0xAAAABBBB";
-
-    if (fullWrite(write_value) == -1) {
-        return -1;
+    int ret = 0;
+    ret = fullWrite(write_value);
+    if (ret != 0) {
+        return ret;
     }
-    bool test_passed = true;
 
     for (int lba = 0; lba < 100; lba++) {
-        if (read(std::to_string(lba)) == -1) {
-            return -1;
+        ret = read(std::to_string(lba), false);
+        if (ret != 0) {
+            return ret;
         }
 
-        std::string result = file_manager->read("../../resources/result.txt");
-        if (result != write_value) {
-            test_passed = false;
+        std::string line = file_manager->read("../../resources/result.txt");
+        if (line != write_value) {
+            ret = TEST_FAIL;
             break;
         }
     }
-    return 0;
+    return ret;
 }
 
 int TestShell::testApp2(void) {
     std::string write_value = "0xAAAABBBB";
-
+    int ret = 0;
     for (int i = 0; i < 30; ++i) {
         for (int lba = 0; lba <= 5; ++lba) {
             std::string arg = std::to_string(lba) + " " + write_value;
-            if (write(arg) != 0) {
-                return -1;
+            ret = write(arg);
+            if (ret != 0) {
+                return ret;
             }
         }
     }
@@ -225,23 +265,24 @@ int TestShell::testApp2(void) {
     write_value = "0x12345678";
     for (int lba = 0; lba <= 5; ++lba) {
         std::string arg = std::to_string(lba) + " " + write_value;
-        if (write(arg) != 0) {
-            return -1;
+        ret = write(arg);
+        if (ret != 0) {
+            return ret;
         }
     }
 
     for (int lba = 0; lba <= 5; ++lba) {
-        if (read(std::to_string(lba)) == -1) {
-            return -1;
+        ret = read(std::to_string(lba), false);
+        if (ret != 0) {
+            return ret;
         }
-        bool test_passed = true;
-        std::string result = file_manager->read("../../resources/result.txt");
-        if (result != write_value) {
-            test_passed = false;
+        std::string line = file_manager->read("../../resources/result.txt");
+        if (line != write_value) {
+            ret = TEST_FAIL;
             break;
         }
     }
-    return 0;
+    return ret;
 }
 
 int TestShell::doErase(int start_lba, int size) {
@@ -256,7 +297,7 @@ int TestShell::doErase(int start_lba, int size) {
 
         ret = system(cmd.c_str());
         if (ret != 0) {
-            throw std::invalid_argument("INVALID SYSTEM COMMAND");
+            return SYSTEM_ERROR;
         }
 
         size -= 10;
@@ -269,63 +310,101 @@ int TestShell::doErase(int start_lba, int size) {
 
         ret = system(cmd.c_str());
         if (ret != 0) {
-            throw std::invalid_argument("INVALID SYSTEM COMMAND");
+            return SYSTEM_ERROR;
         }
     }
 
     return ret;
 }
 
-void TestShell::transStringtoIntInt(const std::string& arg,
+int TestShell::transStringtoIntInt(const std::string& arg,
     int* left_arg, int* right_arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
+        return INVALID_ARGUMENT;
     if (!isValidLBA(first_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
+        return INVALID_ARGUMENT;
 
     if (!(iss >> second_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
+        return INVALID_ARGUMENT;
     if (!isValidSize(second_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
+        return INVALID_ARGUMENT;
 
     if ((iss >> third_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
+        return INVALID_ARGUMENT;
 
     *left_arg = std::stoi(first_word);
     *right_arg = std::stoi(second_word);
+
+    return 0;
 }
 
 int TestShell::erase(const std::string& arg) {
     int start_lba, size;
-
-    transStringtoIntInt(arg, &start_lba, &size);
+    int ret = 0;
+    ret  = transStringtoIntInt(arg, &start_lba, &size);
+    if (ret != 0) {
+        return ret;
+    }
 
     return doErase(start_lba, size);
 }
 
 int TestShell::erase_range(const std::string& arg) {
     int start_lba, end_lba;
-
-    transStringtoIntInt(arg, &start_lba, &end_lba);
+    int ret = 0;
+    ret = transStringtoIntInt(arg, &start_lba, &end_lba);
+    if (ret != 0) {
+        return ret;
+    }
 
     if (start_lba >= end_lba)
-        throw std::invalid_argument("INVALID ARGUMENT");
+        return INVALID_ARGUMENT;
 
     int size = end_lba - start_lba;
 
     return doErase(start_lba, size);
 }
 
+void TestShell::runScenarioFile(const std::string& filename) {
+    try {
+        std::string fullPath = "../../resources/" + filename;
+        std::string file_content = file_manager->read(fullPath);
+        if (file_content.empty()) {
+            throw std::runtime_error("File is not opened or is empty");
+        }
+
+        std::istringstream infile(file_content);
+        std::string line;
+        while (std::getline(infile, line)) {
+            if (line.empty()) continue;
+
+            std::cout << line << " --- Run...";
+            int result = execute(line, true);
+            if (result != 0) {
+                std::cout << "FAIL!" << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::exit(1);
+            }
+            else std::cout << "Pass" << std::endl;
+        }
+    }
+    catch (const std::runtime_error& e) {
+        std::cerr << "Error reading file: " << filename << " - " << e.what() << std::endl;
+    }
+    catch (const std::invalid_argument& e) {
+        std::cerr << "Error executing command from file: " << filename << " - " << e.what() << std::endl;
+    }
+}
+
 int TestShell::flush(void) {
     std::string cmd = "SSDManager.exe f";
 
     int ret = system(cmd.c_str());
-    if (ret == 0) {
-        return ret;
+    if (ret != 0) {
+        return SYSTEM_ERROR;
     }
-
-    throw std::invalid_argument("INVALID SYSTEM COMMAND");
+    return 0;
 }
