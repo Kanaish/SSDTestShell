@@ -5,12 +5,12 @@
 #include <string>
 #include <windows.h>
 
-#define LOG_STORE(msg) do {lm->logWrite(CLASS_NAME, __func__, msg)} while(0)
-#define LOG_PRINT(msg) do {lm->logPrint(CLASS_NAME, __func__, msg)} while(0)
 
-#define LOG(msg) do {LOG_PRINT(msg); LOG_STORE(msg);}while(0)
-class LogManager
-{
+#define LOG_STORE(msg) do {LogManager::getLogManagerInstance().logPrint(CLASS_NAME, __func__, msg);} while(0)
+#define LOG_PRINT(msg) do {LogManager::getLogManagerInstance().logWrite(CLASS_NAME, __func__, msg);} while(0)
+#define LOG(msg) do {LOG_PRINT(msg); LOG_STORE(msg);} while(0)
+
+class LogManager {
 public:
     static LogManager& getLogManagerInstance(void);
     void logWrite(std::string className, std::string mFunctionName, std::string msg);
@@ -26,7 +26,6 @@ private:
     const std::string CURRENT_LOG = "lastest.log";
     const wchar_t* PATH = L"../../\\log\\*_*_*_*_*_*.log";;
     const int LIMIT_LOG_SIZE = 10*1000;
-
     LogManager& operator=(const LogManager& other) = delete;
     LogManager(const LogManager& other) = delete;
 };

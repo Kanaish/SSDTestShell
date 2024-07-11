@@ -4,6 +4,7 @@
 #include "gmock/gmock.h"
 #include "../SSDManager/FileManager.cpp"
 #include "../SSDManager/FileManagerInterface.h"
+#include "../SSDManager/LogManager.cpp"
 
 #define TEST_RESULT          "test_result.txt"
 #define TEST_NAND            "test_nand.txt"

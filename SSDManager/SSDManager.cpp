@@ -2,23 +2,17 @@
 
 #include "SSDManager.h"
 
-SSDManager::SSDManager(int argc, char** argv, LogManager * plm) {
+SSDManager::SSDManager(int argc, char** argv) {
     for (int i = 0; i < argc; i++) {
         parsed_input.push_back(argv[i]);
     }
 
     parsed_input_arg_cnt = argc;
-    getLogManagerInstance(plm);
     // TODO: Factory Pattern
     file_manager = new FileManager();
     ssd_writer = new SSDWriter(file_manager);
     ssd_reader = new SSDReader(file_manager);
     ssd_eraser = new SSDEraser(file_manager);
-
-    file_manager->getLogManagerInstance(plm);
-    ssd_writer->getLogManagerInstance(plm);
-    ssd_reader->getLogManagerInstance(plm);
-    ssd_eraser->getLogManagerInstance(plm);
 }
 
 SSDManager::~SSDManager() {
@@ -37,7 +31,7 @@ bool SSDManager::isValidInput() {
         return false;
     }
 
-    if (isValidArgCnt() == false) {
+    if (isValidArgCnt() == false) { 
         return false;
     }
 
@@ -53,7 +47,6 @@ bool SSDManager::isValidInput() {
 }
 
 bool SSDManager::executeCommand() {
-    lm->logWrite(CLASS_NAME, __func__, "Executing the current command");
     if (isValidInput() == false) {
         return false;
     }
@@ -178,9 +171,4 @@ bool SSDManager::isValidEraseInput() {
     }
 
     return true;
-}
-
-void SSDManager::getLogManagerInstance(LogManager* plm)
-{
-    this->lm = plm;
 }

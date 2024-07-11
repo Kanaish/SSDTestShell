@@ -16,8 +16,3 @@ bool  SSDEraser::erase(const std::string& nand_file, int index, int size) {
         return false;
     }
 }
-
-void SSDEraser::getLogManagerInstance(LogManager* plm)
-{
-    this->lm = plm;
-}

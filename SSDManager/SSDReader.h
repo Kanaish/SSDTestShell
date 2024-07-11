@@ -10,12 +10,10 @@ class SSDReader {
     }
     bool read(const std::string& nand_file,
         const std::string& result_file, int index);
-    void getLogManagerInstance(LogManager* plm);
  private:
     bool writeResultValue(const std::string& result_file, std::string& result);
     std::string readSSDValue(const std::string& nand_file, int index);
 
     FileManagerInterface* fm;
     const std::string CLASS_NAME = "SDDReader";
-    LogManager* lm;
 };

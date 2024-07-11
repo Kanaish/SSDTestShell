@@ -12,6 +12,7 @@
 class SSDManager {
 public:
     SSDManager(int argc, char** argv, LogManager* plm);
+    SSDManager(int argc, char** argv);
     ~SSDManager();
 
     bool isValidInput();
@@ -21,7 +22,6 @@ public:
     const std::string NAND_FILE = "../../resources/nand.txt";
     const std::string RESULT_FILE = "../../resources/result.txt";
 
-    void getLogManagerInstance(LogManager* plm);
 private:
     std::vector<std::string> parsed_input;
     int parsed_input_arg_cnt;
@@ -42,5 +42,4 @@ private:
     bool isValidWriteInput();
     bool isValidEraseInput();
     const std::string CLASS_NAME = "SDDManager";
-    LogManager* lm;
 };

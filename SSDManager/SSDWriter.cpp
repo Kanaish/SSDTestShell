@@ -5,6 +5,7 @@
 
 SSDWriter::SSDWriter(FileManagerInterface* fm) :file_mgr{ fm } {}
 bool  SSDWriter::write(std::string nand_file, int index, std::string value) {
+    LOG("SSD Write is started");
     try {
         return file_mgr->write(nand_file, index, value);
     }
@@ -12,8 +13,5 @@ bool  SSDWriter::write(std::string nand_file, int index, std::string value) {
         std::cerr << "Caught standard exception: " << e.what() << std::endl;
         return false;
     }
-}
-void SSDWriter::getLogManagerInstance(LogManager* plm)
-{
-    this->lm = plm;
+    LOG("SSD Write is completed");
 }
