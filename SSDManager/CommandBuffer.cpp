@@ -46,7 +46,7 @@ bool CommandBuffer::mergeLastErase(BufferData& new_data) {
     }
 
     BufferData left_data = new_data < tail_data ? new_data : tail_data;
-    BufferData right_data = tail_data < new_data ? tail_data : new_data;
+    BufferData right_data = new_data < tail_data ? tail_data : new_data;
 
     if (right_data.index <= left_data.getLastIndex()) {
         const int MAX_ERASE_SIZE = 10;
