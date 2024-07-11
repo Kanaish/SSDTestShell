@@ -19,7 +19,7 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
 
     if (new_data.cmd == 'W') {
         ignoreDupWrite(new_data); // Opt1
-        narrowRangeOfConsecutiveLastErases(new_data); // Opt 4
+        narrowEraseRangeSeveralTimes(new_data); // Opt 4
     }
     if (new_data.cmd == 'E') {
         ignoreDupWrite(new_data); // Opt2
@@ -29,14 +29,30 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
     return writeBufferFile();
 }
 
-void CommandBuffer::narrowRangeOfConsecutiveLastErases(BufferData& new_data) {
-    for (int i = data.size() - 1; i >= 0; i--) {
+bool CommandBuffer::narrowEraseRangeSeveralTimes(BufferData& new_data) {
+    bool has_change_in_data = false;
+    if (has_change_in_data = narrowEraseRange(new_data, data.size())) {
+        for (int i = data.size() - 1; i >= 0; i--) {
+            if (data[i].cmd == 'W') {
+                narrowEraseRange(data[i], i);
+            }
+        }
+    }
+    data.push_back(new_data);
+    return has_change_in_data;
+}
+
+bool CommandBuffer::narrowEraseRange(BufferData& new_data, int new_data_pos) {
+    bool has_change_in_data = false;
+
+    for (int i = new_data_pos - 1; i >= 0; i--) {
         if (data[i].cmd != 'E') {
-            break;
+            continue;
         }
 
         bool invalid_erase_data = false;
         if (data[i].index == new_data.index) {
+            has_change_in_data = true;
             if (data[i].index == 99) {
                 invalid_erase_data = true;
             }
@@ -46,7 +62,11 @@ void CommandBuffer::narrowRangeOfConsecutiveLastErases(BufferData& new_data) {
             }
         }
         else if (data[i].getLastIndex() == new_data.index) {
+            has_change_in_data = true;
             data[i].erase_size--;
+        }
+        else {
+            continue;
         }
         invalid_erase_data |= data[i].erase_size <= 0 ;
 
@@ -55,7 +75,7 @@ void CommandBuffer::narrowRangeOfConsecutiveLastErases(BufferData& new_data) {
         }
     }
 
-    data.push_back(new_data);
+    return has_change_in_data;
 }
 
 bool CommandBuffer::ignoreDupWrite(BufferData& new_data) {

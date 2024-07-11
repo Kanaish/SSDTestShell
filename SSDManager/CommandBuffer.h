@@ -35,7 +35,7 @@ public:
     bool updateBuffer(BufferData);
     bool isFullBuffer();
     std::vector<BufferData> flushBuffer(); // data 전달 + 파일 비우기 (flushBufferFile() 호출)
-    std::string findMatchedWrite(int index); // 있으면 value 값, 없으면 ""
+    std::string findMatchedWrite(int); // 있으면 value 값, 없으면 ""
 
     const std::string BUFFER_FILE_NAME = "../../resources/buffer.txt";
     // const std::string BUFFER_FILE_NAME = "../resources/buffer.txt";
@@ -48,9 +48,10 @@ private:
     bool flushBufferFile(); // buffer.txt 파일 비우기
 
     // 최적화 알고리즘 함수들 넣기
-    bool ignoreDupWrite(BufferData& new_data);
-    bool mergeLastErase(BufferData& new_data);
-    void narrowRangeOfConsecutiveLastErases(BufferData& new_data);
+    bool ignoreDupWrite(BufferData&);
+    bool mergeLastErase(BufferData&);
+    bool narrowEraseRange(BufferData&, int);
+    bool narrowEraseRangeSeveralTimes(BufferData& new_data);
 
     std::vector<BufferData> data;
     const char DELIMETER_STRING = ','; // "W 1 0x12345678,E 10 5,W 2 0x12345678,"
