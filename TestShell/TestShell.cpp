@@ -1,10 +1,11 @@
 /* Copyright 2024 Code Love you */
 
+#include <windows.h>
+
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <thread>
-#include <chrono>
+
 #include "TestShell.h"
 #include "SSDAPILibrary.h"
 
@@ -19,10 +20,10 @@ void TestShell::run(void) {
                 runScenarioFile(input_str);
             }
             catch (const std::exception& e) {
-                std::cerr << "Error running scenario file: " << e.what() << std::endl;
+                std::cerr << "Error running scenario file: " << e.what()
+                    << std::endl;
             }
-        }
-        else {
+        } else {
             try {
                 this->execute(input_str);
             }
@@ -56,7 +57,7 @@ int TestShell::execute(std::string input_str, bool fromScenarioFile) {
     }
 
     int ret = commandMap.at(cmd)(arg);
-    
+
     if (ret != 0) {
         if (fromScenarioFile) {
             return -1;
@@ -68,7 +69,7 @@ int TestShell::execute(std::string input_str, bool fromScenarioFile) {
             throw std::invalid_argument("INVALID ARGUMENT");
         case (INVALID_COMMAND) :
             throw std::invalid_argument("INVALID COMMAND");
-        case (TEST_FAIL) : 
+        case (TEST_FAIL) :
             throw std::invalid_argument("TEST FAIL");
         default:
             throw std::invalid_argument("error");
@@ -187,17 +188,20 @@ void TestShell::runScenarioFile(const std::string& filename) {
             int result = execute(line, true);
             if (result != 0) {
                 std::cout << "FAIL!" << std::endl;
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                Sleep(1000);
                 std::exit(1);
+            } else {
+                std::cout << "Pass" << std::endl;
             }
-            else std::cout << "Pass" << std::endl;
         }
     }
     catch (const std::runtime_error& e) {
-        std::cerr << "Error reading file: " << filename << " - " << e.what() << std::endl;
+        std::cerr << "Error reading file: " << filename
+            << " - " << e.what() << std::endl;
     }
     catch (const std::invalid_argument& e) {
-        std::cerr << "Error executing command from file: " << filename << " - " << e.what() << std::endl;
+        std::cerr << "Error executing command from file: " << filename
+            << " - " << e.what() << std::endl;
     }
 }
 

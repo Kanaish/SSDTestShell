@@ -35,7 +35,6 @@ class TestShell {
     virtual int help();
 
  private:
-
     bool isValidCommand(const std::string& cmd);
     int doErase(int start_lba, int size);
     void runScenarioFile(const std::string& filename);
@@ -46,12 +45,14 @@ class TestShell {
       {"read", [this](const std::string& arg) { return this->read(arg); }},
       {"exit", [this](const std::string&) { return this->exit(); return 0; }},
       {"help", [this](const std::string&) { return this->help(); return 0; }},
-      {"fullwrite", [this](const std::string& arg) { return this->fullWrite(arg); }},
+      {"fullwrite", [this](const std::string& arg)
+            {return this->fullWrite(arg); }},
       {"fullread", [this](const std::string& arg) { return this->fullRead(); }},
       {"testapp1", [this](const std::string&) { return this->testApp1(); }},
       {"testapp2", [this](const std::string&) { return this->testApp2(); }},
       {"erase", [this](const std::string& arg) { return this->erase(arg); }},
-      {"erase_range", [this](const std::string& arg) { return this->erase_range(arg); }},
+      {"erase_range", [this](const std::string& arg)
+            { return this->erase_range(arg); }},
       {"flush", [this](const std::string&) { return this->flush(); }},
     };
 
