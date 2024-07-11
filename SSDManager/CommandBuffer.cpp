@@ -8,24 +8,47 @@ CommandBuffer::CommandBuffer() {
 	createBufferFile();
 }
 
-bool CommandBuffer::updateBuffer(BufferData data) {
+bool CommandBuffer::updateBuffer(BufferData new_data) {
     if (readBufferFile() == false) {
         return false;
+    }
+
+    if (new_data.cmd == 'W') {
+        ignoreDupWrite(new_data); // Opt1
     }
 
     return true;
 }
 
+void CommandBuffer::ignoreDupWrite(BufferData& new_data)
+{
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i].cmd == 'W' && data[i].index == new_data.index) {
+            data.erase(data.begin() + i);
+            break;
+        }
+    }
+    data.push_back(new_data);
+}
+
 bool CommandBuffer::isFullBuffer() {
-    return true;
+    if (data.size() >= BUFFER_MAX) {
+        return true;
+    }
+    return false;
 }
 
 std::vector<BufferData> CommandBuffer::flushBuffer() {
-    std::vector<BufferData> data;
+    flushBufferFile();
     return data;
 }
 
 std::string CommandBuffer::findMatchedWrite(int index) {
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i].index == index && data[i].cmd == 'W') {
+            return data[i].write_value;
+        }
+    }
     return "";
 }
 
