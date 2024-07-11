@@ -10,7 +10,7 @@ class TestShell {
  public:
     explicit TestShell(FileManagerInterface* file_manager)
         : file_manager(file_manager) {}
-    void run(void);
+    void run(int argc, char* argv[]);
     int execute(const std::string inputStr, bool fromScenarioFile = false);
     virtual int write(const std::string& arg);
     virtual int read(const std::string& arg, bool isPrint = true);

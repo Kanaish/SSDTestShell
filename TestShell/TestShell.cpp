@@ -10,20 +10,14 @@
 #include "SSDAPILibrary.h"
 #include "LogManager.h"
 
-void TestShell::run(void) {
+void TestShell::run(int argc, char* argv[]) {
     std::string input_str;
-    while (1) {
-        std::getline(std::cin, input_str);
-        if (input_str.empty()) continue;
-        if (input_str.substr(0, 8) == TEST_SCENARIO_NAME) {
-            try {
-                runScenarioFile(input_str);
-            }
-            catch (const std::exception& e) {
-                std::cerr << "Error running scenario file: " << e.what()
-                    << std::endl;
-            }
-        } else {
+
+    if (argc == 1) {
+        while (1) {
+            std::getline(std::cin, input_str);
+            if (input_str.empty()) continue;
+
             try {
                 this->execute(input_str);
             }
@@ -31,6 +25,9 @@ void TestShell::run(void) {
                 std::cerr << e.what() << std::endl;
             }
         }
+    } else {
+        std::string arg = argv[1];
+        runScenarioFile(arg);
     }
 }
 
