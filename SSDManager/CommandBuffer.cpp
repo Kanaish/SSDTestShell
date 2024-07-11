@@ -6,13 +6,10 @@
 
 CommandBuffer::CommandBuffer() {
 	createBufferFile();
+    readBufferFile();
 }
 
-bool CommandBuffer::updateBuffer(BufferData new_data) {
-    if (readBufferFile() == false) {
-        return false;
-    }
-
+bool CommandBuffer::updateBuffer(BufferData new_data) {   
     if (data.empty()) {
         data.push_back(new_data);
     }
@@ -127,7 +124,6 @@ bool CommandBuffer::isFullBuffer() {
 }
 
 std::vector<BufferData> CommandBuffer::flushBuffer() {
-    flushBufferFile();
     return data;
 }
 

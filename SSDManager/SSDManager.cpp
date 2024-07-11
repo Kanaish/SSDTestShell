@@ -73,7 +73,9 @@ bool SSDManager::executeCommand() {
         //TODO: Builder Pattern
         BufferData data{ cmd, index, write_value, erase_size };
 
-        command_buffer->updateBuffer(data);
+        if (command_buffer->updateBuffer(data) == false) {
+            return false;
+        }
 
         if (command_buffer->isFullBuffer()) {
             flushed_data = command_buffer->flushBuffer();
@@ -86,14 +88,21 @@ bool SSDManager::executeCommand() {
 
     for (BufferData& data : flushed_data) {
         if (data.cmd == 'W') {
-            return ssd_writer->write(NAND_FILE, index, write_value);
+            if (ssd_writer->write(NAND_FILE, data.index, data.write_value) == false) {
+                return false;
+            }
         }
         if (data.cmd == 'E') {
-            return ssd_eraser->erase(NAND_FILE, index, erase_size);
+            if (ssd_eraser->erase(NAND_FILE, data.index, data.erase_size) == false) {
+                return false;
+            }
         }
     }
 
-    return false;
+    if (flushed_data.empty() == false) {
+        return command_buffer->flushBufferFile();
+    }
+    return true;
 }
 
 std::vector<std::string> SSDManager::getParsedInput() {
