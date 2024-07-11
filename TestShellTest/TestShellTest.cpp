@@ -24,8 +24,8 @@ class TestShellWithMockFileManager : public TestShell {
 
     MOCK_METHOD(int, write, (const string& arg), (override));
     MOCK_METHOD(int, read, (const string& arg, bool isPrint), (override));
-    MOCK_METHOD(void, exit, (), (override));
-    MOCK_METHOD(void, help, (), (override));
+    MOCK_METHOD(int, exit, (), (override));
+    MOCK_METHOD(int, help, (), (override));
 };
 
 class TestShellFixture : public Test {
