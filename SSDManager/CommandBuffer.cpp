@@ -101,16 +101,19 @@ bool CommandBuffer::writeBufferFile() {
         return false;
     }
 
-    std::string cmdString = "";
-    bufferFile.seekp(0, std::ios::beg);
+    std::string cmd_str = "";
+    std::string space_str(1, SPACE_STRING);
+    std::string delimeter_str(1, DELIMETER_STRING);
+
+    bufferFile.seekp(0, std::ios::end);
     for (auto& cmdData: data) {
         if (cmdData.cmd == 'W') {
-            cmdString = "W" + SPACE_STRING + std::to_string(cmdData.index) + SPACE_STRING + cmdData.write_value + DELIMETER_STRING;
-            bufferFile << cmdString;
+            cmd_str = "W" + space_str + std::to_string(cmdData.index) + space_str + cmdData.write_value + delimeter_str;
+            bufferFile << cmd_str;
         }
         else if (cmdData.cmd == 'E') {
-            cmdString = "E" + SPACE_STRING + std::to_string(cmdData.index) + SPACE_STRING + std::to_string(cmdData.erase_size) + DELIMETER_STRING;
-            bufferFile << cmdString;
+            cmd_str = "E" + space_str + std::to_string(cmdData.index) + space_str + std::to_string(cmdData.erase_size) + delimeter_str;
+            bufferFile << cmd_str;
         }
     }
 
@@ -119,5 +122,11 @@ bool CommandBuffer::writeBufferFile() {
 }
 
 bool CommandBuffer::flushBufferFile() {
+    std::ofstream bufferFile(BUFFER_FILE_NAME, std::ios::out | std::ios::trunc);
+    if (!bufferFile.is_open()) {
+        return false;
+    }
+
+    bufferFile.close();
     return true;
 }
