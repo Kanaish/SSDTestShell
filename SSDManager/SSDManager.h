@@ -1,13 +1,12 @@
 /* Copyright 2024 Code Love you */
 
 #pragma once
-#include <string>
-#include <vector>
 #include "FileManager.h"
 #include "LogManager.h"
 #include "SSDWriter.h"
 #include "SSDReader.h"
 #include "SSDEraser.h"
+#include "CommandBuffer.h"
 
 class SSDManager {
 public:
@@ -34,11 +33,14 @@ private:
     SSDWriter* ssd_writer;
     SSDReader* ssd_reader;
     SSDEraser* ssd_eraser;
+    CommandBuffer* command_buffer;
 
     bool isValidCommand();
     bool isValidIndex();
     bool isValidArgCnt();
     bool isValidWriteInput();
     bool isValidEraseInput();
+
+    std::string convertToUpperValue(std::string&);
     const std::string CLASS_NAME = "SDDManager";
 };
