@@ -53,6 +53,7 @@ bool SSDManager::isValidInput() {
 }
 
 bool SSDManager::executeCommand() {
+    lm->logWrite(CLASS_NAME, __func__, "Executing the current command");
     if (isValidInput() == false) {
         return false;
     }

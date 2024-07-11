@@ -41,5 +41,6 @@ private:
     bool isValidArgCnt();
     bool isValidWriteInput();
     bool isValidEraseInput();
+    const std::string CLASS_NAME = "SDDManager";
     LogManager* lm;
 };

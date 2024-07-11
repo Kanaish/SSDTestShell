@@ -11,15 +11,20 @@
 #include <codecvt>
 #include "LogManager.h"
 
-LogManager::LogManager() {
+LogManager& LogManager::getLogManagerInstance(void) {
+    static LogManager instance;
+    return instance;
 }
+
+LogManager::LogManager() {
+
+}
+
 void LogManager::logWrite(std::string className, std::string mFunctionName, std::string msg) {
     std::string logTitle(50, ' ');
     std::string buf = className + "::" + mFunctionName;
     logTitle.replace(0, buf.length(), buf);
     std::string logMessage = logGetCurrentTimeForLogging() + logTitle + msg + "\n";
-    
-    logPrint(logMessage);
 
     std::ofstream logFile(LOG_DIR + CURRENT_LOG, std::ios::out | std::ios::app);
     if (logFile.is_open()) {
@@ -53,8 +58,12 @@ void LogManager::logWrite(std::string className, std::string mFunctionName, std:
     }
     logFile.close();
 }
-void LogManager::logPrint(std::string msg) {
-    std::cout << msg;
+void LogManager::logPrint(std::string className, std::string mFunctionName, std::string msg) {
+    std::string logTitle(50, ' ');
+    std::string buf = className + "::" + mFunctionName;
+    logTitle.replace(0, buf.length(), buf);
+    std::string logMessage = logGetCurrentTimeForLogging() + logTitle + msg;
+    std::cout << logMessage << std::endl;
 }
 std::string LogManager::logGetCurrentTimeForLogging(void) {
     std::time_t t = std::time(nullptr);
