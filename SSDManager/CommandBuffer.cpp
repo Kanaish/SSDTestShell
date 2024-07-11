@@ -19,6 +19,7 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
 
     if (new_data.cmd == 'W') {
         ignoreDupWrite(new_data); // Opt1
+        data.push_back(new_data);
     }
     if (new_data.cmd == 'E') {
         ignoreDupWrite(new_data); // Opt2
