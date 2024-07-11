@@ -13,14 +13,12 @@ std::string FileManager::read(std::string name) {
     std::fstream resultFile(name, std::ios::in | std::ios::out);
     std::string ret;
 
-    if (resultFile.is_open())
-    {
+    if (resultFile.is_open()) {
         /* read result and store to the buffer */
         std::stringstream buffer;
         buffer << resultFile.rdbuf();
         ret = buffer.str();
-    }
-    else {
+    } else {
         throw std::invalid_argument("File is not opened");
     }
     resultFile.close();
@@ -30,8 +28,7 @@ std::string FileManager::read(std::string name) {
 std::string FileManager::read(std::string name, int index) {
     std::fstream nandFile(name, std::ios::in | std::ios::out);
     std::string ret;
-    if (nandFile.is_open())
-    {
+    if (nandFile.is_open()) {
         /* read nand and store to the buffer */
         std::stringstream buffer;
         buffer << nandFile.rdbuf();
@@ -43,13 +40,11 @@ std::string FileManager::read(std::string name, int index) {
             /* If token is found, read LBA */
             size_t posValue = buffer.str().find(" ", pos);
             ret = buffer.str().substr(posValue + 1, VALUE_LEN);
-        }
-        else {
+        } else {
             /* If not, return empty value */
             ret = EMPTY;
         }
-    }
-    else {
+    } else {
         throw std::invalid_argument("File is not opened");
     }
     nandFile.close();
@@ -71,14 +66,12 @@ bool FileManager::write(std::string name, int index, std::string value) {
             /* If token is found, replace LBA with given value */
             nandFile.seekp(pos, std::ios::beg);
             nandFile << generateMemoryBlock(generateToken(index), value);
-        }
-        else {
+        } else {
             /* If not, replace LBA with given value */
             nandFile.seekp(0, std::ios::end);
             nandFile << generateMemoryBlock(generateToken(index), value);
         }
-    }
-    else {
+    } else {
         throw std::invalid_argument("File is not opened");
         return false;
     }
@@ -91,8 +84,7 @@ bool FileManager::write(std::string name, std::string value) {
     if (resultFile.is_open()) {
         resultFile.seekp(0, std::ios::beg);
         resultFile << value;
-    }
-    else {
+    } else {
         throw std::invalid_argument("File is not opened");
         return false;
     }
@@ -100,12 +92,11 @@ bool FileManager::write(std::string name, std::string value) {
     return true;
 }
 
-std::string FileManager::generateToken(int index)
-{
+std::string FileManager::generateToken(int index) {
     return std::string("LBA" + std::to_string(index) + " ");
 }
 
-std::string FileManager::generateMemoryBlock(std::string token, std::string value)
-{
+std::string FileManager::generateMemoryBlock(std::string token,
+                                             std::string value) {
     return token + value + " ";
 }

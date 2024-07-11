@@ -3,7 +3,7 @@
 #include <string>
 
 class FileManagerInterface {
-public:
+ public:
     virtual std::string read(std::string name) = 0;
     virtual std::string read(std::string name, int index) = 0;
     virtual bool write(std::string name, int index, std::string value) = 0;;
