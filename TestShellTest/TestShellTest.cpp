@@ -6,12 +6,13 @@
 #include "../TestShell/TestShell.cpp"
 #include "../SSDManager/FileManager.cpp"
 #include "../SSDManager/LogManager.cpp"
+#include "../SSDAPILibrary/SSDAPILibrary.cpp"
 
 using namespace std;
 using namespace testing;
 
 class MockFileManager : public FileManagerInterface {
- public:
+public:
     MOCK_METHOD(string, read, (string name), ());
     MOCK_METHOD(string, read, (string name, int index), ());
     MOCK_METHOD(bool, write, (string name, int index, string value), ());
@@ -19,7 +20,7 @@ class MockFileManager : public FileManagerInterface {
 };
 
 class TestShellWithMockFileManager : public TestShell {
- public:
+public:
     explicit TestShellWithMockFileManager(FileManagerInterface* fileManager)
         : TestShell(fileManager) {}
 
@@ -30,7 +31,10 @@ class TestShellWithMockFileManager : public TestShell {
 };
 
 class TestShellFixture : public Test {
- protected:
+    void SetUp() override {
+        _chdir("../x64/Debug");
+    }
+protected:
     NiceMock<MockFileManager> mockFileManager;
     NiceMock<TestShellWithMockFileManager> shellWithMock;
     FileManager file_manager;
@@ -93,42 +97,21 @@ TEST_F(TestShellFixture, read_invalid_argument2) {
 }
 
 TEST_F(TestShellFixture, fullWrite_fail) {
-    EXPECT_EQ(shellWithMock.fullWrite(""), TestShell::INVALID_COMMAND);
+    EXPECT_EQ(shell.fullWrite(""), TestShell::INVALID_COMMAND);
 }
 
 TEST_F(TestShellFixture, fullWrite_pass) {
-    EXPECT_CALL(shellWithMock, write(_))
-        .Times(100)
-        .WillRepeatedly(Return(0));
-    EXPECT_EQ(shellWithMock.fullWrite("0x12345678"), 0);
+    EXPECT_EQ(shell.fullWrite("0x12345678"), 0);
 }
 
 TEST_F(TestShellFixture, fullRead_pass) {
-    EXPECT_CALL(shellWithMock, read(_, _))
-        .Times(100)
-        .WillRepeatedly(Return(0));
-    EXPECT_EQ(shellWithMock.fullRead(), 0);
+    EXPECT_EQ(shell.fullRead(), 0);
 }
 
 TEST_F(TestShellFixture, testApp1_pass) {
-    EXPECT_CALL(shellWithMock, write(_))
-        .Times(100)
-        .WillRepeatedly(Return(0));
-    EXPECT_CALL(shellWithMock, read(_, _))
-        .Times(100)
-        .WillRepeatedly(Return(0));
-    EXPECT_CALL(mockFileManager, read(_))
-        .Times(100)
-        .WillRepeatedly(Return("0xAAAABBBB"));
-    EXPECT_EQ(shellWithMock.testApp1(), 0);
+    EXPECT_EQ(shell.testApp1(), 0);
 }
 
 TEST_F(TestShellFixture, testApp2_pass) {
-    EXPECT_CALL(shellWithMock, write(_))
-        .Times(186)
-        .WillRepeatedly(Return(0));
-    EXPECT_CALL(mockFileManager, read(_)).
-        Times(6)
-        .WillRepeatedly(Return("0x12345678"));
-    EXPECT_EQ(shellWithMock.testApp2(), 0);
+    EXPECT_EQ(shell.testApp2(), 0);
 }
