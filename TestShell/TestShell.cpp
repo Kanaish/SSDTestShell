@@ -276,8 +276,8 @@ int TestShell::doErase(int start_lba, int size) {
     return ret;
 }
 
-void TestShell::transStringtoIntInt(const std::string& arg, int& left_arg, int& right_arg)
-{
+void TestShell::transStringtoIntInt(const std::string& arg,
+    int* left_arg, int* right_arg) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
@@ -294,14 +294,14 @@ void TestShell::transStringtoIntInt(const std::string& arg, int& left_arg, int& 
     if ((iss >> third_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
-    left_arg = std::stoi(first_word);
-    right_arg = std::stoi(second_word);
+    *left_arg = std::stoi(first_word);
+    *right_arg = std::stoi(second_word);
 }
 
 int TestShell::erase(const std::string& arg) {
     int start_lba, size;
 
-    transStringtoIntInt(arg, start_lba, size);
+    transStringtoIntInt(arg, &start_lba, &size);
 
     return doErase(start_lba, size);
 }
@@ -309,7 +309,7 @@ int TestShell::erase(const std::string& arg) {
 int TestShell::erase_range(const std::string& arg) {
     int start_lba, end_lba;
 
-    transStringtoIntInt(arg, start_lba, end_lba);
+    transStringtoIntInt(arg, &start_lba, &end_lba);
 
     if (start_lba >= end_lba)
         throw std::invalid_argument("INVALID ARGUMENT");
