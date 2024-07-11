@@ -1,6 +1,11 @@
 ﻿// dllmain.cpp : DLL 애플리케이션의 진입점을 정의합니다.
-#include "pch.h"
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <stdexcept>
+#include <string>
 
+#include "framework.h"
 using namespace std;
 
 BOOL APIENTRY DllMain( HMODULE hModule,

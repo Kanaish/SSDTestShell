@@ -1,4 +1,10 @@
-#include "pch.h" // use stdafx.h in Visual Studio 2017 and earlier
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+
+#include "framework.h"
 #include "SSDAPILibrary.h"
 #include "FileManager.h"
 
