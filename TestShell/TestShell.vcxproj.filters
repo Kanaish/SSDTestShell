@@ -21,10 +21,10 @@
     <ClCompile Include="TestShell.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FileManager.cpp">
+    <ClCompile Include="..\SSDManager\LogManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\SSDManager\LogManager.cpp">
+    <ClCompile Include="..\SSDManager\FileManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,13 +32,13 @@
     <ClInclude Include="TestShell.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManagerInterface.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\SSDManager\LogManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SSDAPILibrary\FileManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\SSDAPILibrary\FileManagerInterface.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

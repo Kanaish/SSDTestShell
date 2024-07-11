@@ -11,9 +11,10 @@ static const std::string NAND_NAME_PATH = "test_nand.txt";
 
 class FileManagerReaderMock : public FileManagerInterface {
  public:
-    MOCK_METHOD(std::string, read, (std::string, int), (override));
-    MOCK_METHOD(bool, write, (std::string, int, std::string), (override));
-    MOCK_METHOD(bool, write, (std::string, std::string), (override));
+    MOCK_METHOD(std::string, read, (std::string name), ());
+    MOCK_METHOD(std::string, read, (std::string, int), ());
+    MOCK_METHOD(bool, write, (std::string, int, std::string), ());
+    MOCK_METHOD(bool, write, (std::string, std::string), ());
 };
 
 class SSDReaderFileManagerMockFixture: public testing::Test {
