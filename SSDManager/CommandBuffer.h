@@ -38,8 +38,8 @@ public:
     std::string findMatchedWrite(int); // 있으면 value 값, 없으면 ""
     bool flushBufferFile(); // buffer.txt 파일 비우기
 
-     const std::string BUFFER_FILE_NAME = "../../resources/buffer.txt";
-     // const std::string BUFFER_FILE_NAME = "../resources/buffer.txt";
+    const std::string BUFFER_FILE_NAME = "../../resources/buffer.txt";
+    // const std::string BUFFER_FILE_NAME = "../resources/buffer.txt";
 
 private:
     // 파일 뭔가 문제 생기면 (null을 리턴? exception이 떨어지는지?) 여기서 return false;

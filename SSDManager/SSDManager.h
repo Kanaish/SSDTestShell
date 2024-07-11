@@ -16,13 +16,8 @@ public:
     bool executeCommand();
     std::vector<std::string> getParsedInput();
 
-#if 0
     const std::string NAND_FILE = "../../resources/nand.txt";
     const std::string RESULT_FILE = "../../resources/result.txt";
-#else // gtest
-    const std::string NAND_FILE = "../resources/nand.txt";
-    const std::string RESULT_FILE = "../resources/result.txt";
-#endif
 
 private:
     std::vector<std::string> parsed_input;
