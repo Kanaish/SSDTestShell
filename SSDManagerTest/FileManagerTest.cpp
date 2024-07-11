@@ -20,24 +20,23 @@ using namespace std;
 using namespace testing;
 
 class FileManagerTestFixture : public Test {
-public:
+ public:
     FileManager fm;
     stringstream testBuf, testRef;
     string textBuf = "";
     string textRef = "";
     stringstream resultTestBuf;
     string resultTextBuf = "";
-    void testWrite(string name, int mod)
-    {
+    void testWrite(string name, int mod) {
         for (int i = 0; i < 100; i++) {
             fm.write(name, i % mod, "0x" + to_string(10000000 + i));
         }
     }
-    fstream testFile{ TEST_NAND, std::ios::in | std::ios::out | std::ios::trunc };
-    fstream refFile{ TEST_NAND_REF, std::ios::in | std::ios::out | std::ios::beg };
-    fstream testDiffFile{ TEST_NAND_DIFF, std::ios::in | std::ios::out | std::ios::trunc };
-    fstream refDiffFile{ TEST_NAND_DIFF_REF, std::ios::in | std::ios::out | std::ios::beg };
-    fstream testResultFile{ TEST_RESULT, std::ios::in | std::ios::out | std::ios::trunc };
+    fstream testFile{ TEST_NAND, ios::in | ios::out | ios::trunc };
+    fstream refFile{ TEST_NAND_REF, ios::in | ios::out | ios::beg };
+    fstream testDiffFile{ TEST_NAND_DIFF, ios::in | ios::out | ios::trunc };
+    fstream refDiffFile{ TEST_NAND_DIFF_REF, ios::in | ios::out | ios::beg };
+    fstream testResultFile{ TEST_RESULT, ios::in | ios::out | ios::trunc };
 };
 
 TEST_F(FileManagerTestFixture, file_manager_test_read) {
@@ -49,7 +48,7 @@ TEST_F(FileManagerTestFixture, file_manager_test_read) {
 
 TEST_F(FileManagerTestFixture, file_manager_test_write_different_index) {
     testWrite(TEST_NAND, TEST_NAND_MOD);
-    
+
     testBuf << testFile.rdbuf();
     testRef << refFile.rdbuf();
 
