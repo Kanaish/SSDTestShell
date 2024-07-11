@@ -12,16 +12,16 @@ using namespace std;
 using namespace testing;
 
 class MockFileManager : public FileManagerInterface {
-public:
+ public:
     MOCK_METHOD(string, read, (string name), ());
     MOCK_METHOD(string, read, (string name, int index), ());
     MOCK_METHOD(bool, write, (string name, int index, string value), ());
     MOCK_METHOD(bool, write, (string name, string value), ());
 };
 
-class TestShellWithMockFileManager : public TestShell {
-public:
-    explicit TestShellWithMockFileManager(FileManagerInterface* fileManager)
+class TestShellMock : public TestShell {
+ public:
+    explicit TestShellMock(FileManagerInterface* fileManager)
         : TestShell(fileManager) {}
 
     MOCK_METHOD(int, write, (const string& arg), (override));
@@ -34,14 +34,13 @@ class TestShellFixture : public Test {
     void SetUp() override {
         _chdir("../x64/Debug");
     }
-protected:
-    NiceMock<MockFileManager> mockFileManager;
-    NiceMock<TestShellWithMockFileManager> shellWithMock;
+ protected:
+    NiceMock<TestShellMock> shellWithMock;
     FileManager file_manager;
     TestShell shell{ &file_manager };
 
     TestShellFixture()
-        : shellWithMock(&mockFileManager), shell(&file_manager) {}
+        : shellWithMock(&file_manager), shell(&file_manager) {}
 };
 
 TEST_F(TestShellFixture, execute_invalid_command) {
