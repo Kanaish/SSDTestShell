@@ -49,7 +49,7 @@ private:
     
 
     // 최적화 알고리즘 함수들 넣기
-    bool ignoreDupWrite(BufferData&);
+    bool ignoreDupWrite(BufferData&, int, int);
     bool mergeLastErase(BufferData&);
     bool narrowEraseRange(BufferData&, int);
     bool narrowEraseRangeSeveralTimes(BufferData& new_data);

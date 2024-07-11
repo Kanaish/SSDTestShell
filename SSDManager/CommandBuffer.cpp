@@ -15,11 +15,11 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
     }
 
     if (new_data.cmd == 'W') {
-        ignoreDupWrite(new_data); // Opt1
+        ignoreDupWrite(new_data, new_data.index, new_data.index); // Opt1
         narrowEraseRangeSeveralTimes(new_data); // Opt 4
     }
     if (new_data.cmd == 'E') {
-        ignoreDupWrite(new_data); // Opt2
+        ignoreDupWrite(new_data, new_data.index, new_data.getLastIndex()); // Opt2
         mergeLastErase(new_data); // Opt3
     }
 
@@ -75,14 +75,16 @@ bool CommandBuffer::narrowEraseRange(BufferData& write_data, int write_data_pos)
     return has_change_in_data;
 }
 
-bool CommandBuffer::ignoreDupWrite(BufferData& new_data) {
+bool CommandBuffer::ignoreDupWrite(BufferData& new_data, int left, int right) {
+    bool has_change_in_data = false;
+
     for (int i = data.size() - 1; i >= 0; i--) {
-        if (data[i].cmd == 'W' && data[i].index == new_data.index) {
+        if (data[i].cmd == 'W' && left <= data[i].index && data[i].index <= right) {
             data.erase(data.begin() + i);
-            return true;
+            has_change_in_data = true;
         }
     }
-    return false;
+    return has_change_in_data;
 }
 
 bool CommandBuffer::mergeLastErase(BufferData& new_data) {
