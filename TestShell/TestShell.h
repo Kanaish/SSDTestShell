@@ -30,8 +30,8 @@ class TestShell {
 
  private:
     bool isValidCommand(const std::string& cmd);
-    bool isValidIndex(const std::string& str);
-    bool isValidIndex2(const std::string& str);
+    bool isValidLBA(const std::string& str);
+    bool isValidSize(const std::string& str);
     bool isValidAddress(const std::string& str);
     bool isValidArgument(const std::string& arg);
     int doErase(int start_lba, int size);

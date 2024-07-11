@@ -25,7 +25,7 @@ bool TestShell::isValidCommand(const std::string& cmd) {
     return commandMap.find(cmd) != commandMap.end();
 }
 
-bool TestShell::isValidIndex(const std::string& str) {
+bool TestShell::isValidLBA(const std::string& str) {
     if (str.empty()) return false;
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -39,7 +39,7 @@ bool TestShell::isValidIndex(const std::string& str) {
     return true;
 }
 
-bool TestShell::isValidIndex2(const std::string& str) {
+bool TestShell::isValidSize(const std::string& str) {
     if (str.empty()) return false;
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -66,7 +66,7 @@ bool TestShell::isValidArgument(const std::string& arg) {
     std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word)) return false;
-    if (!isValidIndex(first_word)) return false;
+    if (!isValidLBA(first_word)) return false;
 
     if (!(iss >> second_word)) return false;
     if (!isValidAddress(second_word)) return false;
@@ -126,7 +126,7 @@ int TestShell::read(const std::string& arg) {
     if ((iss >> second_word)) {
         throw std::invalid_argument("INVALID COMMAND");
     }
-    if (!isValidIndex(first_word)) {
+    if (!isValidLBA(first_word)) {
         throw std::invalid_argument("INVALID COMMAND");
     }
 
@@ -283,12 +283,12 @@ void TestShell::transStringtoIntInt(const std::string& arg, int& left_arg, int& 
 
     if (!(iss >> first_word))
         throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex(first_word))
+    if (!isValidLBA(first_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
     if (!(iss >> second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex2(second_word))
+    if (!isValidSize(second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
     if ((iss >> third_word))
