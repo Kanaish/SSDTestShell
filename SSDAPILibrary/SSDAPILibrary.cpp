@@ -7,7 +7,6 @@
 
 #include "framework.h"
 #include "SSDAPILibrary.h"
-#include "FileManager.h"
 
 static const int LBA_START_INDEX = 0;
 static const int LBA_LAST_INDEX = 99;
@@ -103,7 +102,7 @@ static int doErase(int start_lba, int size) {
         size = LBA_MAX_SIZE - start_lba;
 
     while (size >= LBA_PROCESS_SIZE) {
-        std::string cmd = "SSDManager.exe e ";
+        std::string cmd = ".\\SSDManager.exe e ";
         cmd += std::to_string(start_lba) + " " + std::to_string(10);
 
         ret = system(cmd.c_str());
@@ -116,7 +115,7 @@ static int doErase(int start_lba, int size) {
     }
 
     if (size > 0) {
-        std::string cmd = "SSDManager.exe e ";
+        std::string cmd = ".\\SSDManager.exe e ";
         cmd += std::to_string(start_lba) + " " + std::to_string(size);
 
         ret = system(cmd.c_str());
@@ -129,7 +128,7 @@ static int doErase(int start_lba, int size) {
 }
 
 int SSDAPIWrite(const char* arg) {
-    std::string cmd = "SSDManager.exe w ";
+    std::string cmd = ".\\SSDManager.exe w ";
     int ret;
 
     if (!isValidArgument(arg)) {
@@ -147,7 +146,6 @@ int SSDAPIWrite(const char* arg) {
 int SSDAPIRead(const char* arg, bool isPrint) {
     std::istringstream iss(arg);
     std::string first_word, second_word;
-    FileManager* file_manager = new FileManager();
 
     if (!(iss >> first_word)) {
         return INVALID_COMMAND;
@@ -160,22 +158,27 @@ int SSDAPIRead(const char* arg, bool isPrint) {
         return INVALID_COMMAND;
     }
 
-    std::string cmd = "SSDManager.exe r ";
+    std::string cmd = ".\\SSDManager.exe r ";
     int ret;
 
     cmd += arg;
 
     ret = system(cmd.c_str());
+    
     if (ret != 0) {
         return SYSTEM_ERROR;
     }
 
     if (isPrint) {
-        std::cout << file_manager->read("../../resources/result.txt")
-            << std::endl;
+        cmd = "type ..\\..\\resources\\result.txt";
+        ret = system(cmd.c_str());
+        if (ret != 0) {
+            return SYSTEM_ERROR;
+        }
+        std::cout << std::endl;
     }
 
-    return 0;
+    return ret;
 }
 
 int SSDAPIFullWrite(const char* arg) {
@@ -247,7 +250,7 @@ int SSDAPIEraseRange(const char* arg) {
 }
 
 int SSDAPIFlush(void) {
-    std::string cmd = "SSDManager.exe f";
+    std::string cmd = ".\\SSDManager.exe f";
     int ret = system(cmd.c_str());
     if (ret != 0) {
         return -1;
