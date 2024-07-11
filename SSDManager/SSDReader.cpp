@@ -4,7 +4,7 @@
 
 bool SSDReader::read(const std::string& nand_file,
     const std::string& result_file, int index) {
-    
+    LOG("SSD Read is started");
     std::string result = readSSDValue(nand_file, index);
     if (result == "") {
         return false;

@@ -9,7 +9,7 @@ class SSDReader {
     explicit SSDReader(FileManagerInterface* fm) : fm(fm) {
     }
     bool read(const std::string& nand_file,
-        const std::string& result_file, int index);
+    const std::string& result_file, int index);
  private:
     bool writeResultValue(const std::string& result_file, std::string& result);
     std::string readSSDValue(const std::string& nand_file, int index);

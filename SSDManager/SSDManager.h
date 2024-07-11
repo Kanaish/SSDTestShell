@@ -11,7 +11,6 @@
 
 class SSDManager {
 public:
-    SSDManager(int argc, char** argv, LogManager* plm);
     SSDManager(int argc, char** argv);
     ~SSDManager();
 
