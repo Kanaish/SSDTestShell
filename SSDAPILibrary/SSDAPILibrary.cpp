@@ -4,10 +4,12 @@
 #include "SSDAPILibrary.h"
 #include "FileManager.h"
 
-static const int SSD_START_INDEX = 0;
-static const int SSD_LAST_INDEX = 99;
-static const int ERASE_MAX_SIZE = 100;
-static const int ERASE_MAX_SIZE_FOR_SSD = 10;
+static const int LBA_START_INDEX = 0;
+static const int LBA_LAST_INDEX = 99;
+static const int LBA_MIN_SIZE = 0;
+static const int LBA_MAX_SIZE = 100;
+static const int LBA_PROCESS_SIZE = 10;
+static const int ADDRESS_LENGTH = 10;
 
 static const int SYSTEM_ERROR = -1;
 static const int INVALID_ARGUMENT = -2;
@@ -20,8 +22,8 @@ static bool isValidLBA(const std::string& str) {
         if (!std::isdigit(c)) return false;
     }
 
-    int index = std::stoi(str);
-    if (index < SSD_START_INDEX || index > SSD_LAST_INDEX) {
+    int lba = std::stoi(str);
+    if (lba < LBA_START_INDEX || lba > LBA_LAST_INDEX) {
         return false;
     }
 
@@ -35,7 +37,7 @@ static bool isValidSize(const std::string& str) {
     }
 
     int index = std::stoi(str);
-    if (index < SSD_START_INDEX || index > ERASE_MAX_SIZE) {
+    if (index < LBA_MIN_SIZE || index > LBA_MAX_SIZE) {
         return false;
     }
 
@@ -43,7 +45,7 @@ static bool isValidSize(const std::string& str) {
 }
 
 static bool isValidAddress(const std::string& str) {
-    if (str.size() != 10 || str.substr(0, 2) != "0x") return false;
+    if (str.size() != ADDRESS_LENGTH || str.substr(0, 2) != "0x") return false;
     for (size_t i = 2; i < str.size(); ++i) {
         if (!std::isxdigit(str[i])) return false;
     }
@@ -66,7 +68,7 @@ static bool isValidArgument(const std::string& arg) {
 }
 
 static int transStringtoIntInt(const std::string& arg,
-    int* left_arg, int* right_arg) {
+    int* left_value, int* right_value) {
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
@@ -83,8 +85,8 @@ static int transStringtoIntInt(const std::string& arg,
     if ((iss >> third_word))
         return INVALID_ARGUMENT;
 
-    *left_arg = std::stoi(first_word);
-    *right_arg = std::stoi(second_word);
+    *left_value = std::stoi(first_word);
+    *right_value = std::stoi(second_word);
 
     return 0;
 }
@@ -92,10 +94,10 @@ static int transStringtoIntInt(const std::string& arg,
 static int doErase(int start_lba, int size) {
     int ret = 0;
 
-    if (start_lba + size >= 100)
-        size = 100 - start_lba;
+    if (start_lba + size >= LBA_MAX_SIZE)
+        size = LBA_MAX_SIZE - start_lba;
 
-    while (size >= 10) {
+    while (size >= LBA_PROCESS_SIZE) {
         std::string cmd = "SSDManager.exe e ";
         cmd += std::to_string(start_lba) + " " + std::to_string(10);
 
@@ -104,11 +106,11 @@ static int doErase(int start_lba, int size) {
             return SYSTEM_ERROR;
         }
 
-        size -= 10;
-        start_lba += 10;
+        size -= LBA_PROCESS_SIZE;
+        start_lba += LBA_PROCESS_SIZE;
     }
 
-    if (size != 0) {
+    if (size > 0) {
         std::string cmd = "SSDManager.exe e ";
         cmd += std::to_string(start_lba) + " " + std::to_string(size);
 
@@ -186,7 +188,7 @@ int SSDAPIFullWrite(const char* arg) {
     }
 
     int ret = 0;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = LBA_START_INDEX; i <= LBA_LAST_INDEX; ++i) {
         std::string cmd;
         cmd = std::to_string(i) + " " + first_word;
         ret = SSDAPIWrite(cmd.c_str());
@@ -199,7 +201,7 @@ int SSDAPIFullWrite(const char* arg) {
 
 int SSDAPIFullRead(void) {
     int ret = 0;
-    for (int i = 0; i < 100; ++i) {
+    for (int i = LBA_START_INDEX; i <= LBA_LAST_INDEX; ++i) {
         std::string cmd;
 
         cmd = std::to_string(i) + " ";
