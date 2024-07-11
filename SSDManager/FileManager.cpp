@@ -106,10 +106,10 @@ bool FileManager::write(std::string name, std::string value) {
 
 std::string FileManager::generateToken(int index)
 {
-    return std::string("LBA" + std::to_string(index));
+    return std::string("LBA" + std::to_string(index) + " ");
 }
 
 std::string FileManager::generateMemoryBlock(std::string token, std::string value)
 {
-    return token + " " + value + " ";
+    return token + value + " ";
 }
