@@ -25,47 +25,48 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
         mergeLastErase(new_data); // Opt3
     }
 
-
     return true;
 }
 
-void CommandBuffer::ignoreDupWrite(BufferData& new_data) {
+bool CommandBuffer::ignoreDupWrite(BufferData& new_data) {
     for (int i = data.size() - 1; i >= 0; i--) {
         if (data[i].cmd == 'W' && data[i].index == new_data.index) {
             data.erase(data.begin() + i);
-            break;
+            return true;
         }
     }
-    data.push_back(new_data);
+    return false;
 }
 
-void CommandBuffer::mergeLastErase(BufferData& new_data) {
+bool CommandBuffer::mergeLastErase(BufferData& new_data) {
     BufferData& tail_data = data[data.size() - 1];
     if (tail_data.cmd != 'E') {
         data.push_back(new_data);
-        return;
+        return false;
     }
 
-    BufferData& left_data = new_data.index <= tail_data.index ? new_data : tail_data;
-    BufferData& right_data = new_data.index <= tail_data.index ? tail_data : new_data;
-    const int MAX_ERASE_SIZE = 10;
+    BufferData left_data = new_data.index <= tail_data.index ? new_data : tail_data;
+    BufferData right_data = new_data.index <= tail_data.index ? tail_data : new_data;
 
     if (right_data.index <= left_data.getLastIndex()) {
+        const int MAX_ERASE_SIZE = 10;
         int collapsed_erase_size = right_data.getLastIndex() - left_data.index + 1;
+
+        data.erase(data.end() - 1);
 
         if (collapsed_erase_size > MAX_ERASE_SIZE) {
             data.push_back(BufferData{'E', left_data.index, "", MAX_ERASE_SIZE });
             data.push_back(BufferData{'E', left_data.index + MAX_ERASE_SIZE, "", collapsed_erase_size - MAX_ERASE_SIZE });
-            return;
+            return true;
         }
         else {
             data.push_back(BufferData{ 'E', left_data.index, "", collapsed_erase_size });
-            return;
+            return true;
         }
     }
 
     data.push_back(new_data);
-    return;
+    return false;
 }
 
 bool CommandBuffer::isFullBuffer() {
