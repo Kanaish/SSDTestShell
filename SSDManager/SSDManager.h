@@ -42,5 +42,5 @@ private:
     bool isValidEraseInput();
 
     std::string convertToUpperValue(std::string&);
-    const std::string CLASS_NAME = "SDDManager";
+    const std::string CLASS_NAME = "SSDManager";
 };

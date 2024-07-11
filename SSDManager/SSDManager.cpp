@@ -1,6 +1,7 @@
 /* Copyright 2024 Code Love you */
 
 #include "SSDManager.h"
+#include "LogManager.h"
 
 SSDManager::SSDManager(int argc, char** argv) {
     for (int i = 0; i < argc; i++) {
@@ -50,15 +51,18 @@ bool SSDManager::isValidInput() {
 
 bool SSDManager::executeCommand() {
     if (isValidInput() == false) {
+        LOG("Invalid Command Is Entered.");
         return false;
     }
 
     if (cmd == 'R') {
         std::string buffer_ret = command_buffer->findMatchedWrite(index);
         if (buffer_ret == "") {
+            LOG("Read From SSD. No Return From Buffer.");
             return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
         }
         try {
+            LOG("Read From Buffer.");
             return file_manager->write(RESULT_FILE, buffer_ret);
         }
         catch (std::exception& e) {
@@ -77,11 +81,13 @@ bool SSDManager::executeCommand() {
         }
 
         if (command_buffer->isFullBuffer()) {
+            LOG("Buffer is full. Auto Flush Executed.");
             flushed_data = command_buffer->flushBuffer();
         }
     }
 
     if (cmd == 'F') {
+        LOG("Manual Flush Executed.");
         flushed_data = command_buffer->flushBuffer();
     }
 

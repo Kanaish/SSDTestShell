@@ -12,18 +12,37 @@ CommandBuffer::CommandBuffer() {
 
 bool CommandBuffer::updateBuffer(BufferData new_data) {
     if (data.empty()) {
+        LOG("Buffer is clean. No need to optimize.");
         data.push_back(new_data);
     }
 
     if (new_data.cmd == 'W') {
-        ignoreDupWrite(new_data, new_data.index, new_data.index);  // Opt1
-        narrowEraseRangeSeveralTimes(new_data);  // Opt 4
+        bool optimize_applied = false;
+
+        if (optimize_applied = ignoreDupWrite(new_data, new_data.index, new_data.index)) {  // Opt1
+            LOG("Ignore Duplicated Write Optimization (#1) Applied.");
+        }
+
+        optimize_applied = false;
+        if (optimize_applied = narrowEraseRangeSeveralTimes(new_data)) {  // Opt 4
+            LOG("Narrow Erase Range Optimization (#4) Applied.");
+        }
+
+        LOG("Write Request Is Stashed To Buffer.");
     }
     if (new_data.cmd == 'E') {
-        ignoreDupWrite(new_data,
-                       new_data.index,
-                       new_data.getLastIndex());  // Opt2
-        mergeLastErase(new_data);  // Opt3
+        bool optimize_applied = false;
+
+        if (optimize_applied = ignoreDupWrite(new_data, new_data.index, new_data.getLastIndex())) {  // Opt2
+            LOG("Ignore Duplicated Write Optimization (#2) Applied.");
+        }
+
+        optimize_applied = false;
+        if (optimize_applied = mergeLastErase(new_data)) {  // Opt3
+            LOG("Merge with Last Erase Optimization (#3) Applied.");
+        }
+
+        LOG("Erase Request Is Stashed To Buffer.");
     }
 
     return writeBufferFile();
