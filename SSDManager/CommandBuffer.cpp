@@ -14,6 +14,7 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
     if (data.empty()) {
         LOG("Buffer is clean. No need to optimize.");
         data.push_back(new_data);
+        return writeBufferFile();
     }
 
     if (new_data.cmd == 'W') {
