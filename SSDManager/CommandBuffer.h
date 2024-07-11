@@ -13,7 +13,7 @@ struct BufferData {
     int getLastIndex() {
         return index + erase_size - 1;
     }
-    bool operator<(BufferData& compared) {
+    bool operator<(const BufferData& compared) {
         if (index < compared.index) {
             return true;
         }
@@ -27,7 +27,7 @@ struct BufferData {
 };
 
 class CommandBuffer {
-public:
+ public:
     CommandBuffer();
 
     bool updateBuffer(BufferData);
@@ -38,7 +38,7 @@ public:
 
     const std::string BUFFER_FILE_NAME = "../../resources/buffer.txt";
 
-private:
+ private:
     bool createBufferFile();
     bool readBufferFile();
     bool writeBufferFile();
@@ -46,7 +46,7 @@ private:
     bool ignoreDupWrite(BufferData&, int, int);
     bool mergeLastErase(BufferData&);
     bool narrowEraseRange(BufferData&, int);
-    bool narrowEraseRangeSeveralTimes(BufferData& new_data);
+    bool narrowEraseRangeSeveralTimes(BufferData&);
 
     std::vector<BufferData> data;
     const char DELIMETER_STRING = ',';
