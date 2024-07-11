@@ -43,7 +43,7 @@ bool TestShell::isValidLBA(const std::string& str) {
     }
 
     int index = std::stoi(str);
-    if (index < 0 || index > 99) {
+    if (index < SSD_START_INDEX || index > SSD_LAST_INDEX) {
         return false;
     }
 
@@ -57,7 +57,7 @@ bool TestShell::isValidSize(const std::string& str) {
     }
 
     int index = std::stoi(str);
-    if (index < 0 || index > 100) {
+    if (index < SSD_START_INDEX || index > ERASE_MAX_SIZE) {
         return false;
     }
 

@@ -37,45 +37,6 @@ class TestShellFixture : public Test {
 
     TestShellFixture()
         : shellWithMock(&mockFileManager), shell(&file_manager) {}
-
-    void expectInvalidArgumentForFullWrite(const string& command) {
-        try {
-            shellWithMock.fullWrite(command);
-            FAIL() << "Expected invalid_argument";
-        }
-        catch (const invalid_argument& e) {
-            EXPECT_EQ(string(e.what()), "INVALID COMMAND");
-        }
-        catch (...) {
-            FAIL() << "Expected invalid_argument";
-        }
-    }
-
-    void expectInvalidArgumentForWrite(const string & command) {
-        try {
-            shell.write(command);
-            FAIL() << "Expected invalid_argument";
-        }
-        catch (const invalid_argument& e) {
-            EXPECT_EQ(string(e.what()), "INVALID COMMAND");
-        }
-        catch (...) {
-            FAIL() << "Expected invalid_argument";
-        }
-    }
-
-    void expectInvalidArgumentForRead(const string& command) {
-        try {
-            shell.read(command);
-            FAIL() << "Expected invalid_argument";
-        }
-        catch (const invalid_argument& e) {
-            EXPECT_EQ(string(e.what()), "INVALID COMMAND");
-        }
-        catch (...) {
-            FAIL() << "Expected invalid_argument";
-        }
-    }
 };
 
 TEST_F(TestShellFixture, execute_invalid_command) {
