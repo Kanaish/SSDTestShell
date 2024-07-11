@@ -34,7 +34,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CommandBuffer.cpp">
-       <Filter>소스 파일</Filter>
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="LogManager.cpp">
       <Filter>소스 파일</Filter>
