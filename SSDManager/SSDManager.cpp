@@ -209,6 +209,7 @@ std::string SSDManager::convertToUpperValue(std::string& str) {
     for (char& c : str) {
         upper_char_arr[i++] = std::isalpha(c) ? std::toupper(c) : c;
     }
+    upper_char_arr[1] = 'x';
     upper_char_arr[i] = '\0';
 
     std::string upper_str = upper_char_arr;
