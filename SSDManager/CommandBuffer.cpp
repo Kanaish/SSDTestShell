@@ -169,7 +169,7 @@ bool CommandBuffer::readBufferFile() {
     std::string token;
     BufferData buf_data;
 
-    // 구분자로 쉼표(,)를 사용하여 문자열 추출
+    // Split String with comma(,) as delimiter
     while (std::getline(buffer, cmd, DELIMETER_STRING)) {
         buf_data = {};
 
