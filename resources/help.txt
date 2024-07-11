@@ -20,6 +20,21 @@ Usage:
     - Example: fullread
     - Outputs all LBA values to the screen.
 
+   erase <LBA> <SIZE>
+    - Erases data from LBA <LBA> for <SIZE> LBAs.
+    - Example: erase 3 10
+    - Erases data from LBA 3 through LBA 12.
+
+   erase_range <Start LBA> <End LBA>
+    - Erases data from Start LBA through End LBA - 1.
+    - Example: erase_range 3 13
+    - Erases data from LBA 3 through LBA 12.
+
+  flush
+    - Flushes the command buffer.
+    - Example: flush
+    - Sends all buffered commands to ssd.
+
   exit
     - Exits the shell.
 
