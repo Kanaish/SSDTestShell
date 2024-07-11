@@ -29,7 +29,6 @@ class TestShell {
     static const int INVALID_COMMAND = -3;
     static const int TEST_FAIL = -4;
 
-
  protected:
     virtual int exit();
     virtual int help();
@@ -46,7 +45,7 @@ class TestShell {
       {"exit", [this](const std::string&) { return this->exit(); return 0; }},
       {"help", [this](const std::string&) { return this->help(); return 0; }},
       {"fullwrite", [this](const std::string& arg)
-            {return this->fullWrite(arg); }},
+            { return this->fullWrite(arg); }},
       {"fullread", [this](const std::string& arg) { return this->fullRead(); }},
       {"testapp1", [this](const std::string&) { return this->testApp1(); }},
       {"testapp2", [this](const std::string&) { return this->testApp2(); }},
@@ -57,9 +56,7 @@ class TestShell {
     };
 
     const std::string TEST_SCENARIO_NAME = "run_list";
-
-    static const int SSD_START_INDEX = 0;
-    static const int SSD_LAST_INDEX = 99;
-    static const int ERASE_MAX_SIZE = 100;
-    static const int ERASE_MAX_SIZE_FOR_SSD = 10;
+    const std::string HELP_FILE_PATH = "../../resources/help.txt";
+    const std::string RESULT_FILE_PATH = "../../resources/result.txt";
+    const std::string RESOURCE_PATH = "../../resources/";
 };

@@ -92,7 +92,7 @@ int TestShell::exit() {
 }
 
 int TestShell::help() {
-    std::cout << file_manager->read("../../resources/help.txt") << std::endl;
+    std::cout << file_manager->read(HELP_FILE_PATH) << std::endl;
     return 0;
 }
 
@@ -117,7 +117,7 @@ int TestShell::testApp1(void) {
             return ret;
         }
 
-        std::string line = file_manager->read("../../resources/result.txt");
+        std::string line = file_manager->read(RESULT_FILE_PATH);
         if (line != write_value) {
             ret = TEST_FAIL;
             break;
@@ -153,7 +153,7 @@ int TestShell::testApp2(void) {
         if (ret != 0) {
             return ret;
         }
-        std::string line = file_manager->read("../../resources/result.txt");
+        std::string line = file_manager->read(RESULT_FILE_PATH);
         if (line != write_value) {
             ret = TEST_FAIL;
             break;
@@ -173,7 +173,7 @@ int TestShell::erase_range(const std::string& arg) {
 
 void TestShell::runScenarioFile(const std::string& filename) {
     try {
-        std::string fullPath = "../../resources/" + filename;
+        std::string fullPath = RESOURCE_PATH + filename;
         std::string file_content = file_manager->read(fullPath);
         if (file_content.empty()) {
             throw std::runtime_error("File is not opened or is empty");
