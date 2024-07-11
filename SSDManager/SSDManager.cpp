@@ -58,11 +58,9 @@ bool SSDManager::executeCommand() {
     if (cmd == 'R') {
         std::string buffer_ret = command_buffer->findMatchedWrite(index);
         if (buffer_ret == "") {
-            LOG("Read From SSD. No Return From Buffer.");
             return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
         }
         try {
-            LOG("Read From Buffer.");
             return file_manager->write(RESULT_FILE, buffer_ret);
         }
         catch (std::exception& e) {
@@ -73,7 +71,6 @@ bool SSDManager::executeCommand() {
     std::vector<BufferData> flushed_data;
 
     if (cmd == 'W' || cmd == 'E') {
-        //TODO: Builder Pattern
         BufferData data{ cmd, index, write_value, erase_size };
 
         if (command_buffer->updateBuffer(data) == false) {

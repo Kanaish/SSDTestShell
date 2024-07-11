@@ -28,8 +28,6 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
         if (optimize_applied = narrowEraseRangeSeveralTimes(new_data)) {  // Opt 4
             LOG("Narrow Erase Range Optimization (#4) Applied.");
         }
-
-        LOG("Write Request Is Stashed To Buffer.");
     }
     if (new_data.cmd == 'E') {
         bool optimize_applied = false;
@@ -42,8 +40,6 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
         if (optimize_applied = mergeLastErase(new_data)) {  // Opt3
             LOG("Merge with Last Erase Optimization (#3) Applied.");
         }
-
-        LOG("Erase Request Is Stashed To Buffer.");
     }
 
     return writeBufferFile();
