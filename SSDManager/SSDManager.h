@@ -39,4 +39,6 @@ private:
     bool isValidArgCnt();
     bool isValidWriteInput();
     bool isValidEraseInput();
+
+    std::string convertToUpperValue(std::string&);
 };

@@ -181,9 +181,24 @@ bool SSDManager::isValidWriteInput() {
                 return false;
             }
         }
+
+        write_value = convertToUpperValue(write_value);
     }
 
     return true;
+}
+
+std::string SSDManager::convertToUpperValue(std::string& str) {
+    char upper_char_arr[11] = {};
+    int i = 0;
+
+    for (char& c : str) {
+        upper_char_arr[i++] = std::isalpha(c) ? std::toupper(c) : c;
+    }
+    upper_char_arr[i] = '\0';
+
+    std::string upper_str = upper_char_arr;
+    return upper_str;
 }
 
 bool SSDManager::isValidEraseInput() {
