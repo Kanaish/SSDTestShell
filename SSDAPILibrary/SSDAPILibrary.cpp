@@ -1,4 +1,6 @@
-#include "pch.h" // use stdafx.h in Visual Studio 2017 and earlier
+/* Copyright 2024 Code Love you */
+
+#include "pch.h"
 #include "SSDAPILibrary.h"
 #include "FileManager.h"
 
@@ -162,7 +164,8 @@ int SSDAPIRead(const char* arg, bool isPrint) {
     }
 
     if (isPrint) {
-        std::cout << file_manager->read("../../resources/result.txt") << std::endl;
+        std::cout << file_manager->read("../../resources/result.txt")
+            << std::endl;
     }
 
     return 0;

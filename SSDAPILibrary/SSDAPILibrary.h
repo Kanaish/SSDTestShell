@@ -1,3 +1,4 @@
+/* Copyright 2024 Code Love you */
 #pragma once
 
 #ifdef SSDAPILIBRARY_EXPORTS
