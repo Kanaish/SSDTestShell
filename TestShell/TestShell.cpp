@@ -25,7 +25,7 @@ bool TestShell::isValidCommand(const std::string& cmd) {
     return commandMap.find(cmd) != commandMap.end();
 }
 
-bool TestShell::isValidIndex(const std::string& str) {
+bool TestShell::isValidLBA(const std::string& str) {
     if (str.empty()) return false;
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -39,7 +39,7 @@ bool TestShell::isValidIndex(const std::string& str) {
     return true;
 }
 
-bool TestShell::isValidIndex2(const std::string& str) {
+bool TestShell::isValidSize(const std::string& str) {
     if (str.empty()) return false;
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -66,7 +66,7 @@ bool TestShell::isValidArgument(const std::string& arg) {
     std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word)) return false;
-    if (!isValidIndex(first_word)) return false;
+    if (!isValidLBA(first_word)) return false;
 
     if (!(iss >> second_word)) return false;
     if (!isValidAddress(second_word)) return false;
@@ -110,7 +110,7 @@ int TestShell::write(const std::string& arg) {
 
     ret = system(cmd.c_str());
     if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
+        throw std::invalid_argument("INVALID SYSTEM COMMAND");
     }
 
     return ret;
@@ -126,7 +126,7 @@ int TestShell::read(const std::string& arg) {
     if ((iss >> second_word)) {
         throw std::invalid_argument("INVALID COMMAND");
     }
-    if (!isValidIndex(first_word)) {
+    if (!isValidLBA(first_word)) {
         throw std::invalid_argument("INVALID COMMAND");
     }
 
@@ -137,7 +137,7 @@ int TestShell::read(const std::string& arg) {
 
     ret = system(cmd.c_str());
     if (ret != 0) {
-        throw std::invalid_argument("INVALID COMMAND");
+        throw std::invalid_argument("INVALID SYSTEM COMMAND");
         return ret;
     }
     std::cout << file_manager->read("../../resources/result.txt") << std::endl;
@@ -276,48 +276,40 @@ int TestShell::doErase(int start_lba, int size) {
     return ret;
 }
 
-int TestShell::erase(const std::string& arg) {
+void TestShell::transStringtoIntInt(const std::string& arg, int& left_arg, int& right_arg)
+{
     std::istringstream iss(arg);
     std::string first_word, second_word, third_word;
 
     if (!(iss >> first_word))
         throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex(first_word))
+    if (!isValidLBA(first_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
     if (!(iss >> second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex2(second_word))
+    if (!isValidSize(second_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
     if ((iss >> third_word))
         throw std::invalid_argument("INVALID ARGUMENT");
 
-    int start_lba = std::stoi(first_word);
-    int size = std::stoi(second_word);
+    left_arg = std::stoi(first_word);
+    right_arg = std::stoi(second_word);
+}
+
+int TestShell::erase(const std::string& arg) {
+    int start_lba, size;
+
+    transStringtoIntInt(arg, start_lba, size);
 
     return doErase(start_lba, size);
 }
 
 int TestShell::erase_range(const std::string& arg) {
-    std::istringstream iss(arg);
-    std::string first_word, second_word, third_word;
+    int start_lba, end_lba;
 
-    if (!(iss >> first_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex(first_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-
-    if (!(iss >> second_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-    if (!isValidIndex2(second_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-
-    if ((iss >> third_word))
-        throw std::invalid_argument("INVALID ARGUMENT");
-
-    int start_lba = std::stoi(first_word);
-    int end_lba = std::stoi(second_word);
+    transStringtoIntInt(arg, start_lba, end_lba);
 
     if (start_lba >= end_lba)
         throw std::invalid_argument("INVALID ARGUMENT");
