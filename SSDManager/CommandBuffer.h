@@ -13,6 +13,17 @@ struct BufferData {
     int getLastIndex() {
         return index + erase_size - 1;
     }
+    bool operator<(BufferData& compared) {
+        if (index < compared.index) {
+            return true;
+        }
+        if (index > compared.index) {
+            return false;
+        }
+        if (index == compared.index) {
+            return erase_size <= compared.erase_size;
+        }
+    }
 };
 
 class CommandBuffer {
