@@ -1,4 +1,5 @@
 /* Copyright 2024 Code Love you */
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -19,20 +20,23 @@ bool CommandBuffer::updateBuffer(BufferData new_data) {
 
     if (new_data.cmd == 'W') {
         bool optimize_applied = false;
-
-        if (optimize_applied = ignoreDupWrite(new_data, new_data.index, new_data.index)) {  // Opt1
+        // Opt1
+        if (optimize_applied = ignoreDupWrite(new_data, new_data.index,
+                                                        new_data.index)) {
             LOG("Ignore Duplicated Write Optimization (#1) Applied.");
         }
 
         optimize_applied = false;
-        if (optimize_applied = narrowEraseRangeSeveralTimes(new_data)) {  // Opt 4
+        // Opt 4
+        if (optimize_applied = narrowEraseRangeSeveralTimes(new_data)) {
             LOG("Narrow Erase Range Optimization (#4) Applied.");
         }
     }
     if (new_data.cmd == 'E') {
         bool optimize_applied = false;
-
-        if (optimize_applied = ignoreDupWrite(new_data, new_data.index, new_data.getLastIndex())) {  // Opt2
+        // Opt2
+        if (optimize_applied = ignoreDupWrite(new_data, new_data.index,
+                                              new_data.getLastIndex())) {
             LOG("Ignore Duplicated Write Optimization (#2) Applied.");
         }
 
@@ -167,7 +171,8 @@ std::string CommandBuffer::findMatchedWrite(int index) {
 
 std::string CommandBuffer::findMatchedErase(int index) {
     for (int i = data.size() - 1; i >= 0; i--) {
-        if (data[i].cmd == 'E' && data[i].index <= index && index <= data[i].getLastIndex()) {
+        if (data[i].cmd == 'E' && data[i].index <= index &&
+                         index <= data[i].getLastIndex()) {
             return ERASED_VALUE;
         }
     }

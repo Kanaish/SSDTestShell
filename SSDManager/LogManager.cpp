@@ -1,11 +1,11 @@
 /* Copyright 2024 Code Love you */
+
+#include <windows.h>
+#include <ctime>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include <ctime>
-#include <iostream>
-#include <windows.h>
 #include <string>
 #include <locale>
 #include <codecvt>
@@ -17,14 +17,16 @@ LogManager& LogManager::getLogManagerInstance(void) {
 }
 
 LogManager::LogManager() {
-
 }
 
-void LogManager::logWrite(std::string className, std::string mFunctionName, std::string msg) {
+void LogManager::logWrite(std::string className,
+                        std::string mFunctionName,
+                        std::string msg) {
     std::string logTitle(50, ' ');
     std::string buf = className + "::" + mFunctionName;
     logTitle.replace(0, buf.length(), buf);
-    std::string logMessage = logGetCurrentTimeForLogging() + logTitle + msg + "\n";
+    std::string logMessage = logGetCurrentTimeForLogging() +
+                                        logTitle + msg + "\n";
 
     std::ofstream logFile(LOG_DIR + CURRENT_LOG, std::ios::out | std::ios::app);
     if (logFile.is_open()) {
@@ -33,33 +35,36 @@ void LogManager::logWrite(std::string className, std::string mFunctionName, std:
         size_t pos = logFile.tellp();
         if (pos > LIMIT_LOG_SIZE) {
             logFile.close();
-            std::string logNewFileName = LOG_DIR +"Until_" + logGetCurrentTimeForFileName() + ".log";
+            std::string logNewFileName = LOG_DIR +"Until_" +
+                                       logGetCurrentTimeForFileName() + ".log";
 
-            if (std::rename((LOG_DIR + CURRENT_LOG).c_str(), logNewFileName.c_str()) != 0) {
+            if (std::rename((LOG_DIR + CURRENT_LOG).c_str(),
+                                     logNewFileName.c_str()) != 0) {
                 std::cerr << "Error renaming file" << std::endl;
                 return;
             }
-            if (getOldLogFileNum() == 2)
-            {
+            if (getOldLogFileNum() == 2) {
                 std::string oldestFileName = LOG_DIR + getOldestLogFileName();
                 std::string changedOldestFileName = oldestFileName;
 
                 size_t pos = oldestFileName.find(".log");
                 changedOldestFileName.replace(pos, 4, ".zip");
-                if (std::rename(oldestFileName.c_str(), changedOldestFileName.c_str()) != 0) {
+                if (std::rename(oldestFileName.c_str(),
+                                changedOldestFileName.c_str()) != 0) {
                     std::cerr << "Error renaming file" << std::endl;
                     return;
                 }
             }
         }
-    }
-    else {
-
+    } else {
+        throw std::invalid_argument("File is not opened");
     }
     logFile.close();
 }
-void LogManager::logPrint(std::string className, std::string mFunctionName, std::string msg) {
-    std::string logTitle(50, ' ');
+void LogManager::logPrint(std::string className,
+                          std::string mFunctionName,
+                          std::string msg) {
+    std::string logTitle(LOG_TITLE_LIMIT, ' ');
     std::string buf = className + "::" + mFunctionName;
     logTitle.replace(0, buf.length(), buf);
     std::string logMessage = logGetCurrentTimeForLogging() + logTitle + msg;
@@ -103,8 +108,7 @@ int LogManager::getOldLogFileNum(void) {
         return count;
 }
 
-std::string LogManager::getOldestLogFileName(void)
-{
+std::string LogManager::getOldestLogFileName(void) {
     WIN32_FIND_DATA data;
     HANDLE hFind;
     FILETIME oldestTime;
@@ -130,16 +134,18 @@ std::string LogManager::getOldestLogFileName(void)
         /* Convert file time into system time  */
         FileTimeToSystemTime(&oldestTime, &stUTC);
         SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
-    }
-    else {
+    } else {
         std::cout << "No .log files found.\n";
     }
     return oldestFile;
 }
 
 std::string LogManager::WideStringToString(const std::wstring& wstr) {
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), NULL, 0, NULL, NULL);
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(),
+                           static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
     std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+    WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(),
+                        static_cast<int>(wstr.size()),
+                        &strTo[0], size_needed, NULL, NULL);
     return strTo;
 }

@@ -1,4 +1,5 @@
 /* Copyright 2024 Code Love you */
+
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -6,19 +7,22 @@
 #include "gmock/gmock.h"
 #include "../SSDManager/SSDWriter.cpp"
 #include "../SSDManager/FileManagerInterface.h"
+
 using namespace std;
 using namespace testing;
+
 class FileManagerWriterMock :public FileManagerInterface {
-public:
+ public:
     MOCK_METHOD(string, read, (string name), (override));
     MOCK_METHOD(string, read, (string name, int index), (override));
-    MOCK_METHOD(bool, write, (string name, int index, string value), (override));
+    MOCK_METHOD(bool, write, (string name, int index,
+                                           string value), (override));
     MOCK_METHOD(bool, write, (string name, string value), (override));
 };
 
 
 class SSDWriteTestFixture :public Test {
-public:
+ public:
     FileManagerWriterMock fm;
     SSDWriter ssd_writer{ &fm };
     string nand_file = "nand.txt";

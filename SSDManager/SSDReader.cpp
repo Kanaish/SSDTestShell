@@ -1,4 +1,5 @@
 /* Copyright 2024 Code Love you */
+
 #include <iostream>
 #include "SSDReader.h"
 
@@ -22,7 +23,7 @@ std::string SSDReader::readSSDValue(const std::string& nand_file, int index) {
 }
 
 bool SSDReader::writeResultValue(const std::string& result_file,
-    std::string& result) {
+    const std::string& result) {
     try {
         return fm->write(result_file, result);
     }
