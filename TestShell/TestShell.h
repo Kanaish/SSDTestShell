@@ -66,5 +66,4 @@ class TestShell {
     const std::string HELP_FILE_PATH = "..\\..\\resources/help.txt";
     const std::string RESULT_FILE_PATH = "..\\..\\resources/result.txt";
     const std::string RESOURCE_PATH = "..\\..\\resources\\";
-
 };
