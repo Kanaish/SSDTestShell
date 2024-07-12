@@ -1,5 +1,5 @@
 /* Copyright 2024 Code Love you */
-#include "LogManager.h"
+
 #include <windows.h>
 #include <ctime>
 #include <iostream>
@@ -9,7 +9,7 @@
 #include <string>
 #include <locale>
 #include <codecvt>
-
+#include "LogManager.h"
 
 LogManager& LogManager::getLogManagerInstance(void) {
     static LogManager instance;

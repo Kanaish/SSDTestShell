@@ -1,6 +1,8 @@
 /* Copyright 2024 Code Love you */
 
 #pragma once
+#include <vector>
+#include <string>
 #include "FileManager.h"
 #include "LogManager.h"
 #include "SSDWriter.h"
@@ -9,7 +11,7 @@
 #include "CommandBuffer.h"
 
 class SSDManager {
-public:
+ public:
     SSDManager(int argc, char** argv);
     ~SSDManager();
 
@@ -20,7 +22,7 @@ public:
     const std::string NAND_FILE = "../../resources/nand.txt";
     const std::string RESULT_FILE = "../../resources/result.txt";
 
-private:
+ private:
     std::vector<std::string> parsed_input;
     int parsed_input_arg_cnt;
 

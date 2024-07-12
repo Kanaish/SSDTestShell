@@ -1,5 +1,7 @@
 /* Copyright 2024 Code Love you */
 
+#include <vector>
+#include <string>
 #include "SSDManager.h"
 #include "LogManager.h"
 
@@ -9,7 +11,7 @@ SSDManager::SSDManager(int argc, char** argv) {
     }
 
     parsed_input_arg_cnt = argc;
-    // TODO: Factory Pattern
+
     file_manager = new FileManager();
     ssd_writer = new SSDWriter(file_manager);
     ssd_reader = new SSDReader(file_manager);
@@ -34,7 +36,7 @@ bool SSDManager::isValidInput() {
         return false;
     }
 
-    if (isValidArgCnt() == false) { 
+    if (isValidArgCnt() == false) {
         return false;
     }
 
@@ -93,12 +95,14 @@ bool SSDManager::executeCommand() {
 
     for (BufferData& data : flushed_data) {
         if (data.cmd == 'W') {
-            if (ssd_writer->write(NAND_FILE, data.index, data.write_value) == false) {
+            if (ssd_writer->write(NAND_FILE, data.index,
+                                             data.write_value) == false) {
                 return false;
             }
         }
         if (data.cmd == 'E') {
-            if (ssd_eraser->erase(NAND_FILE, data.index, data.erase_size) == false) {
+            if (ssd_eraser->erase(NAND_FILE, data.index,
+                                             data.erase_size) == false) {
                 return false;
             }
         }
