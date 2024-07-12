@@ -34,6 +34,7 @@ class CommandBuffer {
     bool isFullBuffer();
     std::vector<BufferData> flushBuffer();
     std::string findMatchedWrite(int);
+    std::string findMatchedErase(int);
     bool flushBufferFile();
 
     const std::string BUFFER_FILE_NAME = "../../resources/buffer.txt";
@@ -52,5 +53,6 @@ class CommandBuffer {
     const char DELIMETER_STRING = ',';
     const char SPACE_STRING = ' ';
     const int BUFFER_MAX = 10;
+    const std::string ERASED_VALUE = "0x00000000";
     const std::string CLASS_NAME = "CommandBuffer";
 };
