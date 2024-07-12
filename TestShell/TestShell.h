@@ -35,7 +35,6 @@ class TestShell {
 
  private:
     bool isValidCommand(const std::string& cmd);
-    int doErase(int start_lba, int size);
     void runScenarioFile(const std::string& filename);
 
     const std::unordered_map<std::string,
@@ -66,5 +65,4 @@ class TestShell {
     const std::string HELP_FILE_PATH = "..\\..\\resources/help.txt";
     const std::string RESULT_FILE_PATH = "..\\..\\resources/result.txt";
     const std::string RESOURCE_PATH = "..\\..\\resources\\";
-
 };
