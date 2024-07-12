@@ -46,10 +46,10 @@ We provides example scenario list file - `/resources/run_list.lst`
 	* testapp1, testapp2 and runner.
  * SSD API library is used in TestShell to send request to SSD.
  * Logs are printed in command line and save with files in `/log/`.
-	* Log format is `[<Date> <Time>] <Function Name>() : <Log Message>`. 50bytes are fixed before `:`.
-	* You can log with `LOG()` after include `"Logger.h"`.
+	* Log format is `[<Date> <Time>] <Class Name>::<Function Name>() : <Log Message>`. 50bytes are fixed before `:`.
+	* You can log with `LOG()` after include `"LogManager.h"`.
 	* `/log/latest.log` is latest. The max size of 1 log file is 10KB. 
-	* When exceeds 10KB, the file renames to `/log/untile_{date}_{time}.log`.
+	* When exceeds 10KB, the file renames to `/log/until_{date}_{time}.log`.
 	* When 2 log files are created, the oldest is zipped. (Actually rename from `.log` to `.zip`.)
 
 ## Usage
@@ -111,7 +111,7 @@ Be careful - TestShell is case sensitive.
 
  `erase <LBA> <SIZE>`
   - Erases data from `<LBA>` for `<SIZE>` LBAs.
- `<SIZE>` can be ranged in 0 to 10.
+ `<SIZE>` can be ranged in 0 to 100.
   - Example: `erase 3 10`
   - Erases data from LBA 3 through LBA 12.
 
