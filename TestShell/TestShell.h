@@ -35,7 +35,6 @@ class TestShell {
 
  private:
     bool isValidCommand(const std::string& cmd);
-    int doErase(int start_lba, int size);
     void runScenarioFile(const std::string& filename);
 
     const std::unordered_map<std::string,
