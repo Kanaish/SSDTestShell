@@ -158,8 +158,17 @@ std::vector<BufferData> CommandBuffer::flushBuffer() {
 
 std::string CommandBuffer::findMatchedWrite(int index) {
     for (int i = data.size() - 1; i >= 0; i--) {
-        if (data[i].index == index && data[i].cmd == 'W') {
+        if (data[i].cmd == 'W' && data[i].index == index) {
             return data[i].write_value;
+        }
+    }
+    return "";
+}
+
+std::string CommandBuffer::findMatchedErase(int index) {
+    for (int i = data.size() - 1; i >= 0; i--) {
+        if (data[i].cmd == 'E' && data[i].index <= index && index <= data[i].getLastIndex()) {
+            return ERASED_VALUE;
         }
     }
     return "";

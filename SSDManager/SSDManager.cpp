@@ -58,6 +58,9 @@ bool SSDManager::executeCommand() {
     if (cmd == 'R') {
         std::string buffer_ret = command_buffer->findMatchedWrite(index);
         if (buffer_ret == "") {
+            buffer_ret = command_buffer->findMatchedErase(index);
+        }
+        if (buffer_ret == "") {
             return ssd_reader->read(NAND_FILE, RESULT_FILE, index);
         }
         try {
