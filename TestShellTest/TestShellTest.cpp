@@ -11,14 +11,6 @@
 using namespace std;
 using namespace testing;
 
-class MockFileManager : public FileManagerInterface {
- public:
-    MOCK_METHOD(string, read, (string name), ());
-    MOCK_METHOD(string, read, (string name, int index), ());
-    MOCK_METHOD(bool, write, (string name, int index, string value), ());
-    MOCK_METHOD(bool, write, (string name, string value), ());
-};
-
 class TestShellMock : public TestShell {
  public:
     explicit TestShellMock(FileManagerInterface* fileManager)
